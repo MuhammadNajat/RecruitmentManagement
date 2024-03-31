@@ -1,16 +1,23 @@
 import NextAuth from 'next-auth';
 import { authConfig } from './auth.config';
-//import type { NextRequest } from 'next/server'
+import type { NextRequest } from 'next/server'
+import { getSession } from 'next-auth/react';
+import { NextResponse } from 'next/server';
+import { useSession} from "next-auth/react"
 
 export default NextAuth(authConfig).auth;
 
 //Added for exp - Najat
 /*
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
+  
   const currentUser = request.cookies.get('currentUser')?.value
+
+  console.log("req.cookies: ", request.cookies);
 
   console.log("*** currenteUser", currentUser);
  
+
   if (currentUser && !request.nextUrl.pathname.startsWith('/dashboard')) {
     return Response.redirect(new URL('/dashboard', request.url))
   }
