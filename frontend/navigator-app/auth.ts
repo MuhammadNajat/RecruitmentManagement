@@ -7,23 +7,51 @@ import type { User } from '@/app/lib/definitions';
 import bcrypt from 'bcrypt';
 import { Concert_One } from 'next/font/google';
 
+const { MongoClient, ServerApiVersion } = require('mongodb');
+const uri = "mongodb://localhost:27017/";
+// Create a MongoClient with a MongoClientOptions object to set the Stable API version
+const client = new MongoClient(uri, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  }
+});
+
+async function connectDB() {
+  try {
+    // Connect the client to the server	(optional starting in v4.7)
+    await client.connect();
+    // Send a ping to confirm a successful connection
+    await client.db("admin").command({ ping: 1 });
+    console.log("Pinged your deployment. You successfully connected to MongoDB!");
+  } finally {
+    // Ensures that the client will close when you finish/error
+    //await client.close();
+  }
+}
+
 async function getUser(email: string): Promise<User | undefined> {
     try {
-        /*const user = await sql<User>`SELECT * FROM users WHERE email=${email}`;
-        return user.rows[0];*/
-        const user: User = {
-            id: "1",
-            name: "John Doe",
-            email: "john.doe@example.com",
-            password: "$2b$10$jThPhMhjsoUJ5CYutjgV8eQPH26hKbJht/0FsgjNvnqFGMQFc4dLa"
-        };
+        await connectDB().catch(console.dir);
+        const database = client.db('RecruitmentManagement');
+        console.log("$$$ database", database);
 
-        return user;
+        const collection = database.collection('users');
+        console.log("$$$ collection", collection);
+        
+        const users = await collection.find({ "email": "ahmad@example.com" }).toArray();
+        console.log("### Documents by email:", users);
+
+        return users[0];
           
     } catch (error) {
         console.error('Failed to fetch user:', error);
         throw new Error('Failed to fetch user.');
-    }
+    } finally {
+        // Ensures that the client will close when you finish/error
+        await client.close();
+      }
 }
 
 export const { auth, signIn, signOut } = NextAuth({
