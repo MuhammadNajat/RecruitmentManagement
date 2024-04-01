@@ -39,8 +39,10 @@ async function getUser(email: string): Promise<User | undefined> {
 
         const collection = database.collection('users');
         console.log("$$$ collection", collection);
+
+        //console.log("*** Hashed: ", await bcrypt.hash("dsi123", 10));
         
-        const users = await collection.find({ "email": "ahmad@example.com" }).toArray();
+        const users = await collection.find({ "email": email }).toArray();
         console.log("### Documents by email:", users);
 
         return users[0];
