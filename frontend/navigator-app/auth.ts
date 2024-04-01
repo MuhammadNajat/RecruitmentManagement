@@ -70,12 +70,15 @@ export const { auth, signIn, signOut } = NextAuth({
                     console.log(">>> parsedCredentials.success");
                     const { email, password } = parsedCredentials.data;
                     const user = await getUser(email);
-                    if (!user) return null;
-                    console.log(">>> User found");
+                    if (!user)
+                      return null;
+                    console.log(">>> User found:\n", user);
                     console.log(">>>email:", email, ", password:", password);
-                    const passwordsMatch = await bcrypt.compare(password, user.password);
+                    let passwordsMatch = !user.changedAdminAssignedPassword && user.adminAssignedPassword === password;
+                    passwordsMatch = !passwordsMatch? await bcrypt.compare(password, user.password) : passwordsMatch;
 
-                    if (passwordsMatch) return user;
+                    if (passwordsMatch)
+                      return user;
                 }
 
                 console.log('Invalid credentials');

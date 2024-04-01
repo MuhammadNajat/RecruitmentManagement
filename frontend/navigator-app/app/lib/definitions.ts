@@ -7,6 +7,8 @@ export type User = {
   name: string;
   email: string;
   password: string;
+  adminAssignedPassword: string;
+  changedAdminAssignedPassword: boolean;
 };
 
 export type Customer = {
