@@ -1,0 +1,166 @@
+# GraphQL schema example
+#
+# https://gqlgen.com/getting-started/
+
+enum Role {
+  PROBLEMSETTER
+  REVIEWER
+  ADMIN
+}
+
+enum Difficulty {
+  EASY
+  MEDIUM
+  HARD
+}
+
+enum Status {
+  WITHPROPOSER
+  WITHREVIEWER
+  WITHADMIN
+  APPROVED
+  REJECTED
+}
+
+type User {
+  _id : ID!
+  employeeID : String!
+  name : String!
+  email : String!
+  password : String
+  adminAssignedPassword : String!
+  changedAdminAssignedPassword : Boolean!
+  role : Role!
+}
+
+type TopicMap {
+  key: String!
+  value: [String!]!
+}
+
+scalar Upload
+
+type Problem {
+  _id : ID!
+  statement : String!
+  images : [Upload!]
+  tags : [String!]!
+  difficulty : Difficulty!
+  status : Status!
+  proposerID : String!
+  reviewerID : String!
+  adminID : String!
+  reviewerComment : String
+  adminComment : String
+}
+
+type Query {
+  getUser(employeeID : String!) : User!
+  getUsers : [User!]!
+}
+
+type Mutation {
+  createUser(input : UserCreateInput!) : UserCreateResponse!
+
+  updateUser(employeeID : String!, input : UserUpdateInput!) : UserUpdateResponse!
+
+  deleteUser(employeeID : String!) : UserDeleteResponse!
+
+
+  createProblem(input : ProblemCreateInput!) : Problem!
+
+  updateProblem(id : ID!, input : ProblemUpdateInput!) : ProblemUpdateResponse!
+  
+  deleteProblem(id : ID!) : ProblemDeleteResponse!
+}
+
+input UserCreateInput {
+  employeeID : String!
+  name : String!
+  email : String!
+  password : String
+  adminAssignedPassword : String!
+  changedAdminAssignedPassword : Boolean!
+  role : Role!
+}
+
+input UserUpdateInput {
+  employeeID : String
+  name : String
+  email : String
+  password : String
+  adminAssignedPassword : String
+  changedAdminAssignedPassword : Boolean
+  role : Role
+}
+
+type UserCreateResponse {
+  _id : ID!
+  employeeID : String!
+  name : String!
+  email : String!
+  password : String
+  adminAssignedPassword : String
+  changedAdminAssignedPassword : Boolean
+  role : Role!
+}
+
+type UserUpdateResponse {
+  _id : ID!
+  employeeID : String!
+  name : String!
+  email : String!
+  password : String
+  adminAssignedPassword : String
+  changedAdminAssignedPassword : Boolean
+  role : Role!
+}
+
+type UserDeleteResponse {
+  employeeID : String!
+}
+
+input ProblemCreateInput {
+  statement : String!
+  images : [Upload!]
+  tags : [String!]!
+  difficulty : Difficulty!
+  status : Status!
+  proposerID : String!
+  reviewerID : String
+  adminID : String
+  reviewerComment : String
+  adminComment : String
+}
+
+input ProblemUpdateInput {
+  statement : String
+  images : [Upload!]
+  tags : [String!]!
+  difficulty : Difficulty
+  status : Status
+  proposerID : String
+  reviewerID : String
+  adminID : String
+  reviewerComment : String
+  adminComment : String
+}
+
+type ProblemUpdateResponse {
+  id : ID!
+  statement : String!
+  images : [Upload!]
+  tags : [String!]!
+  difficulty : Difficulty!
+  status : Status!
+  proposerID : String!
+  reviewerID : String
+  adminID : String
+  reviewerComment : String
+  adminComment : String
+}
+
+type ProblemDeleteResponse {
+  id : ID!
+  statement : String!
+}
