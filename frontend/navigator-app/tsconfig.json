@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "target": "es2017", //added latern on to solve a fix (from seggestion of vs code)
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
