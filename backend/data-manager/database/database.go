@@ -53,8 +53,11 @@ func (database database) CreateUser(input model.UserCreateInput) *model.UserCrea
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
+	currentTime := time.Now()
+	formattedTime := currentTime.Format("2006-01-02 15:04:05.000000000")
+
 	insertedUser, error := userCollection.InsertOne(ctx,
-		bson.M{"employeeID": input.EmployeeID, "name": input.Name, "email": input.Email, "role": input.Role, "password": input.Password, "adminAssignedPassword": input.AdminAssignedPassword, "changedAdminAssignedPassword": input.ChangedAdminAssignedPassword})
+		bson.M{"employeeID": input.EmployeeID, "name": input.Name, "email": input.Email, "role": input.Role, "password": input.Password, "adminAssignedPassword": input.AdminAssignedPassword, "changedAdminAssignedPassword": input.ChangedAdminAssignedPassword, "createdAt": formattedTime, "updatedAt": ""})
 
 	fmt.Println(">>> >>> Inserted Data:", insertedUser)
 
@@ -65,7 +68,7 @@ func (database database) CreateUser(input model.UserCreateInput) *model.UserCrea
 	}
 
 	insertedUserID := insertedUser.InsertedID.(primitive.ObjectID).Hex()
-	user := model.UserCreateResponse{ID: insertedUserID, EmployeeID: input.EmployeeID, Name: input.Name, Email: input.Email, Role: input.Role, Password: input.Password, AdminAssignedPassword: &input.AdminAssignedPassword, ChangedAdminAssignedPassword: &input.ChangedAdminAssignedPassword}
+	user := model.UserCreateResponse{ID: insertedUserID, EmployeeID: input.EmployeeID, Name: input.Name, Email: input.Email, Role: input.Role, Password: input.Password, AdminAssignedPassword: &input.AdminAssignedPassword, ChangedAdminAssignedPassword: &input.ChangedAdminAssignedPassword, CreatedAt: formattedTime, UpdatedAt: nil}
 	return &user
 }
 
@@ -115,31 +118,36 @@ func (database database) UpdateUser(employeeID string, input model.UserUpdateInp
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	jobDescriptionUpdateInfo := bson.M{}
+	userUpdateInfo := bson.M{}
 
 	if input.EmployeeID != nil {
-		jobDescriptionUpdateInfo["employeeID"] = input.EmployeeID
+		userUpdateInfo["employeeID"] = input.EmployeeID
 	}
 	if input.Name != nil {
-		jobDescriptionUpdateInfo["name"] = input.Name
+		userUpdateInfo["name"] = input.Name
 	}
 	if input.Email != nil {
-		jobDescriptionUpdateInfo["email"] = input.Email
+		userUpdateInfo["email"] = input.Email
 	}
 	if input.Password != nil {
-		jobDescriptionUpdateInfo["password"] = input.Password
-		//jobDescriptionUpdateInfo["changedAdminAssignedPassword"] = true
+		userUpdateInfo["password"] = input.Password
+		//userUpdateInfo["changedAdminAssignedPassword"] = true
 	}
 	if input.AdminAssignedPassword != nil {
-		jobDescriptionUpdateInfo["adminAssignedPassword"] = input.AdminAssignedPassword
-		//jobDescriptionUpdateInfo["changedAdminAssignedPassword"] = true
+		userUpdateInfo["adminAssignedPassword"] = input.AdminAssignedPassword
+		//userUpdateInfo["changedAdminAssignedPassword"] = true
 	}
 	if input.ChangedAdminAssignedPassword != nil {
-		jobDescriptionUpdateInfo["changedAdminAssignedPassword"] = input.ChangedAdminAssignedPassword
+		userUpdateInfo["changedAdminAssignedPassword"] = input.ChangedAdminAssignedPassword
 	}
 	if input.Role != nil {
-		jobDescriptionUpdateInfo["role"] = input.Role
+		userUpdateInfo["role"] = input.Role
 	}
+
+	currentTime := time.Now()
+	formattedTime := currentTime.Format("2006-01-02 15:04:05.000000000")
+
+	userUpdateInfo["updatedAt"] = formattedTime
 
 	//_id, _ := primitive.ObjectIDFromHex(id)
 	//_id := employeeID //???
@@ -151,7 +159,7 @@ func (database database) UpdateUser(employeeID string, input model.UserUpdateInp
 		return nil
 	}
 
-	updateCommand := bson.M{"$set": jobDescriptionUpdateInfo}
+	updateCommand := bson.M{"$set": userUpdateInfo}
 
 	results := userCollection.FindOneAndUpdate(ctx, filter, updateCommand, options.FindOneAndUpdate().SetReturnDocument(1))
 

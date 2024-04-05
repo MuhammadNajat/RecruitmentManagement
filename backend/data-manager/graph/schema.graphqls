@@ -31,6 +31,8 @@ type User {
   adminAssignedPassword : String!
   changedAdminAssignedPassword : Boolean!
   role : Role!
+  createdAt : String!
+  updatedAt : String
 }
 
 type TopicMap {
@@ -47,11 +49,13 @@ type Problem {
   tags : [String!]!
   difficulty : Difficulty!
   status : Status!
-  proposerID : String!
-  reviewerID : String!
-  adminID : String!
+  authorEmployeeID : String!
+  reviewerEmployeeID : String!
+  adminEmployeeID : String!
   reviewerComment : String
   adminComment : String
+  createdAt : String!
+  updatedAt : String
 }
 
 type Query {
@@ -103,6 +107,8 @@ type UserCreateResponse {
   adminAssignedPassword : String
   changedAdminAssignedPassword : Boolean
   role : Role!
+  createdAt : String!
+  updatedAt : String
 }
 
 type UserUpdateResponse {
@@ -114,6 +120,8 @@ type UserUpdateResponse {
   adminAssignedPassword : String
   changedAdminAssignedPassword : Boolean
   role : Role!
+  createdAt : String!
+  updatedAt : String
 }
 
 type UserDeleteResponse {
@@ -126,11 +134,13 @@ input ProblemCreateInput {
   tags : [String!]!
   difficulty : Difficulty!
   status : Status!
-  proposerID : String!
-  reviewerID : String
-  adminID : String
+  authorEmployeeID : String!
+  reviewerEmployeeID : String
+  adminEmployeeID : String
   reviewerComment : String
   adminComment : String
+  createdAt : String!
+  updatedAt : String
 }
 
 input ProblemUpdateInput {
@@ -139,28 +149,29 @@ input ProblemUpdateInput {
   tags : [String!]!
   difficulty : Difficulty
   status : Status
-  proposerID : String
-  reviewerID : String
-  adminID : String
+  authorEmployeeID : String
+  reviewerEmployeeID : String
+  adminEmployeeID : String
   reviewerComment : String
   adminComment : String
 }
 
 type ProblemUpdateResponse {
-  id : ID!
+  _id : ID!
   statement : String!
   images : [Upload!]
   tags : [String!]!
   difficulty : Difficulty!
   status : Status!
-  proposerID : String!
-  reviewerID : String
-  adminID : String
+  authorEmployeeID : String!
+  reviewerEmployeeID : String
+  adminEmployeeID : String
   reviewerComment : String
   adminComment : String
+  createdAt : String!
+  updatedAt : String
 }
 
 type ProblemDeleteResponse {
-  id : ID!
-  statement : String!
+  _id : ID!
 }

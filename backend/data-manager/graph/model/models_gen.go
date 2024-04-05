@@ -14,62 +14,67 @@ type Mutation struct {
 }
 
 type Problem struct {
-	ID              string            `bson:"_id" json:"_id"`
-	Statement       string            `json:"statement"`
-	Images          []*graphql.Upload `json:"images,omitempty"`
-	Tags            []string          `json:"tags"`
-	Difficulty      Difficulty        `json:"difficulty"`
-	Status          Status            `json:"status"`
-	ProposerID      string            `json:"proposerID"`
-	ReviewerID      string            `json:"reviewerID"`
-	AdminID         string            `json:"adminID"`
-	ReviewerComment *string           `json:"reviewerComment,omitempty"`
-	AdminComment    *string           `json:"adminComment,omitempty"`
+	ID                 string            `bson:"_id" json:"_id"`
+	Statement          string            `json:"statement"`
+	Images             []*graphql.Upload `json:"images,omitempty"`
+	Tags               []string          `json:"tags"`
+	Difficulty         Difficulty        `json:"difficulty"`
+	Status             Status            `json:"status"`
+	AuthorEmployeeID   string            `json:"authorEmployeeID"`
+	ReviewerEmployeeID string            `json:"reviewerEmployeeID"`
+	AdminEmployeeID    string            `json:"adminEmployeeID"`
+	ReviewerComment    *string           `json:"reviewerComment,omitempty"`
+	AdminComment       *string           `json:"adminComment,omitempty"`
+	CreatedAt          string            `json:"createdAt"`
+	UpdatedAt          *string           `json:"updatedAt,omitempty"`
 }
 
 type ProblemCreateInput struct {
-	Statement       string            `json:"statement"`
-	Images          []*graphql.Upload `json:"images,omitempty"`
-	Tags            []string          `json:"tags"`
-	Difficulty      Difficulty        `json:"difficulty"`
-	Status          Status            `json:"status"`
-	ProposerID      string            `json:"proposerID"`
-	ReviewerID      *string           `json:"reviewerID,omitempty"`
-	AdminID         *string           `json:"adminID,omitempty"`
-	ReviewerComment *string           `json:"reviewerComment,omitempty"`
-	AdminComment    *string           `json:"adminComment,omitempty"`
+	Statement          string            `json:"statement"`
+	Images             []*graphql.Upload `json:"images,omitempty"`
+	Tags               []string          `json:"tags"`
+	Difficulty         Difficulty        `json:"difficulty"`
+	Status             Status            `json:"status"`
+	AuthorEmployeeID   string            `json:"authorEmployeeID"`
+	ReviewerEmployeeID *string           `json:"reviewerEmployeeID,omitempty"`
+	AdminEmployeeID    *string           `json:"adminEmployeeID,omitempty"`
+	ReviewerComment    *string           `json:"reviewerComment,omitempty"`
+	AdminComment       *string           `json:"adminComment,omitempty"`
+	CreatedAt          string            `json:"createdAt"`
+	UpdatedAt          *string           `json:"updatedAt,omitempty"`
 }
 
 type ProblemDeleteResponse struct {
-	ID              string            `bson:"_id" json:"_id"`
-	Statement string `json:"statement"`
+	ID string `bson:"_id" json:"_id"`
 }
 
 type ProblemUpdateInput struct {
-	Statement       *string           `json:"statement,omitempty"`
-	Images          []*graphql.Upload `json:"images,omitempty"`
-	Tags            []string          `json:"tags"`
-	Difficulty      *Difficulty       `json:"difficulty,omitempty"`
-	Status          *Status           `json:"status,omitempty"`
-	ProposerID      *string           `json:"proposerID,omitempty"`
-	ReviewerID      *string           `json:"reviewerID,omitempty"`
-	AdminID         *string           `json:"adminID,omitempty"`
-	ReviewerComment *string           `json:"reviewerComment,omitempty"`
-	AdminComment    *string           `json:"adminComment,omitempty"`
+	Statement          *string           `json:"statement,omitempty"`
+	Images             []*graphql.Upload `json:"images,omitempty"`
+	Tags               []string          `json:"tags"`
+	Difficulty         *Difficulty       `json:"difficulty,omitempty"`
+	Status             *Status           `json:"status,omitempty"`
+	AuthorEmployeeID   *string           `json:"authorEmployeeID,omitempty"`
+	ReviewerEmployeeID *string           `json:"reviewerEmployeeID,omitempty"`
+	AdminEmployeeID    *string           `json:"adminEmployeeID,omitempty"`
+	ReviewerComment    *string           `json:"reviewerComment,omitempty"`
+	AdminComment       *string           `json:"adminComment,omitempty"`
 }
 
 type ProblemUpdateResponse struct {
-	ID              string            `bson:"_id" json:"_id"`
-	Statement       string            `json:"statement"`
-	Images          []*graphql.Upload `json:"images,omitempty"`
-	Tags            []string          `json:"tags"`
-	Difficulty      Difficulty        `json:"difficulty"`
-	Status          Status            `json:"status"`
-	ProposerID      string            `json:"proposerID"`
-	ReviewerID      *string           `json:"reviewerID,omitempty"`
-	AdminID         *string           `json:"adminID,omitempty"`
-	ReviewerComment *string           `json:"reviewerComment,omitempty"`
-	AdminComment    *string           `json:"adminComment,omitempty"`
+	ID                 string            `bson:"_id" json:"_id"`
+	Statement          string            `json:"statement"`
+	Images             []*graphql.Upload `json:"images,omitempty"`
+	Tags               []string          `json:"tags"`
+	Difficulty         Difficulty        `json:"difficulty"`
+	Status             Status            `json:"status"`
+	AuthorEmployeeID   string            `json:"authorEmployeeID"`
+	ReviewerEmployeeID *string           `json:"reviewerEmployeeID,omitempty"`
+	AdminEmployeeID    *string           `json:"adminEmployeeID,omitempty"`
+	ReviewerComment    *string           `json:"reviewerComment,omitempty"`
+	AdminComment       *string           `json:"adminComment,omitempty"`
+	CreatedAt          string            `json:"createdAt"`
+	UpdatedAt          *string           `json:"updatedAt,omitempty"`
 }
 
 type Query struct {
@@ -81,7 +86,7 @@ type TopicMap struct {
 }
 
 type User struct {
-	ID              string            `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"_id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -89,6 +94,8 @@ type User struct {
 	AdminAssignedPassword        string  `json:"adminAssignedPassword"`
 	ChangedAdminAssignedPassword bool    `json:"changedAdminAssignedPassword"`
 	Role                         Role    `json:"role"`
+	CreatedAt                    string  `json:"createdAt"`
+	UpdatedAt                    *string `json:"updatedAt,omitempty"`
 }
 
 type UserCreateInput struct {
@@ -102,7 +109,7 @@ type UserCreateInput struct {
 }
 
 type UserCreateResponse struct {
-	ID              string            `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"_id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -110,10 +117,11 @@ type UserCreateResponse struct {
 	AdminAssignedPassword        *string `json:"adminAssignedPassword,omitempty"`
 	ChangedAdminAssignedPassword *bool   `json:"changedAdminAssignedPassword,omitempty"`
 	Role                         Role    `json:"role"`
+	CreatedAt                    string  `json:"createdAt"`
+	UpdatedAt                    *string `json:"updatedAt,omitempty"`
 }
 
 type UserDeleteResponse struct {
-	ID              string            `bson:"_id" json:"_id"`
 	EmployeeID string `json:"employeeID"`
 }
 
@@ -128,7 +136,7 @@ type UserUpdateInput struct {
 }
 
 type UserUpdateResponse struct {
-	ID              string            `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"_id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -136,6 +144,8 @@ type UserUpdateResponse struct {
 	AdminAssignedPassword        *string `json:"adminAssignedPassword,omitempty"`
 	ChangedAdminAssignedPassword *bool   `json:"changedAdminAssignedPassword,omitempty"`
 	Role                         Role    `json:"role"`
+	CreatedAt                    string  `json:"createdAt"`
+	UpdatedAt                    *string `json:"updatedAt,omitempty"`
 }
 
 type Difficulty string
