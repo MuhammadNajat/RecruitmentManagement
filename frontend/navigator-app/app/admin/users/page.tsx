@@ -4,6 +4,7 @@ import { lusitana } from '@/app/ui/fonts';
 import { User } from "@/app/lib/definitions";
 import clsx from 'clsx';
 import Link from 'next/link'
+import DeleteUserInput from "@/app/ui/users/delete-command";
 
 export default async function Users() {
   let temp: unknown = await readUsers();
@@ -66,12 +67,14 @@ export default async function Users() {
                   >
                     Created at
                   </th>
+                  {/*
                   <th
                     scope="col"
                     className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                   >
                     Updated at
                   </th>
+                  */}
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -83,13 +86,13 @@ export default async function Users() {
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map(user => (
                   <tr key={user.employeeID}>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {user.employeeID}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       {user.name}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-5 py-4 whitespace-nowrap">
                       <span
                         className="px-2 inline-flex text-xs leading-5
                       font-semibold rounded-full bg-green-100 text-green-800"
@@ -97,24 +100,26 @@ export default async function Users() {
                         {user.email}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.role}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.adminAssignedPassword}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.changedAdminAssignedPassword? "Yes" : "No"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.createdAt.slice(0, 19)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {/*
+                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.updatedAt.slice(0, 19)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    */}
+                    <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
                       
-                      <Link href={`/admin/users/${encodeURIComponent(user.employeeID)}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                      <Link href={`/admin/users/${encodeURIComponent(user._id)}/edit`} className="text-indigo-600 hover:text-indigo-900">
                         Edit
                       </Link>
 
@@ -131,10 +136,13 @@ export default async function Users() {
                       
                     </td>
 
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      {/*
                       <a href="#" className="text-indigo-600 hover:text-red-900">
                         Delete
                       </a>
+                      */}
+                      <DeleteUserInput id={user._id} />
                     </td>
                   </tr>
                 ))}
@@ -144,6 +152,7 @@ export default async function Users() {
         </div>
       </div>
     </div>
+
     </div>
   );
 }

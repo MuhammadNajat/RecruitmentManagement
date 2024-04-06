@@ -47,13 +47,18 @@ type DirectiveRoot struct {
 }
 
 type ComplexityRoot struct {
+	Category struct {
+		Name          func(childComplexity int) int
+		SubCategories func(childComplexity int) int
+	}
+
 	Mutation struct {
 		CreateProblem func(childComplexity int, input model.ProblemCreateInput) int
 		CreateUser    func(childComplexity int, input model.UserCreateInput) int
 		DeleteProblem func(childComplexity int, id string) int
-		DeleteUser    func(childComplexity int, employeeID string) int
+		DeleteUser    func(childComplexity int, id string) int
 		UpdateProblem func(childComplexity int, id string, input model.ProblemUpdateInput) int
-		UpdateUser    func(childComplexity int, employeeID string, input model.UserUpdateInput) int
+		UpdateUser    func(childComplexity int, id string, input model.UserUpdateInput) int
 	}
 
 	Problem struct {
@@ -93,13 +98,8 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetUser  func(childComplexity int, employeeID string) int
+		GetUser  func(childComplexity int, id string) int
 		GetUsers func(childComplexity int) int
-	}
-
-	TopicMap struct {
-		Key   func(childComplexity int) int
-		Value func(childComplexity int) int
 	}
 
 	User struct {
@@ -129,7 +129,7 @@ type ComplexityRoot struct {
 	}
 
 	UserDeleteResponse struct {
-		EmployeeID func(childComplexity int) int
+		ID func(childComplexity int) int
 	}
 
 	UserUpdateResponse struct {
@@ -148,14 +148,14 @@ type ComplexityRoot struct {
 
 type MutationResolver interface {
 	CreateUser(ctx context.Context, input model.UserCreateInput) (*model.UserCreateResponse, error)
-	UpdateUser(ctx context.Context, employeeID string, input model.UserUpdateInput) (*model.UserUpdateResponse, error)
-	DeleteUser(ctx context.Context, employeeID string) (*model.UserDeleteResponse, error)
+	UpdateUser(ctx context.Context, id string, input model.UserUpdateInput) (*model.UserUpdateResponse, error)
+	DeleteUser(ctx context.Context, id string) (*model.UserDeleteResponse, error)
 	CreateProblem(ctx context.Context, input model.ProblemCreateInput) (*model.Problem, error)
 	UpdateProblem(ctx context.Context, id string, input model.ProblemUpdateInput) (*model.ProblemUpdateResponse, error)
 	DeleteProblem(ctx context.Context, id string) (*model.ProblemDeleteResponse, error)
 }
 type QueryResolver interface {
-	GetUser(ctx context.Context, employeeID string) (*model.User, error)
+	GetUser(ctx context.Context, id string) (*model.User, error)
 	GetUsers(ctx context.Context) ([]*model.User, error)
 }
 
@@ -177,6 +177,20 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 	ec := executionContext{nil, e, 0, 0, nil}
 	_ = ec
 	switch typeName + "." + field {
+
+	case "Category.name":
+		if e.complexity.Category.Name == nil {
+			break
+		}
+
+		return e.complexity.Category.Name(childComplexity), true
+
+	case "Category.subCategories":
+		if e.complexity.Category.SubCategories == nil {
+			break
+		}
+
+		return e.complexity.Category.SubCategories(childComplexity), true
 
 	case "Mutation.createProblem":
 		if e.complexity.Mutation.CreateProblem == nil {
@@ -224,7 +238,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.DeleteUser(childComplexity, args["employeeID"].(string)), true
+		return e.complexity.Mutation.DeleteUser(childComplexity, args["id"].(string)), true
 
 	case "Mutation.updateProblem":
 		if e.complexity.Mutation.UpdateProblem == nil {
@@ -248,7 +262,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Mutation.UpdateUser(childComplexity, args["employeeID"].(string), args["input"].(model.UserUpdateInput)), true
+		return e.complexity.Mutation.UpdateUser(childComplexity, args["id"].(string), args["input"].(model.UserUpdateInput)), true
 
 	case "Problem.adminComment":
 		if e.complexity.Problem.AdminComment == nil {
@@ -341,7 +355,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Problem.UpdatedAt(childComplexity), true
 
-	case "ProblemDeleteResponse._id":
+	case "ProblemDeleteResponse.id":
 		if e.complexity.ProblemDeleteResponse.ID == nil {
 			break
 		}
@@ -383,7 +397,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ProblemUpdateResponse.Difficulty(childComplexity), true
 
-	case "ProblemUpdateResponse._id":
+	case "ProblemUpdateResponse.id":
 		if e.complexity.ProblemUpdateResponse.ID == nil {
 			break
 		}
@@ -449,7 +463,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUser(childComplexity, args["employeeID"].(string)), true
+		return e.complexity.Query.GetUser(childComplexity, args["id"].(string)), true
 
 	case "Query.getUsers":
 		if e.complexity.Query.GetUsers == nil {
@@ -457,20 +471,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.Query.GetUsers(childComplexity), true
-
-	case "TopicMap.key":
-		if e.complexity.TopicMap.Key == nil {
-			break
-		}
-
-		return e.complexity.TopicMap.Key(childComplexity), true
-
-	case "TopicMap.value":
-		if e.complexity.TopicMap.Value == nil {
-			break
-		}
-
-		return e.complexity.TopicMap.Value(childComplexity), true
 
 	case "User.adminAssignedPassword":
 		if e.complexity.User.AdminAssignedPassword == nil {
@@ -577,7 +577,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserCreateResponse.EmployeeID(childComplexity), true
 
-	case "UserCreateResponse._id":
+	case "UserCreateResponse.id":
 		if e.complexity.UserCreateResponse.ID == nil {
 			break
 		}
@@ -612,12 +612,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserCreateResponse.UpdatedAt(childComplexity), true
 
-	case "UserDeleteResponse.employeeID":
-		if e.complexity.UserDeleteResponse.EmployeeID == nil {
+	case "UserDeleteResponse.id":
+		if e.complexity.UserDeleteResponse.ID == nil {
 			break
 		}
 
-		return e.complexity.UserDeleteResponse.EmployeeID(childComplexity), true
+		return e.complexity.UserDeleteResponse.ID(childComplexity), true
 
 	case "UserUpdateResponse.adminAssignedPassword":
 		if e.complexity.UserUpdateResponse.AdminAssignedPassword == nil {
@@ -654,7 +654,7 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserUpdateResponse.EmployeeID(childComplexity), true
 
-	case "UserUpdateResponse._id":
+	case "UserUpdateResponse.id":
 		if e.complexity.UserUpdateResponse.ID == nil {
 			break
 		}
@@ -866,14 +866,14 @@ func (ec *executionContext) field_Mutation_deleteUser_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["employeeID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employeeID"] = arg0
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -905,14 +905,14 @@ func (ec *executionContext) field_Mutation_updateUser_args(ctx context.Context, 
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["employeeID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employeeID"] = arg0
+	args["id"] = arg0
 	var arg1 model.UserUpdateInput
 	if tmp, ok := rawArgs["input"]; ok {
 		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("input"))
@@ -944,14 +944,14 @@ func (ec *executionContext) field_Query_getUser_args(ctx context.Context, rawArg
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
-	if tmp, ok := rawArgs["employeeID"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
-		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
 		if err != nil {
 			return nil, err
 		}
 	}
-	args["employeeID"] = arg0
+	args["id"] = arg0
 	return args, nil
 }
 
@@ -993,6 +993,94 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
+func (ec *executionContext) _Category_name(ctx context.Context, field graphql.CollectedField, obj *model.Category) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Category_name(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.Name, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(string)
+	fc.Result = res
+	return ec.marshalNString2string(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Category_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Category",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Category_subCategories(ctx context.Context, field graphql.CollectedField, obj *model.Category) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Category_subCategories(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.SubCategories, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Category_subCategories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Category",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type String does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
 func (ec *executionContext) _Mutation_createUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_Mutation_createUser(ctx, field)
 	if err != nil {
@@ -1032,8 +1120,8 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "_id":
-				return ec.fieldContext_UserCreateResponse__id(ctx, field)
+			case "id":
+				return ec.fieldContext_UserCreateResponse_id(ctx, field)
 			case "employeeID":
 				return ec.fieldContext_UserCreateResponse_employeeID(ctx, field)
 			case "name":
@@ -1084,7 +1172,7 @@ func (ec *executionContext) _Mutation_updateUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["employeeID"].(string), fc.Args["input"].(model.UserUpdateInput))
+		return ec.resolvers.Mutation().UpdateUser(rctx, fc.Args["id"].(string), fc.Args["input"].(model.UserUpdateInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1109,8 +1197,8 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "_id":
-				return ec.fieldContext_UserUpdateResponse__id(ctx, field)
+			case "id":
+				return ec.fieldContext_UserUpdateResponse_id(ctx, field)
 			case "employeeID":
 				return ec.fieldContext_UserUpdateResponse_employeeID(ctx, field)
 			case "name":
@@ -1161,7 +1249,7 @@ func (ec *executionContext) _Mutation_deleteUser(ctx context.Context, field grap
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Mutation().DeleteUser(rctx, fc.Args["employeeID"].(string))
+		return ec.resolvers.Mutation().DeleteUser(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -1186,8 +1274,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteUser(ctx context.Context
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "employeeID":
-				return ec.fieldContext_UserDeleteResponse_employeeID(ctx, field)
+			case "id":
+				return ec.fieldContext_UserDeleteResponse_id(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type UserDeleteResponse", field.Name)
 		},
@@ -1328,8 +1416,8 @@ func (ec *executionContext) fieldContext_Mutation_updateProblem(ctx context.Cont
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "_id":
-				return ec.fieldContext_ProblemUpdateResponse__id(ctx, field)
+			case "id":
+				return ec.fieldContext_ProblemUpdateResponse_id(ctx, field)
 			case "statement":
 				return ec.fieldContext_ProblemUpdateResponse_statement(ctx, field)
 			case "images":
@@ -1411,8 +1499,8 @@ func (ec *executionContext) fieldContext_Mutation_deleteProblem(ctx context.Cont
 		IsResolver: true,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			switch field.Name {
-			case "_id":
-				return ec.fieldContext_ProblemDeleteResponse__id(ctx, field)
+			case "id":
+				return ec.fieldContext_ProblemDeleteResponse_id(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ProblemDeleteResponse", field.Name)
 		},
@@ -1991,8 +2079,8 @@ func (ec *executionContext) fieldContext_Problem_updatedAt(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _ProblemDeleteResponse__id(ctx context.Context, field graphql.CollectedField, obj *model.ProblemDeleteResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ProblemDeleteResponse__id(ctx, field)
+func (ec *executionContext) _ProblemDeleteResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.ProblemDeleteResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ProblemDeleteResponse_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2019,24 +2107,24 @@ func (ec *executionContext) _ProblemDeleteResponse__id(ctx context.Context, fiel
 	}
 	res := resTmp.(string)
 	fc.Result = res
-	return ec.marshalNID2string(ctx, field.Selections, res)
+	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ProblemDeleteResponse__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ProblemDeleteResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ProblemDeleteResponse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type ID does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
 }
 
-func (ec *executionContext) _ProblemUpdateResponse__id(ctx context.Context, field graphql.CollectedField, obj *model.ProblemUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ProblemUpdateResponse__id(ctx, field)
+func (ec *executionContext) _ProblemUpdateResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.ProblemUpdateResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ProblemUpdateResponse_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2066,7 +2154,7 @@ func (ec *executionContext) _ProblemUpdateResponse__id(ctx context.Context, fiel
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ProblemUpdateResponse__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ProblemUpdateResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ProblemUpdateResponse",
 		Field:      field,
@@ -2603,7 +2691,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUser(rctx, fc.Args["employeeID"].(string))
+		return ec.resolvers.Query().GetUser(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2856,94 +2944,6 @@ func (ec *executionContext) fieldContext_Query___schema(ctx context.Context, fie
 				return ec.fieldContext___Schema_directives(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type __Schema", field.Name)
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _TopicMap_key(ctx context.Context, field graphql.CollectedField, obj *model.TopicMap) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_TopicMap_key(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Key, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_TopicMap_key(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "TopicMap",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _TopicMap_value(ctx context.Context, field graphql.CollectedField, obj *model.TopicMap) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_TopicMap_value(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Value, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	fc.Result = res
-	return ec.marshalNString2ᚕstringᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_TopicMap_value(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "TopicMap",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3383,8 +3383,8 @@ func (ec *executionContext) fieldContext_User_updatedAt(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _UserCreateResponse__id(ctx context.Context, field graphql.CollectedField, obj *model.UserCreateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserCreateResponse__id(ctx, field)
+func (ec *executionContext) _UserCreateResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.UserCreateResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserCreateResponse_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3414,7 +3414,7 @@ func (ec *executionContext) _UserCreateResponse__id(ctx context.Context, field g
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserCreateResponse__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserCreateResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserCreateResponse",
 		Field:      field,
@@ -3811,8 +3811,8 @@ func (ec *executionContext) fieldContext_UserCreateResponse_updatedAt(ctx contex
 	return fc, nil
 }
 
-func (ec *executionContext) _UserDeleteResponse_employeeID(ctx context.Context, field graphql.CollectedField, obj *model.UserDeleteResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserDeleteResponse_employeeID(ctx, field)
+func (ec *executionContext) _UserDeleteResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.UserDeleteResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserDeleteResponse_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3825,7 +3825,7 @@ func (ec *executionContext) _UserDeleteResponse_employeeID(ctx context.Context, 
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.EmployeeID, nil
+		return obj.ID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3842,7 +3842,7 @@ func (ec *executionContext) _UserDeleteResponse_employeeID(ctx context.Context, 
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserDeleteResponse_employeeID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserDeleteResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserDeleteResponse",
 		Field:      field,
@@ -3855,8 +3855,8 @@ func (ec *executionContext) fieldContext_UserDeleteResponse_employeeID(ctx conte
 	return fc, nil
 }
 
-func (ec *executionContext) _UserUpdateResponse__id(ctx context.Context, field graphql.CollectedField, obj *model.UserUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserUpdateResponse__id(ctx, field)
+func (ec *executionContext) _UserUpdateResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.UserUpdateResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_UserUpdateResponse_id(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3886,7 +3886,7 @@ func (ec *executionContext) _UserUpdateResponse__id(ctx context.Context, field g
 	return ec.marshalNID2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_UserUpdateResponse__id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_UserUpdateResponse_id(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "UserUpdateResponse",
 		Field:      field,
@@ -6396,6 +6396,50 @@ func (ec *executionContext) unmarshalInputUserUpdateInput(ctx context.Context, o
 
 // region    **************************** object.gotpl ****************************
 
+var categoryImplementors = []string{"Category"}
+
+func (ec *executionContext) _Category(ctx context.Context, sel ast.SelectionSet, obj *model.Category) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.OperationContext, sel, categoryImplementors)
+
+	out := graphql.NewFieldSet(fields)
+	deferred := make(map[string]*graphql.FieldSet)
+	for i, field := range fields {
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("Category")
+		case "name":
+			out.Values[i] = ec._Category_name(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		case "subCategories":
+			out.Values[i] = ec._Category_subCategories(ctx, field, obj)
+			if out.Values[i] == graphql.Null {
+				out.Invalids++
+			}
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+	out.Dispatch(ctx)
+	if out.Invalids > 0 {
+		return graphql.Null
+	}
+
+	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
+
+	for label, dfs := range deferred {
+		ec.processDeferredGroup(graphql.DeferredGroup{
+			Label:    label,
+			Path:     graphql.GetPath(ctx),
+			FieldSet: dfs,
+			Context:  ctx,
+		})
+	}
+
+	return out
+}
+
 var mutationImplementors = []string{"Mutation"}
 
 func (ec *executionContext) _Mutation(ctx context.Context, sel ast.SelectionSet) graphql.Marshaler {
@@ -6578,8 +6622,8 @@ func (ec *executionContext) _ProblemDeleteResponse(ctx context.Context, sel ast.
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("ProblemDeleteResponse")
-		case "_id":
-			out.Values[i] = ec._ProblemDeleteResponse__id(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._ProblemDeleteResponse_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -6617,8 +6661,8 @@ func (ec *executionContext) _ProblemUpdateResponse(ctx context.Context, sel ast.
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("ProblemUpdateResponse")
-		case "_id":
-			out.Values[i] = ec._ProblemUpdateResponse__id(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._ProblemUpdateResponse_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -6781,50 +6825,6 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 	return out
 }
 
-var topicMapImplementors = []string{"TopicMap"}
-
-func (ec *executionContext) _TopicMap(ctx context.Context, sel ast.SelectionSet, obj *model.TopicMap) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.OperationContext, sel, topicMapImplementors)
-
-	out := graphql.NewFieldSet(fields)
-	deferred := make(map[string]*graphql.FieldSet)
-	for i, field := range fields {
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("TopicMap")
-		case "key":
-			out.Values[i] = ec._TopicMap_key(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "value":
-			out.Values[i] = ec._TopicMap_value(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-	out.Dispatch(ctx)
-	if out.Invalids > 0 {
-		return graphql.Null
-	}
-
-	atomic.AddInt32(&ec.deferred, int32(len(deferred)))
-
-	for label, dfs := range deferred {
-		ec.processDeferredGroup(graphql.DeferredGroup{
-			Label:    label,
-			Path:     graphql.GetPath(ctx),
-			FieldSet: dfs,
-			Context:  ctx,
-		})
-	}
-
-	return out
-}
-
 var userImplementors = []string{"User"}
 
 func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj *model.User) graphql.Marshaler {
@@ -6914,8 +6914,8 @@ func (ec *executionContext) _UserCreateResponse(ctx context.Context, sel ast.Sel
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserCreateResponse")
-		case "_id":
-			out.Values[i] = ec._UserCreateResponse__id(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._UserCreateResponse_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -6986,8 +6986,8 @@ func (ec *executionContext) _UserDeleteResponse(ctx context.Context, sel ast.Sel
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserDeleteResponse")
-		case "employeeID":
-			out.Values[i] = ec._UserDeleteResponse_employeeID(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._UserDeleteResponse_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
@@ -7025,8 +7025,8 @@ func (ec *executionContext) _UserUpdateResponse(ctx context.Context, sel ast.Sel
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("UserUpdateResponse")
-		case "_id":
-			out.Values[i] = ec._UserUpdateResponse__id(ctx, field, obj)
+		case "id":
+			out.Values[i] = ec._UserUpdateResponse_id(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}

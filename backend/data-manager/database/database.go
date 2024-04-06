@@ -92,16 +92,16 @@ func (database database) GetUsers() []*model.User {
 	return users
 }
 
-func (database database) GetUser(employeeID string) *model.User {
+func (database database) GetUser(id string) *model.User {
 	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	//defer recoverFunc()
 
-	/*_id, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{"_id": _id}*/
-	filter := bson.M{"employeeID": employeeID}
+	_id, _ := primitive.ObjectIDFromHex(id)
+	//filter := bson.M{"_id": _id}
+	filter := bson.M{"_id": _id}
 
 	var user model.User
 	err := userCollection.FindOne(ctx, filter).Decode(&user)
@@ -113,7 +113,7 @@ func (database database) GetUser(employeeID string) *model.User {
 	return &user
 }
 
-func (database database) UpdateUser(employeeID string, input model.UserUpdateInput) *model.UserUpdateResponse {
+func (database database) UpdateUser(id string, input model.UserUpdateInput) *model.UserUpdateResponse {
 	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -149,9 +149,9 @@ func (database database) UpdateUser(employeeID string, input model.UserUpdateInp
 
 	userUpdateInfo["updatedAt"] = formattedTime
 
-	//_id, _ := primitive.ObjectIDFromHex(id)
+	_id, _ := primitive.ObjectIDFromHex(id)
 	//_id := employeeID //???
-	filter := bson.M{"employeeID": employeeID}
+	filter := bson.M{"_id": _id}
 
 	var user model.User
 	if errInSearching := userCollection.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
@@ -174,13 +174,13 @@ func (database database) UpdateUser(employeeID string, input model.UserUpdateInp
 	return &userUpdateResponse
 }
 
-func (database database) DeleteUser(employeeID string) *model.UserDeleteResponse {
+func (database database) DeleteUser(id string) *model.UserDeleteResponse {
 	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	//_id, _ := primitive.ObjectIDFromHex(id)
-	filter := bson.M{"employeeID": employeeID}
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
 	var user model.User
 	if errInSearching := userCollection.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
 		fmt.Println("!!! Error in DeleteUser (No user found)")
@@ -193,5 +193,5 @@ func (database database) DeleteUser(employeeID string) *model.UserDeleteResponse
 		return nil
 		///log.Fatal(err)
 	}
-	return &model.UserDeleteResponse{EmployeeID: employeeID}
+	return &model.UserDeleteResponse{ID: id}
 }

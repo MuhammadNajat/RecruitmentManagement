@@ -33,17 +33,19 @@ const FormSchema = z.object({
     role: z.enum(['PROBLEMSETTER', 'REVIEWER', 'ADMIN']),
   });
    
-  const CreateUser = FormSchema.omit({ id: true });
+  const CreateUser = FormSchema.omit({ /*id: true*/ });
 
   export async function updateUser(prevState: string | undefined, formData: FormData,) {
-    const { employeeID, emailAddress, name, password, role } = CreateUser.parse({
-    employeeID: formData.get('employeeID'),
-    name: formData.get('name'),
-    emailAddress: formData.get('email'),
-    password: formData.get('password'),
-    role: formData.get('role'),
+    const { id, employeeID, emailAddress, name, password, role } = CreateUser.parse({
+      id: formData.get('id'),
+      employeeID: formData.get('employeeID'),
+      name: formData.get('name'),
+      emailAddress: formData.get('email'),
+      password: formData.get('password'),
+      role: formData.get('role'),
     });
 
+    console.log("*** id: ", id);
     console.log("*** employeeID: ", employeeID);
     console.log("*** email: ", emailAddress);
     console.log("*** name: ", name);
@@ -73,14 +75,14 @@ const FormSchema = z.object({
         return "Proper email address is required";
     }
 
-    updateUserData(employeeID, name, emailAddress, password, role);
+    updateUserData(id, employeeID, name, emailAddress, password, role);
   
     revalidatePath('/admin/users');
   
     redirect('/admin/users');
   }
 
-  async function updateUserData(employeeID : string, name : string, emailAddress : string, adminAssignedPassword : string, role : string) {
+  async function updateUserData(id : string, employeeID: string, name : string, emailAddress : string, adminAssignedPassword : string, role : string) {
     const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
       headers: {
           //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -88,9 +90,9 @@ const FormSchema = z.object({
     });
   
     const query = gql`
-      mutation UpdateUser($id: String!, $input: UserUpdateInput!) {
-        updateUser(employeeID: $id, input: $input) {
-          _id
+      mutation UpdateUser($id: ID!, $input: UserUpdateInput!) {
+        updateUser(id: $id, input: $input) {
+          id
           employeeID
           name
           email
@@ -102,7 +104,7 @@ const FormSchema = z.object({
       }
     `;
     const variables = {
-      id: employeeID,
+      id: id,
       input: {
           employeeID: employeeID,
           name: name,

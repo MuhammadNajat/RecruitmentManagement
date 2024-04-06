@@ -17,13 +17,13 @@ func (r *mutationResolver) CreateUser(ctx context.Context, input model.UserCreat
 }
 
 // UpdateUser is the resolver for the updateUser field.
-func (r *mutationResolver) UpdateUser(ctx context.Context, employeeID string, input model.UserUpdateInput) (*model.UserUpdateResponse, error) {
-	return connection.UpdateUser(employeeID, input), nil
+func (r *mutationResolver) UpdateUser(ctx context.Context, id string, input model.UserUpdateInput) (*model.UserUpdateResponse, error) {
+	return connection.UpdateUser(id, input), nil
 }
 
 // DeleteUser is the resolver for the deleteUser field.
-func (r *mutationResolver) DeleteUser(ctx context.Context, employeeID string) (*model.UserDeleteResponse, error) {
-	return connection.DeleteUser(employeeID), nil
+func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.UserDeleteResponse, error) {
+	return connection.DeleteUser(id), nil
 }
 
 // CreateProblem is the resolver for the createProblem field.
@@ -42,8 +42,8 @@ func (r *mutationResolver) DeleteProblem(ctx context.Context, id string) (*model
 }
 
 // GetUser is the resolver for the getUser field.
-func (r *queryResolver) GetUser(ctx context.Context, employeeID string) (*model.User, error) {
-	return connection.GetUser(employeeID), nil
+func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
+	return connection.GetUser(id), nil
 }
 
 // GetUsers is the resolver for the getUsers field.

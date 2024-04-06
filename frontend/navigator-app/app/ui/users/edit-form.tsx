@@ -12,12 +12,28 @@ export default function EditUserForm({
   }: {
     user:User;
   }) {
+    console.log("### ### ### user inside EditUserForm", user);
     //const updateUserWithId = updateUser.bind(null, user.employeeID);
     const [errorMessage, dispatch] = useFormState(updateUser, undefined);
 
     return (
         <form action={dispatch}>
         <div className="rounded-md bg-gray-50 p-4 md:p-6">
+            {/* Object ID*/}
+            <div className="mb-4">
+            <div className="relative mt-2 rounded-md">
+                <div className="relative">
+                <input
+                    type="hidden"
+                    id="id"
+                    name="id"
+                    className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                    value={user._id}
+                />
+                </div>
+            </div>
+            </div>
+
             {/* Employee ID */}
             <div className="mb-4">
             <label htmlFor="employeeID" className="mb-2 block text-sm font-medium">
@@ -96,7 +112,7 @@ export default function EditUserForm({
                 <input
                     id="password"
                     name="password"
-                    type="password"
+                    type="text"
                     placeholder="Enter an initial password"
                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                     required

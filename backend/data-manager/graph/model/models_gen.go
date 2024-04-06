@@ -10,11 +10,16 @@ import (
 	"github.com/99designs/gqlgen/graphql"
 )
 
+type Category struct {
+	Name          string   `json:"name"`
+	SubCategories []string `json:"subCategories"`
+}
+
 type Mutation struct {
 }
 
 type Problem struct {
-	ID                 string            `bson:"_id" json:"_id"`
+	ID                 string            `bson:"_id" json:"id"`
 	Statement          string            `json:"statement"`
 	Images             []*graphql.Upload `json:"images,omitempty"`
 	Tags               []string          `json:"tags"`
@@ -45,7 +50,7 @@ type ProblemCreateInput struct {
 }
 
 type ProblemDeleteResponse struct {
-	ID string `bson:"_id" json:"_id"`
+	ID string `bson:"_id" json:"id"`
 }
 
 type ProblemUpdateInput struct {
@@ -62,7 +67,7 @@ type ProblemUpdateInput struct {
 }
 
 type ProblemUpdateResponse struct {
-	ID                 string            `bson:"_id" json:"_id"`
+	ID                 string            `bson:"_id" json:"id"`
 	Statement          string            `json:"statement"`
 	Images             []*graphql.Upload `json:"images,omitempty"`
 	Tags               []string          `json:"tags"`
@@ -80,13 +85,8 @@ type ProblemUpdateResponse struct {
 type Query struct {
 }
 
-type TopicMap struct {
-	Key   string   `json:"key"`
-	Value []string `json:"value"`
-}
-
 type User struct {
-	ID                           string  `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -109,7 +109,7 @@ type UserCreateInput struct {
 }
 
 type UserCreateResponse struct {
-	ID                           string  `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -122,7 +122,7 @@ type UserCreateResponse struct {
 }
 
 type UserDeleteResponse struct {
-	EmployeeID string `json:"employeeID"`
+	ID string `bson:"_id" json:"id"`
 }
 
 type UserUpdateInput struct {
@@ -136,7 +136,7 @@ type UserUpdateInput struct {
 }
 
 type UserUpdateResponse struct {
-	ID                           string  `bson:"_id" json:"_id"`
+	ID                           string  `bson:"_id" json:"id"`
 	EmployeeID                   string  `json:"employeeID"`
 	Name                         string  `json:"name"`
 	Email                        string  `json:"email"`
@@ -240,6 +240,7 @@ const (
 	StatusWithproposer Status = "WITHPROPOSER"
 	StatusWithreviewer Status = "WITHREVIEWER"
 	StatusWithadmin    Status = "WITHADMIN"
+	StatusSubmitted    Status = "SUBMITTED"
 	StatusApproved     Status = "APPROVED"
 	StatusRejected     Status = "REJECTED"
 )
@@ -248,13 +249,14 @@ var AllStatus = []Status{
 	StatusWithproposer,
 	StatusWithreviewer,
 	StatusWithadmin,
+	StatusSubmitted,
 	StatusApproved,
 	StatusRejected,
 }
 
 func (e Status) IsValid() bool {
 	switch e {
-	case StatusWithproposer, StatusWithreviewer, StatusWithadmin, StatusApproved, StatusRejected:
+	case StatusWithproposer, StatusWithreviewer, StatusWithadmin, StatusSubmitted, StatusApproved, StatusRejected:
 		return true
 	}
 	return false

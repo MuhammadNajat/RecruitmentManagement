@@ -18,6 +18,7 @@ enum Status {
   WITHPROPOSER
   WITHREVIEWER
   WITHADMIN
+  SUBMITTED
   APPROVED
   REJECTED
 }
@@ -35,9 +36,9 @@ type User {
   updatedAt : String
 }
 
-type TopicMap {
-  key: String!
-  value: [String!]!
+type Category {
+  name: String!
+  subCategories: [String!]!
 }
 
 scalar Upload
@@ -59,16 +60,16 @@ type Problem {
 }
 
 type Query {
-  getUser(employeeID : String!) : User!
+  getUser(id : ID!) : User!
   getUsers : [User!]!
 }
 
 type Mutation {
   createUser(input : UserCreateInput!) : UserCreateResponse!
 
-  updateUser(employeeID : String!, input : UserUpdateInput!) : UserUpdateResponse!
+  updateUser(id : ID!, input : UserUpdateInput!) : UserUpdateResponse!
 
-  deleteUser(employeeID : String!) : UserDeleteResponse!
+  deleteUser(id : ID!) : UserDeleteResponse!
 
 
   createProblem(input : ProblemCreateInput!) : Problem!
@@ -99,7 +100,7 @@ input UserUpdateInput {
 }
 
 type UserCreateResponse {
-  _id : ID!
+  id : ID!
   employeeID : String!
   name : String!
   email : String!
@@ -112,7 +113,7 @@ type UserCreateResponse {
 }
 
 type UserUpdateResponse {
-  _id : ID!
+  id : ID!
   employeeID : String!
   name : String!
   email : String!
@@ -125,7 +126,7 @@ type UserUpdateResponse {
 }
 
 type UserDeleteResponse {
-  employeeID : String!
+  id : String!
 }
 
 input ProblemCreateInput {
@@ -157,7 +158,7 @@ input ProblemUpdateInput {
 }
 
 type ProblemUpdateResponse {
-  _id : ID!
+  id : ID!
   statement : String!
   images : [Upload!]
   tags : [String!]!
@@ -173,5 +174,5 @@ type ProblemUpdateResponse {
 }
 
 type ProblemDeleteResponse {
-  _id : ID!
+  id : String!
 }

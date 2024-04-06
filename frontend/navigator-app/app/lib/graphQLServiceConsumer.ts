@@ -68,8 +68,8 @@ export async function readUser(id : String) {
   });
 
   const query = gql`
-    query GetUser($id: String!) {
-      getUser(employeeID: $id) {
+    query GetUser($id: ID!) {
+      getUser(id: $id) {
         _id
         employeeID
         name

@@ -89,7 +89,7 @@ const FormSchema = z.object({
     const query = gql`
       mutation CreateUser($input: UserCreateInput!) {
         createUser(input: $input) {
-          _id
+          id
           employeeID
           name
           email

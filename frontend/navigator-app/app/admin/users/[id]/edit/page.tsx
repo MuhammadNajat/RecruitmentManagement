@@ -1,5 +1,3 @@
-"use client";
-
 import { readUser } from '@/app/lib/graphQLServiceConsumer'
 import { updateUser } from "@/app/lib/updateUserAction"
 import { useFormState, useFormStatus } from 'react-dom';
@@ -20,6 +18,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   const userData = temp as User[];
 
   const user = userData.getUser;
+  console.log("~~~ ~~~ user is:", user);
 
   return (
     <main>
