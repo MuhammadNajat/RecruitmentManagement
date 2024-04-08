@@ -4,12 +4,14 @@ import { lusitana } from '@/app/ui/fonts';
 import { User } from "@/app/lib/definitions";
 import clsx from 'clsx';
 import Link from 'next/link'
-import DeleteUserInput from "@/app/ui/users/delete-command";
+import DeleteComponent from "@/app/ui/users/delete-component";
+import { deleteUser } from "@/app/lib/deleteUserAction";
 
 export default async function Users() {
   let temp: unknown = await readUsers();
   const userData = temp as User[];
-
+  console.log("&&& &&& userData", userData);
+  {/* //@ts-ignore */}
   const users = userData.getUsers;
   console.log("^^^ ^^^ fteched users: ", userData);
 
@@ -67,14 +69,6 @@ export default async function Users() {
                   >
                     Created at
                   </th>
-                  {/*
-                  <th
-                    scope="col"
-                    className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                  >
-                    Updated at
-                  </th>
-                  */}
                   <th scope="col" className="relative px-6 py-3">
                     <span className="sr-only">Edit</span>
                   </th>
@@ -85,7 +79,7 @@ export default async function Users() {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {users.map(user => (
-                  <tr key={user.employeeID}>
+                  <tr key={user._id}>
                     <td className="px-5 py-4 whitespace-nowrap">
                       {user.employeeID}
                     </td>
@@ -112,37 +106,24 @@ export default async function Users() {
                     <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                       {user.createdAt.slice(0, 19)}
                     </td>
-                    {/*
-                    <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {user.updatedAt.slice(0, 19)}
-                    </td>
-                    */}
                     <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
                       
                       <Link href={`/admin/users/${encodeURIComponent(user._id)}/edit`} className="text-indigo-600 hover:text-indigo-900">
                         Edit
                       </Link>
-
-                      {/*
-                      <Link
-                        href={{
-                          pathname: `/admin/users/${encodeURIComponent(user.employeeID)}/edit`,
-                          query: user // the data
-                        }}
-                      >
-                        Edit
-                      </Link>
-                      */}
                       
                     </td>
 
                     <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
+
+
+                        <DeleteComponent key={user._id} id={user._id} />
+
                       {/*
-                      <a href="#" className="text-indigo-600 hover:text-red-900">
+                      <Link href={`/admin/users/${encodeURIComponent(user._id)}/delete`} className="text-indigo-600 hover:text-indigo-900">
                         Delete
-                      </a>
+                      </Link>
                       */}
-                      <DeleteUserInput id={user._id} />
                     </td>
                   </tr>
                 ))}

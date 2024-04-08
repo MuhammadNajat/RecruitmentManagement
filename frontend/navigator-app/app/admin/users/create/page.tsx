@@ -101,7 +101,7 @@ export default function Form() {
         {/* Role*/}
         <fieldset>
           <legend className="mb-2 block text-sm font-medium">
-            Set user type
+            User-type
           </legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
             <div className="flex gap-4">
@@ -162,7 +162,7 @@ export default function Form() {
         >
           Cancel
         </Link>
-        <Button type="submit">Create User</Button>
+        <Button type="submit">Create</Button>
       </div>
 
       <div
