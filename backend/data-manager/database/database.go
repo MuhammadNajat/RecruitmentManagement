@@ -195,3 +195,123 @@ func (database database) DeleteUser(id string) *model.UserDeleteResponse {
 	}
 	return &model.UserDeleteResponse{ID: id}
 }
+
+func (database database) CreateProblemCategory(input model.ProblemCategoryCreateInput) *model.ProblemCategory {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	insertedCategory, error := categories.InsertOne(ctx,
+		bson.M{"name": input.Name, "subCategories": input.SubCategories})
+
+	fmt.Println(">>> >>> Inserted Category:", insertedCategory)
+
+	if error != nil {
+		fmt.Println("Error in CreateProblemCategory")
+		return nil
+		///log.Fatal(error)
+	}
+
+	insertedCategoryID := insertedCategory.InsertedID.(primitive.ObjectID).Hex()
+	category := model.ProblemCategory{ID: insertedCategoryID, Name: input.Name, SubCategories: input.SubCategories}
+	return &category
+}
+
+func (database database) GetProblemCategories() []*model.ProblemCategory {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var fetchedCategories []*model.ProblemCategory
+	cursor, error := categories.Find(ctx, bson.D{})
+	if error != nil {
+		fmt.Println("Error in GetProblemCategories - 1")
+		return nil
+		///log.Fatal(error)
+	}
+
+	if error = cursor.All(context.TODO(), &fetchedCategories); error != nil {
+		fmt.Println("Error in GetProblemCategories - 2")
+		return nil
+	}
+
+	return fetchedCategories
+}
+
+func (database database) GetProblemCategory(id string) *model.ProblemCategory {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+
+	var fetchedCategory model.ProblemCategory
+	err := categories.FindOne(ctx, filter).Decode(&fetchedCategory)
+	if err != nil {
+		fmt.Println("Error in GetProblemCategory")
+		return nil
+		/////log.Fatal(err)
+	}
+	return &fetchedCategory
+}
+
+func (database database) UpdateProblemCategory(id string, input model.ProblemCategoryUpdateInput) *model.ProblemCategoryUpdateResponse {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	categoryUpdateInfo := bson.M{}
+
+	if input.Name != nil {
+		categoryUpdateInfo["name"] = input.Name
+	}
+	if input.SubCategories != nil {
+		categoryUpdateInfo["subCategories"] = input.SubCategories
+	}
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+
+	var fetchedCategory model.ProblemCategory
+	if errInSearching := categories.FindOne(ctx, filter).Decode(&fetchedCategory); errInSearching != nil {
+		fmt.Println("!!! Error in UpdateProblemCategory (No Problem Category found)")
+		return nil
+	}
+
+	updateCommand := bson.M{"$set": categoryUpdateInfo}
+
+	results := categories.FindOneAndUpdate(ctx, filter, updateCommand, options.FindOneAndUpdate().SetReturnDocument(1))
+
+	var problemCategoryUpdateResponse model.ProblemCategoryUpdateResponse
+
+	if err := results.Decode(&problemCategoryUpdateResponse); err != nil {
+		fmt.Println("Error in UpdateProblemCategory (in results.Decode)")
+		return nil
+		///log.Fatal(err)
+	}
+
+	return &problemCategoryUpdateResponse
+}
+
+func (database database) DeleteProblemCategory(id string) *model.ProblemCategoryDeleteResponse {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+	var user model.User
+	if errInSearching := categories.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
+		fmt.Println("!!! Error in DeleteProblemCategory (No category found)")
+		return nil
+	}
+
+	_, errInDeleting := categories.DeleteOne(ctx, filter)
+	if errInDeleting != nil {
+		fmt.Println("!!! Error in DeleteProblemCategory")
+		return nil
+		///log.Fatal(err)
+	}
+	return &model.ProblemCategoryDeleteResponse{ID: id}
+}

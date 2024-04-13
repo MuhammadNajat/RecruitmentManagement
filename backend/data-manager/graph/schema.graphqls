@@ -23,6 +23,11 @@ enum Status {
   REJECTED
 }
 
+
+
+
+
+
 type User {
   _id : ID!
   employeeID : String!
@@ -34,49 +39,6 @@ type User {
   role : Role!
   createdAt : String!
   updatedAt : String
-}
-
-type Category {
-  name: String!
-  subCategories: [String!]!
-}
-
-scalar Upload
-
-type Problem {
-  _id : ID!
-  statement : String!
-  images : [Upload!]
-  tags : [String!]!
-  difficulty : Difficulty!
-  status : Status!
-  authorEmployeeID : String!
-  reviewerEmployeeID : String!
-  adminEmployeeID : String!
-  reviewerComment : String
-  adminComment : String
-  createdAt : String!
-  updatedAt : String
-}
-
-type Query {
-  getUser(id : ID!) : User!
-  getUsers : [User!]!
-}
-
-type Mutation {
-  createUser(input : UserCreateInput!) : UserCreateResponse!
-
-  updateUser(id : ID!, input : UserUpdateInput!) : UserUpdateResponse!
-
-  deleteUser(id : ID!) : UserDeleteResponse!
-
-
-  createProblem(input : ProblemCreateInput!) : Problem!
-
-  updateProblem(id : ID!, input : ProblemUpdateInput!) : ProblemUpdateResponse!
-  
-  deleteProblem(id : ID!) : ProblemDeleteResponse!
 }
 
 input UserCreateInput {
@@ -129,15 +91,78 @@ type UserDeleteResponse {
   id : String!
 }
 
-input ProblemCreateInput {
+
+
+
+
+
+
+type Comment {
+  body : String!
+  userID : ID!
+  userName : String!
+  createdAt : String!
+}
+
+type ProblemCategory {
+  _id : ID!
+  name: String!
+  subCategories: [String!]
+}
+
+input ProblemCategoryCreateInput {
+  name : String!
+  subCategories : [String!]
+}
+
+input ProblemCategoryUpdateInput {
+  name : String
+  subCategories : [String!]
+}
+
+type ProblemCategoryUpdateResponse {
+  id : ID!
+  name : String!
+  subCategories : [String!]
+}
+
+type ProblemCategoryDeleteResponse {
+  id : String!
+}
+
+
+
+
+
+
+
+scalar Upload
+
+type Problem {
+  _id : ID!
   statement : String!
-  images : [Upload!]
+  image : Upload
   tags : [String!]!
   difficulty : Difficulty!
   status : Status!
-  authorEmployeeID : String!
-  reviewerEmployeeID : String
-  adminEmployeeID : String
+  authorUserID : String!
+  reviewerUserID : String
+  approverAdminUserID : String
+  comments : [Comment!]
+  createdAt : String!
+  updatedAt : String
+}
+
+
+input ProblemCreateInput {
+  statement : String!
+  image : Upload
+  tags : [String!]!
+  difficulty : Difficulty!
+  status : Status!
+  authorUserID : String!
+  reviewerUserID : String
+  approverAdminUserID : String
   reviewerComment : String
   adminComment : String
   createdAt : String!
@@ -146,8 +171,8 @@ input ProblemCreateInput {
 
 input ProblemUpdateInput {
   statement : String
-  images : [Upload!]
-  tags : [String!]!
+  image : Upload
+  tags : [String]
   difficulty : Difficulty
   status : Status
   authorEmployeeID : String
@@ -160,7 +185,7 @@ input ProblemUpdateInput {
 type ProblemUpdateResponse {
   id : ID!
   statement : String!
-  images : [Upload!]
+  image : Upload
   tags : [String!]!
   difficulty : Difficulty!
   status : Status!
@@ -175,4 +200,46 @@ type ProblemUpdateResponse {
 
 type ProblemDeleteResponse {
   id : String!
+}
+
+
+
+
+
+
+
+
+
+
+
+type Query {
+  getUser(id : ID!) : User!
+  getUsers : [User!]!
+
+  getProblemCategory(id : ID!) : ProblemCategory!
+  getProblemCategories : [ProblemCategory!]!
+}
+
+type Mutation {
+  createUser(input : UserCreateInput!) : UserCreateResponse!
+
+  updateUser(id : ID!, input : UserUpdateInput!) : UserUpdateResponse!
+
+  deleteUser(id : ID!) : UserDeleteResponse!
+
+
+
+  createProblemCategory(input : ProblemCategoryCreateInput!) : ProblemCategory!
+
+  updateProblemCategory(id : ID!, input : ProblemCategoryUpdateInput!) : ProblemCategoryUpdateResponse!
+  
+  deleteProblemCategory(id : ID!) : ProblemCategoryDeleteResponse!
+
+
+
+  createProblem(input : ProblemCreateInput!) : Problem!
+
+  updateProblem(id : ID!, input : ProblemUpdateInput!) : ProblemUpdateResponse!
+  
+  deleteProblem(id : ID!) : ProblemDeleteResponse!
 }
