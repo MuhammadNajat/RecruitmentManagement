@@ -52,11 +52,11 @@ async function insertUser(employeeID : string, name : string, emailAddress : str
     
   try {
     const results = await graphQLClient.request(query, variables);
-    console.log("Mutation (Create) Results:");
+    console.log("Query (GetUsers) Results:");
     console.log(results);
     return results;
   } catch (error) {
-      console.error("Error inserting data:", error);
+      console.error("Error querying data:", error);
   }
 }
 
@@ -90,11 +90,11 @@ export async function readUser(id : String) {
   
   try {
       const results = await graphQLClient.request(query, variables);
-      console.log("*** *** Mutation (Create) Results:");
+      console.log("Query (GetUser) Result:");
       console.log(results);
       return results;
   } catch (error) {
-      console.error("Error inserting data:", error);
+      console.error("Error querying data:", error);
   }
 }
 
@@ -206,5 +206,32 @@ async function updateUserData(employeeID : string, name : string, emailAddress :
     console.log(results);
   } catch (error) {
       console.error("Error udating data:", error);
+  }
+}
+
+export async function getProblemCategories() {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+        //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+    query GetProblemCategories {
+      getProblemCategories {
+        _id
+        name
+        subCategories
+      }
+    }
+  `;
+  
+  try {
+      const results = await graphQLClient.request(query);
+      console.log("*** *** Query (GetProblemCategories) Results:");
+      console.log(results);
+      return results;
+  } catch (error) {
+      console.error("Error uery (GetProblemCategories):", error);
   }
 }

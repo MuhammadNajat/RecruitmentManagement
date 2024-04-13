@@ -115,7 +115,7 @@ export async function authenticate(
   }
 }
 
-const FormSchema = z.object({
+const CreateUserFormSchema = z.object({
   id: z.string(),
   employeeID: z.string(),
   name: z.string(),
@@ -124,7 +124,7 @@ const FormSchema = z.object({
   userType: z.enum(['problemSetter', 'reviewer', 'admin']),
 });
  
-const CreateUser = FormSchema.omit({ id: true });
+const CreateUser = CreateUserFormSchema.omit({ id: true });
 
 export async function createUser(formData: FormData) {
   const { employeeID, emailAddress, name, password, userType } = CreateUser.parse({
@@ -135,14 +135,14 @@ export async function createUser(formData: FormData) {
     userType: formData.get('userType'),
   });
 
-  insertData(employeeID, name, emailAddress, password, userType);
+  insertUser(employeeID, name, emailAddress, password, userType);
 
   revalidatePath('/admin/users');
 
   redirect('/admin/users');
 }
 
-async function insertData(employeeID : string, name : string, emailAddress : string, password : string, userType : string) {
+async function insertUser(employeeID : string, name : string, emailAddress : string, password : string, userType : string) {
   try {
       await connectDB().catch(console.dir);
       // Select the database

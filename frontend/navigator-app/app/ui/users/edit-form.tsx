@@ -127,7 +127,7 @@ export default function EditUserForm({
             {/* Role*/}
             <fieldset>
             <legend className="mb-2 block text-sm font-medium">
-                Set user type
+                User-type
             </legend>
             <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
                 <div className="flex gap-4">
@@ -198,7 +198,7 @@ export default function EditUserForm({
             >
             {errorMessage && (
                 <>
-                <p className="text-sm text-red-500">{errorMessage}</p>
+                    <p className="text-sm text-red-500">{errorMessage}</p>
                 </>
             )}
             </div>

@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
-import{ createUser } from '@/app/lib/createUserAction';
+import { createUser } from '@/app/lib/createUserAction';
 
 
 export default function Form() {
@@ -166,19 +166,19 @@ export default function Form() {
       </div>
 
       <div
-          className="flex h-8 items-end space-x-1"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {errorMessage && (
-            <>
-              <p className="text-sm text-red-500">{errorMessage}</p>
-            </>
-          )}
-        </div>
-        <div className="flex h-8 items-end space-x-1">
-          {/* Add form errors here */}
-        </div>
+        className="flex h-8 items-end space-x-1"
+        aria-live="polite"
+        aria-atomic="true"
+      >
+        {errorMessage && (
+          <>
+            <p className="text-sm text-red-500">{errorMessage}</p>
+          </>
+        )}
+      </div>
+      <div className="flex h-8 items-end space-x-1">
+        {/* Add form errors here */}
+      </div>
     </form>
   );
 }

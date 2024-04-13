@@ -10,19 +10,6 @@ import email from 'next-auth/providers/email';
 import { error } from 'console';
 import { request, gql, GraphQLClient } from 'graphql-request';
 
-/*
-const { MongoClient, ServerApiVersion } = require('mongodb');
-const uri = "mongodb://localhost:27017/";
-// Create a MongoClient with a MongoClientOptions object to set the Stable API version
-const client = new MongoClient(uri, {
-  serverApi: {
-    version: ServerApiVersion.v1,
-    strict: true,
-    deprecationErrors: true,
-  }
-});
-*/
-
 const FormSchema = z.object({
     id: z.string(),
     employeeID: z.string(),

@@ -15,6 +15,17 @@ export type User = {
   updatedAt: string;
 };
 
+export type ProblemCategory = {
+  id : string;
+  name: string;
+  subCategories : [string];
+};
+
+export type ProblemCategoryInput = {
+  name: string;
+  subCategories : string;
+};
+
 export type Customer = {
   id: string;
   name: string;
