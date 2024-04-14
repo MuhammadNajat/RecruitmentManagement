@@ -11,17 +11,23 @@ import { error } from 'console';
 import { request, gql, GraphQLClient } from 'graphql-request';
 
 const FormSchema = z.object({
+    id: z.string(),
     name: z.string(),
     subCategories: z.string(),
 });
 
-const CreateCategory = FormSchema.omit({});
+const UpdateCategory = FormSchema.omit({/* */});
 
-export async function createCategory(prevState: string | undefined, formData: FormData,) {
-    const { name, subCategories } = CreateCategory.parse({
+export async function updateCategory(prevState: string | undefined, formData: FormData,) {
+    const { id, name, subCategories } = UpdateCategory.parse({
+        id: formData.get('id'),
         name: formData.get('name'),
         subCategories: formData.get('subCategories'),
     });
+
+    console.log("*** category id: ", id);
+
+    console.log("*** *** sub-categories" + subCategories);
 
     if (name.length < 2) {
         console.log("~~~ ~~~Insert valid category name");
@@ -33,7 +39,7 @@ export async function createCategory(prevState: string | undefined, formData: Fo
 
     let response = "";
     let invalidChars = "<>\'\"@%&{}[]()=";
-    var invalidSubcategories: String[] = []
+    var invalidSubcategories: String[] = [];
     var regExp = /[a-zA-Z]/g;
     chunks.forEach((item, index) => {
         let containsInvalid = false;
@@ -59,30 +65,37 @@ export async function createCategory(prevState: string | undefined, formData: Fo
         return response;
     }
 
+    let trimmedChunks: String[] = [];
+    chunks.forEach((item, index) => {
+        //trimmedChunks.push( item.trim() );
+        chunks[index] = item.trim();
+    })
 
-    insertCategory(name, chunks);
+    try {
+        await updateData(id, name, chunks);
+    } catch (error) {
+        console.error("!!! !!! Error updating category:", error);
+    }
 
-    revalidatePath('/admin/problems/categories');
+    revalidatePath('/admin/problem-categories');
 
-    redirect('/admin/problems/categories');
+    redirect('/admin/problem-categories');
 }
 
-async function insertCategory(name: string, subCategories: string[]) {
-    const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
-        headers: {
-            //authorization: 'Apikey ' + process.env.AUTH_SECRET,
-        },
-    });
+async function updateData(id: string, name: string, subCategories: Array<string>) {
+    console.log("Enetered: updateProblemCategoryAction->updateData, id = ", id);
+    const graphQLClient = new GraphQLClient('http://localhost:8080/query');
 
     const query = gql`
-        mutation CreateProblemCategory($input : ProblemCategoryCreateInput!) {
-            createProblemCategory(input : $input) {
-            name
-            subCategories
+        mutation UpdateProblemCategory($id : ID!, $input : ProblemCategoryUpdateInput!) {
+            updateProblemCategory(id : $id, input : $input) {
+                name
+                subCategories
             }
         }
     `;
     const variables = {
+        id: id,
         input: {
             name: name,
             subCategories: subCategories
@@ -92,9 +105,9 @@ async function insertCategory(name: string, subCategories: string[]) {
 
     try {
         const results = await graphQLClient.request(query, variables);
-        console.log("Mutation (Create categories) Results:");
+        console.log("MMM MMM Mutation (Update categories) Results:");
         console.log(results);
     } catch (error) {
-        console.error("Error inserting category:", error);
+        console.error("EEE EEE Error updating category:", error);
     }
 }

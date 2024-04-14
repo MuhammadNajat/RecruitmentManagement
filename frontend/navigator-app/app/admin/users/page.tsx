@@ -4,14 +4,14 @@ import { lusitana } from '@/app/ui/fonts';
 import { User } from "@/app/lib/definitions";
 import clsx from 'clsx';
 import Link from 'next/link'
-import DeleteComponent from "@/app/ui/users/delete-component";
-import { deleteUser } from "@/app/lib/deleteUserAction";
+import DeleteComponent from "@/app/ui/users/delete-user";
+import { deleteUser } from "@/app/lib/users/mutations/deleteUserAction";
 
 export default async function Users() {
   let temp: unknown = await readUsers();
   const userData = temp as User[];
   console.log("&&& &&& userData", userData);
-  {/* //@ts-ignore */}
+  //@ts-ignore
   const users = userData.getUsers;
   console.log("^^^ ^^^ fteched users: ", userData);
 

@@ -14,14 +14,14 @@ import { cookies } from 'next/headers';
 import { User } from "@/app/lib/definitions";
 
 
-async function insertUser(employeeID : string, name : string, emailAddress : string, adminAssignedPassword : string, role : string) {
-    const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
-      headers: {
-          //authorization: 'Apikey ' + process.env.AUTH_SECRET,
-      },
-    });
+async function insertUser(employeeID: string, name: string, emailAddress: string, adminAssignedPassword: string, role: string) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
 
-    const query = gql`
+  const query = gql`
       mutation CreateUser($input: UserCreateInput!) {
         createUser(input: $input) {
           _id
@@ -37,33 +37,33 @@ async function insertUser(employeeID : string, name : string, emailAddress : str
         }
       }
     `;
-    const variables = {
-      input: {
-          employeeID: employeeID,
-          name: name,
-          email: emailAddress,
-          adminAssignedPassword: adminAssignedPassword,
-          password: '',
-          changedAdminAssignedPassword: false,
-          role: role,
-      }
-    };
+  const variables = {
+    input: {
+      employeeID: employeeID,
+      name: name,
+      email: emailAddress,
+      adminAssignedPassword: adminAssignedPassword,
+      password: '',
+      changedAdminAssignedPassword: false,
+      role: role,
+    }
+  };
 
-    
+
   try {
     const results = await graphQLClient.request(query, variables);
     console.log("Query (GetUsers) Results:");
     console.log(results);
     return results;
   } catch (error) {
-      console.error("Error querying data:", error);
+    console.error("Error querying data:", error);
   }
 }
 
-export async function readUser(id : String) {
+export async function readUser(id: String) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
-        //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
     },
   });
 
@@ -87,25 +87,25 @@ export async function readUser(id : String) {
   const variables = {
     id: id,
   };
-  
+
   try {
-      const results = await graphQLClient.request(query, variables);
-      console.log("Query (GetUser) Result:");
-      console.log(results);
-      return results;
+    const results = await graphQLClient.request(query, variables);
+    console.log("Query (GetUser) Result:");
+    console.log(results);
+    return results;
   } catch (error) {
-      console.error("Error querying data:", error);
+    console.error("Error querying data:", error);
   }
 }
 
 export async function readUsers() {
-    const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
-      headers: {
-          //authorization: 'Apikey ' + process.env.AUTH_SECRET,
-      },
-    });
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
 
-    const query = gql`
+  const query = gql`
       query getUsers() {
         getUsers {
           _id
@@ -121,15 +121,15 @@ export async function readUsers() {
         }
       }
     `;
-    
-    try {
-        const results = await graphQLClient.request(query);
-        console.log("*** *** Mutation (Create) Results:");
-        console.log(results);
-        return results;
-    } catch (error) {
-        console.error("Error inserting data:", error);
-    }
+
+  try {
+    const results = await graphQLClient.request(query);
+    console.log("*** *** Mutation (Create) Results:");
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error("Error inserting data:", error);
+  }
 }
 
 const ITEMS_PER_PAGE = 2;
@@ -143,13 +143,15 @@ export async function fetchFilteredUsers(
   try {
     let temp: unknown = await readUsers();
     const userData = temp as User[];
+
+    //@ts-ignore
     const users = userData.getUsers;
     let taken = new Array(users.length).fill(0);
     console.log(">>> Inside fetchFilteredUsers() : users = ", users);
     const filtered = [];
-    for(let i=offset, j=0; i<users.length && j<ITEMS_PER_PAGE; i++, j++) {
+    for (let i = offset, j = 0; i < users.length && j < ITEMS_PER_PAGE; i++, j++) {
       for (const property in users[i]) {
-        if(String(users[i][property]).includes(query)) {
+        if (String(users[i][property]).includes(query)) {
           filtered.push(users[i]);
         }
       }
@@ -165,10 +167,10 @@ export async function fetchFilteredUsers(
   }
 }
 
-async function updateUserData(employeeID : string, name : string, emailAddress : string, adminAssignedPassword : string, role : string) {
+async function updateUserData(employeeID: string, name: string, emailAddress: string, adminAssignedPassword: string, role: string) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
-        //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
     },
   });
 
@@ -189,30 +191,30 @@ async function updateUserData(employeeID : string, name : string, emailAddress :
   const variables = {
     id: employeeID,
     input: {
-        employeeID: employeeID,
-        name: name,
-        email: emailAddress,
-        adminAssignedPassword: adminAssignedPassword,
-        password: '',
-        changedAdminAssignedPassword: false,
-        role: role,
+      employeeID: employeeID,
+      name: name,
+      email: emailAddress,
+      adminAssignedPassword: adminAssignedPassword,
+      password: '',
+      changedAdminAssignedPassword: false,
+      role: role,
     }
   };
 
-  
+
   try {
     const results = await graphQLClient.request(query, variables);
     console.log("Mutation (Update) Results:");
     console.log(results);
   } catch (error) {
-      console.error("Error udating data:", error);
+    console.error("Error udating data:", error);
   }
 }
 
 export async function getProblemCategories() {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
-        //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
     },
   });
 
@@ -225,13 +227,45 @@ export async function getProblemCategories() {
       }
     }
   `;
-  
+
   try {
-      const results = await graphQLClient.request(query);
-      console.log("*** *** Query (GetProblemCategories) Results:");
-      console.log(results);
-      return results;
+    const results = await graphQLClient.request(query);
+    console.log("*** *** Query (GetProblemCategories) Results:");
+    console.log(results);
+    return results;
   } catch (error) {
-      console.error("Error uery (GetProblemCategories):", error);
+    console.error("Error uery (GetProblemCategories):", error);
+  }
+}
+
+export async function getProblemCategory(id: String) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+    query GetProblemCategory($id : ID!) {
+      getProblemCategory(id : $id) {
+        _id
+        name
+        subCategories
+      }
+    }
+  `;
+
+  const variables = {
+    id: id,
+  };
+
+
+  try {
+    const results = await graphQLClient.request(query, variables);
+    console.log(`*** *** Query (GetProblemCategory${id}) Results:`);
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error(`Error Query (GetProblemCategory${id}):`, error);
   }
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { deleteUser } from "@/app/lib/deleteUserAction";
+import { deleteUser } from "@/app/lib/users/mutations/deleteUserAction";
 import Image from "next/image";
 import { useState } from "react";
 

@@ -16,7 +16,7 @@ export type User = {
 };
 
 export type ProblemCategory = {
-  id : string;
+  _id : string;
   name: string;
   subCategories : [string];
 };

@@ -1,6 +1,6 @@
 "use client";
 
-import { createCategory } from "@/app/lib/createProblemCategoryAction";
+import { createCategory } from "@/app/lib/problem-categories/mutations/createProblemCategoryAction";
 import { useFormState, useFormStatus } from "react-dom";
 import Link from "next/link";
 import { Button } from '@/app/ui/button';

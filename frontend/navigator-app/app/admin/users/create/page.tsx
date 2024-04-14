@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Button } from '@/app/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
-import { createUser } from '@/app/lib/createUserAction';
+import { createUser } from '@/app/lib/users/mutations/createUserAction';
 
 
 export default function Form() {
