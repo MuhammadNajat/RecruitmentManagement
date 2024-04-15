@@ -1,8 +1,6 @@
 "use client";
 
-import { deleteUser } from "@/app/lib/users/mutations/deleteUserAction";
-import Image from "next/image";
-import { useState } from "react";
+import { deleteUser } from "@/app/lib/data/users/mutations/deleteUserAction";
 
 export default function DeleteComponent({ id }: { id: string } ) {
     const trigerDelete = async function() {

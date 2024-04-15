@@ -123,7 +123,7 @@ const CreateUserFormSchema = z.object({
   password: z.string(),
   userType: z.enum(['problemSetter', 'reviewer', 'admin']),
 });
- 
+
 const CreateUser = CreateUserFormSchema.omit({ id: true });
 
 export async function createUser(formData: FormData) {
@@ -142,27 +142,27 @@ export async function createUser(formData: FormData) {
   redirect('/admin/users');
 }
 
-async function insertUser(employeeID : string, name : string, emailAddress : string, password : string, userType : string) {
+async function insertUser(employeeID: string, name: string, emailAddress: string, password: string, userType: string) {
   try {
-      await connectDB().catch(console.dir);
-      // Select the database
-      const db = client.db("RecruitmentManagement");
+    await connectDB().catch(console.dir);
+    // Select the database
+    const db = client.db("RecruitmentManagement");
 
-      // Select the collection
-      const collection = db.collection('users');
+    // Select the collection
+    const collection = db.collection('users');
 
-      // Insert a single document
-      const insertResult = await collection.insertOne({
-          key1: 'value1',
-          key2: 'value2',
-          // Add more key-value pairs as needed
-      });
+    // Insert a single document
+    const insertResult = await collection.insertOne({
+      key1: 'value1',
+      key2: 'value2',
+      // Add more key-value pairs as needed
+    });
 
-      console.log('Document inserted with _id:', insertResult.insertedId);
+    console.log('Document inserted with _id:', insertResult.insertedId);
   } catch (error) {
-      console.error('Error:', error);
+    console.error('Error:', error);
   } finally {
-      // Close the connection
-      await client.close();
+    // Close the connection
+    await client.close();
   }
 }

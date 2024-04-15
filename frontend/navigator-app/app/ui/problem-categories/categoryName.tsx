@@ -1,11 +1,5 @@
 "use client";
 
-import { createCategory } from "@/app/lib/createProblemCategoryAction";
-import { useFormState, useFormStatus } from "react-dom";
-import Link from "next/link";
-import { Button } from '@/app/ui/button';
-import { unstable_noStore as noStore } from 'next/cache';
-
 export default function CategoryName({ id, name }: { id: string, name: string }) {
     const categoryNameSpanID = `categoryNameSpanID_${id}`;
     const categoryNameEditFormID = `categoryNameEditFormID_${id}`;

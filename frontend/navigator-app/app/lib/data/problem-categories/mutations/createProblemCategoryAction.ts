@@ -1,14 +1,10 @@
 'use server';
 
-import { INVALID, z } from 'zod';
-//import { sql } from '@vercel/postgres';
+import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
-import email from 'next-auth/providers/email';
-import { error } from 'console';
-import { request, gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request';
+import { checkNameValidity, checkNamesValidity } from '@/app/lib/helpers/problem-category-validator';
 
 const FormSchema = z.object({
     name: z.string(),
@@ -17,31 +13,16 @@ const FormSchema = z.object({
 
 const CreateCategory = FormSchema.omit({});
 
-let invalidChars = "<>\'\"@%&{}[]()=^";
-
-function isInvalid(text: String) {
-    var alphabetRegExp = /[a-zA-Z]/g;
-
-    let containsInvalid = false;
-    let containsAlphabet = false;
-    for (let i = 0; i < text.length; i++) {
-        containsInvalid = containsInvalid || (invalidChars.indexOf(text[i]) > -1);
-        containsAlphabet = containsAlphabet || alphabetRegExp.test(text[i]);
-    }
-
-    return (containsInvalid || !containsAlphabet);
-}
-
 export async function createCategory(prevState: string | undefined, formData: FormData,) {
     const { name, subCategories } = CreateCategory.parse({
         name: formData.get('name'),
         subCategories: formData.get('subCategories'),
     });
 
-    if (name.length < 2 || isInvalid(name)) {
+    let categoryNameValidity = checkNameValidity(name);
+    if (!categoryNameValidity[0]) {
         console.log("~~~ ~~~Insert valid category name");
-        const response = `Invalid name: ${name}. Please exclude these characters: ${invalidChars} +. Name must contain one alphabet at least.`;
-        return response;
+        return categoryNameValidity[1].toString();
     }
 
     let trimmedName = name.trim();
@@ -49,32 +30,16 @@ export async function createCategory(prevState: string | undefined, formData: Fo
     const chunks = subCategories.split(",");
     console.log("chunks: ", chunks);
 
-    let response = "";
-    var invalidSubcategories: String[] = []
-    
-    chunks.forEach((item, index) => {
-        if (isInvalid(item)) {
-            invalidSubcategories.push(item);
-        }
-    });
-
-    console.log("RESPONSE: " + response);
-
-    let invalidSubcategoriesLength = invalidSubcategories.length;
-    if (invalidSubcategoriesLength > 0) {
-        for (let i = 0; i < invalidSubcategoriesLength; i++) {
-            response = response + invalidSubcategories[i] + "\n";
-        }
-        response = "Invalid entries: " + response + (". \n NOTE: Please exclude these characters:" + invalidChars + ". Name must contain one alphabet at least.");
-        console.log("&&& &&&" + response);
-        return response;
+    let validity = checkNamesValidity(chunks);
+    if (!validity[0]) {
+        console.log("~~~ ~~~Insert valid category name");
+        return validity[1].toString();
     }
 
     let trimmedChunks: string[] = []
     chunks.forEach((item, index) => {
-        trimmedChunks.push( item.trim() );
+        trimmedChunks.push(item.trim());
     })
-
 
     insertCategory(trimmedName, trimmedChunks);
 

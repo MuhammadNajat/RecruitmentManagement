@@ -4,10 +4,7 @@ import { INVALID, z } from 'zod';
 //import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { signIn } from '@/auth';
-import { AuthError } from 'next-auth';
-import email from 'next-auth/providers/email';
-import { error } from 'console';
+import { checkNameValidity, checkNamesValidity } from '@/app/lib/helpers/problem-category-validator';
 import { request, gql, GraphQLClient } from 'graphql-request';
 
 const FormSchema = z.object({
@@ -16,7 +13,7 @@ const FormSchema = z.object({
     subCategories: z.string(),
 });
 
-const UpdateCategory = FormSchema.omit({/* */});
+const UpdateCategory = FormSchema.omit({/* */ });
 
 export async function updateCategory(prevState: string | undefined, formData: FormData,) {
     const { id, name, subCategories } = UpdateCategory.parse({
@@ -25,54 +22,31 @@ export async function updateCategory(prevState: string | undefined, formData: Fo
         subCategories: formData.get('subCategories'),
     });
 
-    console.log("*** category id: ", id);
-
-    console.log("*** *** sub-categories" + subCategories);
-
-    if (name.length < 2) {
+    let categoryNameValidity = checkNameValidity(name);
+    if (!categoryNameValidity[0]) {
         console.log("~~~ ~~~Insert valid category name");
-        return "Insert valid category name";
+        return categoryNameValidity[1].toString();
     }
+
+    let trimmedName = name.trim();
 
     const chunks = subCategories.split(",");
     console.log("chunks: ", chunks);
 
-    let response = "";
-    let invalidChars = "<>\'\"@%&{}[]()=";
-    var invalidSubcategories: String[] = [];
-    var regExp = /[a-zA-Z]/g;
-    chunks.forEach((item, index) => {
-        let containsInvalid = false;
-        let containsAlphabet = false;
-        for (let i = 0; i < item.length; i++) {
-            containsInvalid = containsInvalid || (invalidChars.indexOf(item[i]) > -1);
-            containsAlphabet = containsAlphabet || regExp.test(item[i]);
-        }
-        if (containsInvalid || !containsAlphabet) {
-            invalidSubcategories.push(item);
-        }
-    })
-
-    console.log("RESPONSE: " + response);
-
-    let invalidSubcategoriesLength = invalidSubcategories.length;
-    if (invalidSubcategoriesLength > 0) {
-        for (let i = 0; i < invalidSubcategoriesLength; i++) {
-            response = response + invalidSubcategories[i] + "\n";
-        }
-        response = "Invalid entries: " + response + (". \n NOTE: Please exclude these characters:" + invalidChars + ". Name must contain one alphabet at least.");
-        console.log("&&& &&&" + response);
-        return response;
+    let validity = checkNamesValidity(chunks);
+    if (!validity[0]) {
+        console.log("~~~ ~~~Insert valid category name");
+        return validity[1].toString();
     }
 
-    let trimmedChunks: String[] = [];
+
+    let trimmedChunks: string[] = []
     chunks.forEach((item, index) => {
-        //trimmedChunks.push( item.trim() );
-        chunks[index] = item.trim();
+        trimmedChunks.push(item.trim());
     })
 
     try {
-        await updateData(id, name, chunks);
+        await updateData(id, trimmedName, trimmedChunks);
     } catch (error) {
         console.error("!!! !!! Error updating category:", error);
     }

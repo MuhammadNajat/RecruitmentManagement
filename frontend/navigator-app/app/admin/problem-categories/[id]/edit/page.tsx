@@ -1,16 +1,7 @@
-import { getProblemCategory, readUser } from '@/app/lib/graphQLServiceConsumer'
-import { updateUser } from "@/app/lib/users/mutations/updateUserAction"
-import { useFormState, useFormStatus } from 'react-dom';
+import { getProblemCategory } from '@/app/lib/data/problem-categories/queries/readProblemCategoryAction'
 import { ProblemCategory, User } from "@/app/lib/definitions";
-import Link from 'next/link';
-import { Button } from '@/app/ui/button';
-import dynamic from "next/dynamic";
-import { useSearchParams } from 'next/navigation'
-import { useRouter } from 'next/router';
 import EditProblemCategoryForm from '@/app/ui/problem-categories/categoryUpdate';
-import Breadcrumbs from "@/app/ui/users/breadcrumbs"
-
-//import { fetchInvoiceById, fetchCustomers } from '@/app/lib/data';
+import Breadcrumbs from "@/app/ui/breadcrumbs"
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;

@@ -48,6 +48,10 @@ func Connect() *database {
 	}
 }
 
+/***
+USER CRUD Starts
+***/
+
 func (database database) CreateUser(input model.UserCreateInput) *model.UserCreateResponse {
 	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -196,6 +200,14 @@ func (database database) DeleteUser(id string) *model.UserDeleteResponse {
 	return &model.UserDeleteResponse{ID: id}
 }
 
+/***
+USER CRUD Ends
+***/
+
+/***
+PROBLEM-CATEGORY CRUD Starts
+***/
+
 func (database database) CreateProblemCategory(input model.ProblemCategoryCreateInput) *model.ProblemCategory {
 	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
@@ -301,8 +313,8 @@ func (database database) DeleteProblemCategory(id string) *model.ProblemCategory
 
 	_id, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": _id}
-	var user model.User
-	if errInSearching := categories.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
+	var problemCategory model.ProblemCategory
+	if errInSearching := categories.FindOne(ctx, filter).Decode(&problemCategory); errInSearching != nil {
 		fmt.Println("!!! Error in DeleteProblemCategory (No category found)")
 		return nil
 	}
@@ -315,3 +327,187 @@ func (database database) DeleteProblemCategory(id string) *model.ProblemCategory
 	}
 	return &model.ProblemCategoryDeleteResponse{ID: id}
 }
+
+/***
+PROBLEM-CATEGORY CRUD Ends
+***/
+
+/***
+PROBLEM CRUD Starts
+***/
+
+func (database database) CreateProblem(input model.ProblemCreateInput) *model.Problem {
+	problems := database.client.Database("RecruitmentManagement").Collection("problems")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	currentTime := time.Now()
+	formattedTime := currentTime.Format("2006-01-02 15:04:05.000000000")
+
+	insertedProblem, error := problems.InsertOne(ctx,
+		bson.M{
+			"statement":           input.Statement,
+			"image":               input.Image,
+			"tags":                input.Tags,
+			"difficulty":          input.Difficulty,
+			"status":              input.Status,
+			"authorUserID":        input.AuthorUserID,
+			"reviewerUserID":      input.ReviewerUserID,
+			"approverAdminUserID": input.ApproverAdminUserID,
+			"commentIDs":          input.CommentIDs,
+			"createdAt":           formattedTime,
+			"updatedAt":           ""})
+
+	if error != nil {
+		fmt.Println("Error in CreateProblem")
+		return nil
+		///log.Fatal(error)
+	}
+
+	fmt.Println(">>> >>> Inserted problem:", insertedProblem)
+
+	insertedProblemID := insertedProblem.InsertedID.(primitive.ObjectID).Hex()
+	problem := model.Problem{
+		ID:                  insertedProblemID,
+		Statement:           input.Statement,
+		Image:               input.Image,
+		Tags:                input.Tags,
+		Difficulty:          input.Difficulty,
+		Status:              input.Status,
+		AuthorUserID:        input.AuthorUserID,
+		ReviewerUserID:      input.ReviewerUserID,
+		ApproverAdminUserID: input.ApproverAdminUserID,
+		CommentIDs:          input.CommentIDs,
+		CreatedAt:           formattedTime,
+		UpdatedAt:           nil}
+	return &problem
+}
+
+func (database database) GetProblems() []*model.Problem {
+	categories := database.client.Database("RecruitmentManagement").Collection("problems")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var fetchedCategories []*model.Problem
+	cursor, error := categories.Find(ctx, bson.D{})
+	if error != nil {
+		fmt.Println("Error in GetProblems - 1")
+		return nil
+		///log.Fatal(error)
+	}
+
+	if error = cursor.All(context.TODO(), &fetchedCategories); error != nil {
+		fmt.Println("Error in GetProblems - 2")
+		return nil
+	}
+
+	return fetchedCategories
+}
+
+func (database database) GetProblem(id string) *model.Problem {
+	problems := database.client.Database("RecruitmentManagement").Collection("problems")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+
+	var fetchedCategory model.Problem
+	err := problems.FindOne(ctx, filter).Decode(&fetchedCategory)
+	if err != nil {
+		fmt.Println("Error in GetProblem")
+		return nil
+		/////log.Fatal(err)
+	}
+	return &fetchedCategory
+}
+
+func (database database) UpdateProblem(id string, input model.ProblemUpdateInput) *model.ProblemUpdateResponse {
+	problems := database.client.Database("RecruitmentManagement").Collection("problems")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	currentTime := time.Now()
+	formattedTime := currentTime.Format("2006-01-02 15:04:05.000000000")
+
+	categoryUpdateInfo := bson.M{}
+
+	if input.Statement != nil {
+		categoryUpdateInfo["statement"] = input.Statement
+	}
+	if input.Image != nil {
+		categoryUpdateInfo["image"] = input.Image
+	}
+	if input.Tags != nil {
+		categoryUpdateInfo["tags"] = input.Tags
+	}
+	if input.Difficulty != nil {
+		categoryUpdateInfo["difficulty"] = input.Difficulty
+	}
+	if input.Status != nil {
+		categoryUpdateInfo["status"] = input.Status
+	}
+	if input.AuthorUserID != nil {
+		categoryUpdateInfo["authorUserID"] = input.AuthorUserID
+	}
+	if input.ReviewerUserID != nil {
+		categoryUpdateInfo["reviewerUserID"] = input.ReviewerUserID
+	}
+	if input.ApproverAdminUserID != nil {
+		categoryUpdateInfo["approverAdminUserID"] = input.ApproverAdminUserID
+	}
+	if input.CommentIDs != nil {
+		categoryUpdateInfo["commentIDs"] = input.CommentIDs
+	}
+
+	categoryUpdateInfo["updatedAt"] = formattedTime
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+
+	var fetchedCategory model.Problem
+	if errInSearching := problems.FindOne(ctx, filter).Decode(&fetchedCategory); errInSearching != nil {
+		fmt.Println("!!! Error in UpdateProblem (No problem found)")
+		return nil
+	}
+
+	updateCommand := bson.M{"$set": categoryUpdateInfo}
+
+	results := problems.FindOneAndUpdate(ctx, filter, updateCommand, options.FindOneAndUpdate().SetReturnDocument(1))
+
+	var problemUpdateResponse model.ProblemUpdateResponse
+
+	if err := results.Decode(&problemUpdateResponse); err != nil {
+		fmt.Println("Error in UpdateProblem (in results.Decode)")
+		return nil
+		///log.Fatal(err)
+	}
+
+	return &problemUpdateResponse
+}
+
+func (database database) DeleteProblem(id string) *model.ProblemDeleteResponse {
+	problems := database.client.Database("RecruitmentManagement").Collection("problems")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+	var user model.Problem
+	if errInSearching := problems.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
+		fmt.Println("!!! Error in DeleteProblem (No problem found)")
+		return nil
+	}
+
+	_, errInDeleting := problems.DeleteOne(ctx, filter)
+	if errInDeleting != nil {
+		fmt.Println("!!! Error in DeleteProblem")
+		return nil
+		///log.Fatal(err)
+	}
+	return &model.ProblemDeleteResponse{ID: id}
+}
+
+/***
+PROBLEM CRUD ends
+***/

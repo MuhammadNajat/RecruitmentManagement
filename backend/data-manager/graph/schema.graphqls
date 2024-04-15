@@ -98,10 +98,12 @@ type UserDeleteResponse {
 
 
 type Comment {
+  _id : ID!
   body : String!
   userID : ID!
   userName : String!
   createdAt : String!
+  updatedAt : String
 }
 
 type ProblemCategory {
@@ -142,13 +144,13 @@ type Problem {
   _id : ID!
   statement : String!
   image : Upload
-  tags : [String!]!
+  tags : [String!]
   difficulty : Difficulty!
   status : Status!
-  authorUserID : String!
-  reviewerUserID : String
-  approverAdminUserID : String
-  comments : [Comment!]
+  authorUserID : ID!
+  reviewerUserID : ID
+  approverAdminUserID : ID
+  commentIDs : [ID!]
   createdAt : String!
   updatedAt : String
 }
@@ -157,43 +159,38 @@ type Problem {
 input ProblemCreateInput {
   statement : String!
   image : Upload
-  tags : [String!]!
+  tags : [String!]
   difficulty : Difficulty!
   status : Status!
-  authorUserID : String!
-  reviewerUserID : String
-  approverAdminUserID : String
-  reviewerComment : String
-  adminComment : String
-  createdAt : String!
-  updatedAt : String
+  authorUserID : ID!
+  reviewerUserID : ID
+  approverAdminUserID : ID
+  commentIDs : [ID!]
 }
 
 input ProblemUpdateInput {
   statement : String
   image : Upload
-  tags : [String]
+  tags : [String!]
   difficulty : Difficulty
   status : Status
-  authorEmployeeID : String
-  reviewerEmployeeID : String
-  adminEmployeeID : String
-  reviewerComment : String
-  adminComment : String
+  authorUserID : ID
+  reviewerUserID : ID
+  approverAdminUserID : ID
+  commentIDs : [ID!]
 }
 
 type ProblemUpdateResponse {
   id : ID!
   statement : String!
   image : Upload
-  tags : [String!]!
+  tags : [String!]
   difficulty : Difficulty!
   status : Status!
-  authorEmployeeID : String!
-  reviewerEmployeeID : String
-  adminEmployeeID : String
-  reviewerComment : String
-  adminComment : String
+  authorUserID : ID!
+  reviewerUserID : ID
+  approverAdminUserID : ID
+  commentIDs : [ID!]
   createdAt : String!
   updatedAt : String
 }
@@ -218,6 +215,9 @@ type Query {
 
   getProblemCategory(id : ID!) : ProblemCategory!
   getProblemCategories : [ProblemCategory!]!
+
+  getProblem(id : ID!) : Problem!
+  getProblems : [Problem!]!
 }
 
 type Mutation {

@@ -1,10 +1,7 @@
-import { createCategory } from "@/app/lib/problem-categories/mutations/createProblemCategoryAction";
 import { ProblemCategory } from "@/app/lib/definitions";
-import { getProblemCategories } from "@/app/lib/graphQLServiceConsumer";
+import { getProblemCategories } from "@/app/lib/data/problem-categories/queries/readProblemCategoryAction";
 import CategoryCreateForm from "@/app/ui/problem-categories/categoryCreate";
 import Link from "next/link";
-import { Button } from '@/app/ui/button';
-import CategoryName from "@/app/ui/problem-categories/categoryName";
 import DeleteProblemCategory from "@/app/ui/problem-categories/categoryDelete";
 
 

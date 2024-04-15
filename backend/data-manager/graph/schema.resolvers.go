@@ -8,7 +8,6 @@ import (
 	"context"
 	"data-manager/database"
 	"data-manager/graph/model"
-	"fmt"
 )
 
 // CreateUser is the resolver for the createUser field.
@@ -44,17 +43,17 @@ func (r *mutationResolver) DeleteProblemCategory(ctx context.Context, id string)
 
 // CreateProblem is the resolver for the createProblem field.
 func (r *mutationResolver) CreateProblem(ctx context.Context, input model.ProblemCreateInput) (*model.Problem, error) {
-	panic(fmt.Errorf("not implemented: CreateProblem - createProblem"))
+	return connection.CreateProblem(input), nil
 }
 
 // UpdateProblem is the resolver for the updateProblem field.
 func (r *mutationResolver) UpdateProblem(ctx context.Context, id string, input model.ProblemUpdateInput) (*model.ProblemUpdateResponse, error) {
-	panic(fmt.Errorf("not implemented: UpdateProblem - updateProblem"))
+	return connection.UpdateProblem(id, input), nil
 }
 
 // DeleteProblem is the resolver for the deleteProblem field.
 func (r *mutationResolver) DeleteProblem(ctx context.Context, id string) (*model.ProblemDeleteResponse, error) {
-	panic(fmt.Errorf("not implemented: DeleteProblem - deleteProblem"))
+	return connection.DeleteProblem(id), nil
 }
 
 // GetUser is the resolver for the getUser field.
@@ -75,6 +74,16 @@ func (r *queryResolver) GetProblemCategory(ctx context.Context, id string) (*mod
 // GetProblemCategories is the resolver for the getProblemCategories field.
 func (r *queryResolver) GetProblemCategories(ctx context.Context) ([]*model.ProblemCategory, error) {
 	return connection.GetProblemCategories(), nil
+}
+
+// GetProblem is the resolver for the getProblem field.
+func (r *queryResolver) GetProblem(ctx context.Context, id string) (*model.Problem, error) {
+	return connection.GetProblem(id), nil
+}
+
+// GetProblems is the resolver for the getProblems field.
+func (r *queryResolver) GetProblems(ctx context.Context) ([]*model.Problem, error) {
+	return connection.GetProblems(), nil
 }
 
 // Mutation returns MutationResolver implementation.

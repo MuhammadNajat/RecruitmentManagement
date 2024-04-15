@@ -1,9 +1,6 @@
 "use client";
 
-import { deleteProblemCategory } from "@/app/lib/problem-categories/mutations/deleteProblemCategory";
-import { deleteUser } from "@/app/lib/users/mutations/deleteUserAction";
-import Image from "next/image";
-import { useState } from "react";
+import { deleteProblemCategory } from "@/app/lib/data/problem-categories/mutations/deleteProblemCategory";
 
 export default function DeleteProblemCategory({ id }: { id: string }) {
     const trigerDelete = async function () {

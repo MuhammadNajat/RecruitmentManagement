@@ -1,11 +1,10 @@
 'use client';
 
 import { ProblemCategory, User } from "@/app/lib/definitions";
-import { updateUser } from "@/app/lib/users/mutations/updateUserAction";
 import Link from "next/link";
 import { Button } from '@/app/ui/button';
-import { useFormState, useFormStatus } from 'react-dom';
-import { updateCategory } from "@/app/lib/problem-categories/mutations/updateProblemCategoryAction";
+import { useFormState } from 'react-dom';
+import { updateCategory } from "@/app/lib/data/problem-categories/mutations/updateProblemCategoryAction";
 
 
 export default function EditProblemCategoryForm({

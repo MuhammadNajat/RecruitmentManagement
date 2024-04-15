@@ -1,8 +1,7 @@
 "use client";
 
-import { createCategory } from "@/app/lib/problem-categories/mutations/createProblemCategoryAction";
-import { useFormState, useFormStatus } from "react-dom";
-import Link from "next/link";
+import { createCategory } from "@/app/lib/data/problem-categories/mutations/createProblemCategoryAction";
+import { useFormState } from "react-dom";
 import { Button } from '@/app/ui/button';
 
 export default function CategoryCreateForm() {
@@ -26,46 +25,6 @@ export default function CategoryCreateForm() {
             plusSpan?.classList?.remove(plusSpan?.classList?.contains("hidden") ? "hidden" : "");
             minusSpan?.classList?.add(plusSpan?.classList?.contains("hidden") ? "" : "hidden");
         }
-    }
-
-    const addSubcategoryInputField = () => {
-        let containerDiv = document.getElementById('subCategoryContainer');
-        if (containerDiv == null) {
-            return;
-        }
-        containerDiv.innerHTML +=
-            `<div className='relative mt-2 rounded-md'>
-            <div className='relative'>
-                <input className='subCategories peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500' m-2 type='text' value=''
-                placeholder="Enter Sub-category name" />
-                <br />
-            </div>
-        </div>
-        `;
-
-    }
-
-    const handleSubCategoryChange = () => {
-        const text = document.getElementById("subCategories")?.innerText;
-        console.log("text: ", text);
-        const chunks = text?.split(",");
-        if (chunks == undefined || chunks == null) {
-            return;
-        }
-
-        console.log("chunks:", chunks);
-
-        let outputDiv = document.getElementById('outputDiv');
-        if (outputDiv == null) {
-            return;
-        }
-
-        let outputText = "";
-        for (let i = 0; i < chunks.length; i++) {
-            outputText += ((i + 1).toString() + ". " + chunks[i]);
-        }
-
-        outputDiv.innerHTML = outputText;
     }
 
     return (

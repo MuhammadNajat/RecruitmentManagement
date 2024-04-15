@@ -11,10 +11,12 @@ import (
 )
 
 type Comment struct {
-	Body      string `json:"body"`
-	UserID    string `json:"userID"`
-	UserName  string `json:"userName"`
-	CreatedAt string `json:"createdAt"`
+	ID        string  `bson:"_id" json:"id"`
+	Body      string  `json:"body"`
+	UserID    string  `json:"userID"`
+	UserName  string  `json:"userName"`
+	CreatedAt string  `json:"createdAt"`
+	UpdatedAt *string `json:"updatedAt,omitempty"`
 }
 
 type Mutation struct {
@@ -24,13 +26,13 @@ type Problem struct {
 	ID                  string          `bson:"_id" json:"id"`
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags"`
+	Tags                []string        `json:"tags,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
 	AuthorUserID        string          `json:"authorUserID"`
 	ReviewerUserID      *string         `json:"reviewerUserID,omitempty"`
 	ApproverAdminUserID *string         `json:"approverAdminUserID,omitempty"`
-	Comments            []*Comment      `json:"comments,omitempty"`
+	CommentIDs          []string        `json:"commentIDs,omitempty"`
 	CreatedAt           string          `json:"createdAt"`
 	UpdatedAt           *string         `json:"updatedAt,omitempty"`
 }
@@ -64,16 +66,13 @@ type ProblemCategoryUpdateResponse struct {
 type ProblemCreateInput struct {
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags"`
+	Tags                []string        `json:"tags,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
 	AuthorUserID        string          `json:"authorUserID"`
 	ReviewerUserID      *string         `json:"reviewerUserID,omitempty"`
 	ApproverAdminUserID *string         `json:"approverAdminUserID,omitempty"`
-	ReviewerComment     *string         `json:"reviewerComment,omitempty"`
-	AdminComment        *string         `json:"adminComment,omitempty"`
-	CreatedAt           string          `json:"createdAt"`
-	UpdatedAt           *string         `json:"updatedAt,omitempty"`
+	CommentIDs          []string        `json:"commentIDs,omitempty"`
 }
 
 type ProblemDeleteResponse struct {
@@ -81,32 +80,30 @@ type ProblemDeleteResponse struct {
 }
 
 type ProblemUpdateInput struct {
-	Statement          *string         `json:"statement,omitempty"`
-	Image              *graphql.Upload `json:"image,omitempty"`
-	Tags               []*string       `json:"tags,omitempty"`
-	Difficulty         *Difficulty     `json:"difficulty,omitempty"`
-	Status             *Status         `json:"status,omitempty"`
-	AuthorEmployeeID   *string         `json:"authorEmployeeID,omitempty"`
-	ReviewerEmployeeID *string         `json:"reviewerEmployeeID,omitempty"`
-	AdminEmployeeID    *string         `json:"adminEmployeeID,omitempty"`
-	ReviewerComment    *string         `json:"reviewerComment,omitempty"`
-	AdminComment       *string         `json:"adminComment,omitempty"`
+	Statement           *string         `json:"statement,omitempty"`
+	Image               *graphql.Upload `json:"image,omitempty"`
+	Tags                []string        `json:"tags,omitempty"`
+	Difficulty          *Difficulty     `json:"difficulty,omitempty"`
+	Status              *Status         `json:"status,omitempty"`
+	AuthorUserID        *string         `json:"authorUserID,omitempty"`
+	ReviewerUserID      *string         `json:"reviewerUserID,omitempty"`
+	ApproverAdminUserID *string         `json:"approverAdminUserID,omitempty"`
+	CommentIDs          []string        `json:"commentIDs,omitempty"`
 }
 
 type ProblemUpdateResponse struct {
-	ID                 string          `bson:"_id" json:"id"`
-	Statement          string          `json:"statement"`
-	Image              *graphql.Upload `json:"image,omitempty"`
-	Tags               []string        `json:"tags"`
-	Difficulty         Difficulty      `json:"difficulty"`
-	Status             Status          `json:"status"`
-	AuthorEmployeeID   string          `json:"authorEmployeeID"`
-	ReviewerEmployeeID *string         `json:"reviewerEmployeeID,omitempty"`
-	AdminEmployeeID    *string         `json:"adminEmployeeID,omitempty"`
-	ReviewerComment    *string         `json:"reviewerComment,omitempty"`
-	AdminComment       *string         `json:"adminComment,omitempty"`
-	CreatedAt          string          `json:"createdAt"`
-	UpdatedAt          *string         `json:"updatedAt,omitempty"`
+	ID                  string          `bson:"_id" json:"id"`
+	Statement           string          `json:"statement"`
+	Image               *graphql.Upload `json:"image,omitempty"`
+	Tags                []string        `json:"tags,omitempty"`
+	Difficulty          Difficulty      `json:"difficulty"`
+	Status              Status          `json:"status"`
+	AuthorUserID        string          `json:"authorUserID"`
+	ReviewerUserID      *string         `json:"reviewerUserID,omitempty"`
+	ApproverAdminUserID *string         `json:"approverAdminUserID,omitempty"`
+	CommentIDs          []string        `json:"commentIDs,omitempty"`
+	CreatedAt           string          `json:"createdAt"`
+	UpdatedAt           *string         `json:"updatedAt,omitempty"`
 }
 
 type Query struct {

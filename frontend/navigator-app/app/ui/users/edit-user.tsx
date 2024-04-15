@@ -1,7 +1,7 @@
 'use client';
 
 import { User } from "@/app/lib/definitions";
-import { updateUser } from "@/app/lib/users/mutations/updateUserAction";
+import { updateUser } from "@/app/lib/data/users/mutations/updateUserAction";
 import Link from "next/link";
 import { Button } from '@/app/ui/button';
 import { useFormState, useFormStatus } from 'react-dom';
