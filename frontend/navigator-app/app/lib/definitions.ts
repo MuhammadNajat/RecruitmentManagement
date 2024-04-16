@@ -25,3 +25,19 @@ export type ProblemCategoryInput = {
   name: string;
   subCategories: string;
 };
+
+export type Problem = {
+  _id: string;
+  statement: string;
+  image: any;
+  tags: string[];
+  difficulty: string;
+  status: string;
+  authorUserID: string;
+  reviewerUserID: string;
+  approverAdminUserID: string;
+  reviewerComment: string;
+  adminComment: string;
+  createdAt: string;
+  updatedAt: string;
+}
