@@ -83,6 +83,7 @@ export default function Form() {
 
         {/* Password */}
 
+        {/* 
         <div className="mb-4">
           <label htmlFor="password" className="mb-2 block text-sm font-medium">
             Password (randomly generated one is provided)
@@ -103,6 +104,7 @@ export default function Form() {
             </div>
           </div>
         </div>
+        */}
 
         {/* Role*/}
         <fieldset>

@@ -128,29 +128,24 @@ type ComplexityRoot struct {
 	}
 
 	User struct {
-		AdminAssignedPassword        func(childComplexity int) int
-		ChangedAdminAssignedPassword func(childComplexity int) int
-		CreatedAt                    func(childComplexity int) int
-		Email                        func(childComplexity int) int
-		EmployeeID                   func(childComplexity int) int
-		ID                           func(childComplexity int) int
-		Name                         func(childComplexity int) int
-		Password                     func(childComplexity int) int
-		Role                         func(childComplexity int) int
-		UpdatedAt                    func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		Email      func(childComplexity int) int
+		EmployeeID func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Password   func(childComplexity int) int
+		Role       func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
 	}
 
 	UserCreateResponse struct {
-		AdminAssignedPassword        func(childComplexity int) int
-		ChangedAdminAssignedPassword func(childComplexity int) int
-		CreatedAt                    func(childComplexity int) int
-		Email                        func(childComplexity int) int
-		EmployeeID                   func(childComplexity int) int
-		ID                           func(childComplexity int) int
-		Name                         func(childComplexity int) int
-		Password                     func(childComplexity int) int
-		Role                         func(childComplexity int) int
-		UpdatedAt                    func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		Email      func(childComplexity int) int
+		EmployeeID func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Role       func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
 	}
 
 	UserDeleteResponse struct {
@@ -158,16 +153,13 @@ type ComplexityRoot struct {
 	}
 
 	UserUpdateResponse struct {
-		AdminAssignedPassword        func(childComplexity int) int
-		ChangedAdminAssignedPassword func(childComplexity int) int
-		CreatedAt                    func(childComplexity int) int
-		Email                        func(childComplexity int) int
-		EmployeeID                   func(childComplexity int) int
-		ID                           func(childComplexity int) int
-		Name                         func(childComplexity int) int
-		Password                     func(childComplexity int) int
-		Role                         func(childComplexity int) int
-		UpdatedAt                    func(childComplexity int) int
+		CreatedAt  func(childComplexity int) int
+		Email      func(childComplexity int) int
+		EmployeeID func(childComplexity int) int
+		ID         func(childComplexity int) int
+		Name       func(childComplexity int) int
+		Role       func(childComplexity int) int
+		UpdatedAt  func(childComplexity int) int
 	}
 }
 
@@ -641,20 +633,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetUsers(childComplexity), true
 
-	case "User.adminAssignedPassword":
-		if e.complexity.User.AdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.User.AdminAssignedPassword(childComplexity), true
-
-	case "User.changedAdminAssignedPassword":
-		if e.complexity.User.ChangedAdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.User.ChangedAdminAssignedPassword(childComplexity), true
-
 	case "User.createdAt":
 		if e.complexity.User.CreatedAt == nil {
 			break
@@ -711,20 +689,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.User.UpdatedAt(childComplexity), true
 
-	case "UserCreateResponse.adminAssignedPassword":
-		if e.complexity.UserCreateResponse.AdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.UserCreateResponse.AdminAssignedPassword(childComplexity), true
-
-	case "UserCreateResponse.changedAdminAssignedPassword":
-		if e.complexity.UserCreateResponse.ChangedAdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.UserCreateResponse.ChangedAdminAssignedPassword(childComplexity), true
-
 	case "UserCreateResponse.createdAt":
 		if e.complexity.UserCreateResponse.CreatedAt == nil {
 			break
@@ -760,13 +724,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.UserCreateResponse.Name(childComplexity), true
 
-	case "UserCreateResponse.password":
-		if e.complexity.UserCreateResponse.Password == nil {
-			break
-		}
-
-		return e.complexity.UserCreateResponse.Password(childComplexity), true
-
 	case "UserCreateResponse.role":
 		if e.complexity.UserCreateResponse.Role == nil {
 			break
@@ -787,20 +744,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserDeleteResponse.ID(childComplexity), true
-
-	case "UserUpdateResponse.adminAssignedPassword":
-		if e.complexity.UserUpdateResponse.AdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.UserUpdateResponse.AdminAssignedPassword(childComplexity), true
-
-	case "UserUpdateResponse.changedAdminAssignedPassword":
-		if e.complexity.UserUpdateResponse.ChangedAdminAssignedPassword == nil {
-			break
-		}
-
-		return e.complexity.UserUpdateResponse.ChangedAdminAssignedPassword(childComplexity), true
 
 	case "UserUpdateResponse.createdAt":
 		if e.complexity.UserUpdateResponse.CreatedAt == nil {
@@ -836,13 +779,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.UserUpdateResponse.Name(childComplexity), true
-
-	case "UserUpdateResponse.password":
-		if e.complexity.UserUpdateResponse.Password == nil {
-			break
-		}
-
-		return e.complexity.UserUpdateResponse.Password(childComplexity), true
 
 	case "UserUpdateResponse.role":
 		if e.complexity.UserUpdateResponse.Role == nil {
@@ -1556,12 +1492,6 @@ func (ec *executionContext) fieldContext_Mutation_createUser(ctx context.Context
 				return ec.fieldContext_UserCreateResponse_name(ctx, field)
 			case "email":
 				return ec.fieldContext_UserCreateResponse_email(ctx, field)
-			case "password":
-				return ec.fieldContext_UserCreateResponse_password(ctx, field)
-			case "adminAssignedPassword":
-				return ec.fieldContext_UserCreateResponse_adminAssignedPassword(ctx, field)
-			case "changedAdminAssignedPassword":
-				return ec.fieldContext_UserCreateResponse_changedAdminAssignedPassword(ctx, field)
 			case "role":
 				return ec.fieldContext_UserCreateResponse_role(ctx, field)
 			case "createdAt":
@@ -1633,12 +1563,6 @@ func (ec *executionContext) fieldContext_Mutation_updateUser(ctx context.Context
 				return ec.fieldContext_UserUpdateResponse_name(ctx, field)
 			case "email":
 				return ec.fieldContext_UserUpdateResponse_email(ctx, field)
-			case "password":
-				return ec.fieldContext_UserUpdateResponse_password(ctx, field)
-			case "adminAssignedPassword":
-				return ec.fieldContext_UserUpdateResponse_adminAssignedPassword(ctx, field)
-			case "changedAdminAssignedPassword":
-				return ec.fieldContext_UserUpdateResponse_changedAdminAssignedPassword(ctx, field)
 			case "role":
 				return ec.fieldContext_UserUpdateResponse_role(ctx, field)
 			case "createdAt":
@@ -3543,10 +3467,6 @@ func (ec *executionContext) fieldContext_Query_getUser(ctx context.Context, fiel
 				return ec.fieldContext_User_email(ctx, field)
 			case "password":
 				return ec.fieldContext_User_password(ctx, field)
-			case "adminAssignedPassword":
-				return ec.fieldContext_User_adminAssignedPassword(ctx, field)
-			case "changedAdminAssignedPassword":
-				return ec.fieldContext_User_changedAdminAssignedPassword(ctx, field)
 			case "role":
 				return ec.fieldContext_User_role(ctx, field)
 			case "createdAt":
@@ -3620,10 +3540,6 @@ func (ec *executionContext) fieldContext_Query_getUsers(ctx context.Context, fie
 				return ec.fieldContext_User_email(ctx, field)
 			case "password":
 				return ec.fieldContext_User_password(ctx, field)
-			case "adminAssignedPassword":
-				return ec.fieldContext_User_adminAssignedPassword(ctx, field)
-			case "changedAdminAssignedPassword":
-				return ec.fieldContext_User_changedAdminAssignedPassword(ctx, field)
 			case "role":
 				return ec.fieldContext_User_role(ctx, field)
 			case "createdAt":
@@ -4249,94 +4165,6 @@ func (ec *executionContext) fieldContext_User_password(ctx context.Context, fiel
 	return fc, nil
 }
 
-func (ec *executionContext) _User_adminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_adminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(string)
-	fc.Result = res
-	return ec.marshalNString2string(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_adminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _User_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_User_changedAdminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ChangedAdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		if !graphql.HasFieldError(ctx, fc) {
-			ec.Errorf(ctx, "must not be null")
-		}
-		return graphql.Null
-	}
-	res := resTmp.(bool)
-	fc.Result = res
-	return ec.marshalNBoolean2bool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_User_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "User",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _User_role(ctx context.Context, field graphql.CollectedField, obj *model.User) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_User_role(ctx, field)
 	if err != nil {
@@ -4637,129 +4465,6 @@ func (ec *executionContext) fieldContext_UserCreateResponse_email(ctx context.Co
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserCreateResponse_password(ctx context.Context, field graphql.CollectedField, obj *model.UserCreateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserCreateResponse_password(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserCreateResponse_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserCreateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserCreateResponse_adminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.UserCreateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserCreateResponse_adminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserCreateResponse_adminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserCreateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserCreateResponse_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.UserCreateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserCreateResponse_changedAdminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ChangedAdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*bool)
-	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserCreateResponse_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserCreateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -5109,129 +4814,6 @@ func (ec *executionContext) fieldContext_UserUpdateResponse_email(ctx context.Co
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserUpdateResponse_password(ctx context.Context, field graphql.CollectedField, obj *model.UserUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserUpdateResponse_password(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.Password, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserUpdateResponse_password(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserUpdateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserUpdateResponse_adminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.UserUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserUpdateResponse_adminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.AdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*string)
-	fc.Result = res
-	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserUpdateResponse_adminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserUpdateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _UserUpdateResponse_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField, obj *model.UserUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_UserUpdateResponse_changedAdminAssignedPassword(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.ChangedAdminAssignedPassword, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.(*bool)
-	fc.Result = res
-	return ec.marshalOBoolean2ᚖbool(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_UserUpdateResponse_changedAdminAssignedPassword(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "UserUpdateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Boolean does not have child fields")
 		},
 	}
 	return fc, nil
@@ -7380,7 +6962,7 @@ func (ec *executionContext) unmarshalInputUserCreateInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"employeeID", "name", "email", "password", "adminAssignedPassword", "changedAdminAssignedPassword", "role"}
+	fieldsInOrder := [...]string{"employeeID", "name", "email", "password", "role"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7410,25 +6992,11 @@ func (ec *executionContext) unmarshalInputUserCreateInput(ctx context.Context, o
 			it.Email = data
 		case "password":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("password"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.Password = data
-		case "adminAssignedPassword":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("adminAssignedPassword"))
 			data, err := ec.unmarshalNString2string(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.AdminAssignedPassword = data
-		case "changedAdminAssignedPassword":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("changedAdminAssignedPassword"))
-			data, err := ec.unmarshalNBoolean2bool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ChangedAdminAssignedPassword = data
+			it.Password = data
 		case "role":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("role"))
 			data, err := ec.unmarshalNRole2dataᚑmanagerᚋgraphᚋmodelᚐRole(ctx, v)
@@ -7449,7 +7017,7 @@ func (ec *executionContext) unmarshalInputUserUpdateInput(ctx context.Context, o
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"employeeID", "name", "email", "password", "adminAssignedPassword", "changedAdminAssignedPassword", "role"}
+	fieldsInOrder := [...]string{"employeeID", "name", "email", "password", "role"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7484,20 +7052,6 @@ func (ec *executionContext) unmarshalInputUserUpdateInput(ctx context.Context, o
 				return it, err
 			}
 			it.Password = data
-		case "adminAssignedPassword":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("adminAssignedPassword"))
-			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.AdminAssignedPassword = data
-		case "changedAdminAssignedPassword":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("changedAdminAssignedPassword"))
-			data, err := ec.unmarshalOBoolean2ᚖbool(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.ChangedAdminAssignedPassword = data
 		case "role":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("role"))
 			data, err := ec.unmarshalORole2ᚖdataᚑmanagerᚋgraphᚋmodelᚐRole(ctx, v)
@@ -8222,16 +7776,6 @@ func (ec *executionContext) _User(ctx context.Context, sel ast.SelectionSet, obj
 			}
 		case "password":
 			out.Values[i] = ec._User_password(ctx, field, obj)
-		case "adminAssignedPassword":
-			out.Values[i] = ec._User_adminAssignedPassword(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
-		case "changedAdminAssignedPassword":
-			out.Values[i] = ec._User_changedAdminAssignedPassword(ctx, field, obj)
-			if out.Values[i] == graphql.Null {
-				out.Invalids++
-			}
 		case "role":
 			out.Values[i] = ec._User_role(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -8298,12 +7842,6 @@ func (ec *executionContext) _UserCreateResponse(ctx context.Context, sel ast.Sel
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "password":
-			out.Values[i] = ec._UserCreateResponse_password(ctx, field, obj)
-		case "adminAssignedPassword":
-			out.Values[i] = ec._UserCreateResponse_adminAssignedPassword(ctx, field, obj)
-		case "changedAdminAssignedPassword":
-			out.Values[i] = ec._UserCreateResponse_changedAdminAssignedPassword(ctx, field, obj)
 		case "role":
 			out.Values[i] = ec._UserCreateResponse_role(ctx, field, obj)
 			if out.Values[i] == graphql.Null {
@@ -8409,12 +7947,6 @@ func (ec *executionContext) _UserUpdateResponse(ctx context.Context, sel ast.Sel
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "password":
-			out.Values[i] = ec._UserUpdateResponse_password(ctx, field, obj)
-		case "adminAssignedPassword":
-			out.Values[i] = ec._UserUpdateResponse_adminAssignedPassword(ctx, field, obj)
-		case "changedAdminAssignedPassword":
-			out.Values[i] = ec._UserUpdateResponse_changedAdminAssignedPassword(ctx, field, obj)
 		case "role":
 			out.Values[i] = ec._UserUpdateResponse_role(ctx, field, obj)
 			if out.Values[i] == graphql.Null {

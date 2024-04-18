@@ -49,7 +49,7 @@ type ProblemCategoryCreateInput struct {
 }
 
 type ProblemCategoryDeleteResponse struct {
-	ID string `bson:"_id" json:"id"`
+	ID string `json:"id"`
 }
 
 type ProblemCategoryUpdateInput struct {
@@ -110,39 +110,32 @@ type Query struct {
 }
 
 type User struct {
-	ID                           string  `bson:"_id" json:"id"`
-	EmployeeID                   string  `json:"employeeID"`
-	Name                         string  `json:"name"`
-	Email                        string  `json:"email"`
-	Password                     *string `json:"password,omitempty"`
-	AdminAssignedPassword        string  `json:"adminAssignedPassword"`
-	ChangedAdminAssignedPassword bool    `json:"changedAdminAssignedPassword"`
-	Role                         Role    `json:"role"`
-	CreatedAt                    string  `json:"createdAt"`
-	UpdatedAt                    *string `json:"updatedAt,omitempty"`
+	ID         string  `bson:"_id" json:"id"`
+	EmployeeID string  `json:"employeeID"`
+	Name       string  `json:"name"`
+	Email      string  `json:"email"`
+	Password   *string `json:"password,omitempty"`
+	Role       Role    `json:"role"`
+	CreatedAt  string  `json:"createdAt"`
+	UpdatedAt  *string `json:"updatedAt,omitempty"`
 }
 
 type UserCreateInput struct {
-	EmployeeID                   string  `json:"employeeID"`
-	Name                         string  `json:"name"`
-	Email                        string  `json:"email"`
-	Password                     *string `json:"password,omitempty"`
-	AdminAssignedPassword        string  `json:"adminAssignedPassword"`
-	ChangedAdminAssignedPassword bool    `json:"changedAdminAssignedPassword"`
-	Role                         Role    `json:"role"`
+	EmployeeID string `json:"employeeID"`
+	Name       string `json:"name"`
+	Email      string `json:"email"`
+	Password   string `json:"password"`
+	Role       Role   `json:"role"`
 }
 
 type UserCreateResponse struct {
-	ID                           string  `bson:"_id" json:"id"`
-	EmployeeID                   string  `json:"employeeID"`
-	Name                         string  `json:"name"`
-	Email                        string  `json:"email"`
-	Password                     *string `json:"password,omitempty"`
-	AdminAssignedPassword        *string `json:"adminAssignedPassword,omitempty"`
-	ChangedAdminAssignedPassword *bool   `json:"changedAdminAssignedPassword,omitempty"`
-	Role                         Role    `json:"role"`
-	CreatedAt                    string  `json:"createdAt"`
-	UpdatedAt                    *string `json:"updatedAt,omitempty"`
+	ID         string  `bson:"_id" json:"id"`
+	EmployeeID string  `json:"employeeID"`
+	Name       string  `json:"name"`
+	Email      string  `json:"email"`
+	Role       Role    `json:"role"`
+	CreatedAt  string  `json:"createdAt"`
+	UpdatedAt  *string `json:"updatedAt,omitempty"`
 }
 
 type UserDeleteResponse struct {
@@ -150,26 +143,21 @@ type UserDeleteResponse struct {
 }
 
 type UserUpdateInput struct {
-	EmployeeID                   *string `json:"employeeID,omitempty"`
-	Name                         *string `json:"name,omitempty"`
-	Email                        *string `json:"email,omitempty"`
-	Password                     *string `json:"password,omitempty"`
-	AdminAssignedPassword        *string `json:"adminAssignedPassword,omitempty"`
-	ChangedAdminAssignedPassword *bool   `json:"changedAdminAssignedPassword,omitempty"`
-	Role                         *Role   `json:"role,omitempty"`
+	EmployeeID *string `json:"employeeID,omitempty"`
+	Name       *string `json:"name,omitempty"`
+	Email      *string `json:"email,omitempty"`
+	Password   *string `json:"password,omitempty"`
+	Role       *Role   `json:"role,omitempty"`
 }
 
 type UserUpdateResponse struct {
-	ID                           string  `bson:"_id" json:"id"`
-	EmployeeID                   string  `json:"employeeID"`
-	Name                         string  `json:"name"`
-	Email                        string  `json:"email"`
-	Password                     *string `json:"password,omitempty"`
-	AdminAssignedPassword        *string `json:"adminAssignedPassword,omitempty"`
-	ChangedAdminAssignedPassword *bool   `json:"changedAdminAssignedPassword,omitempty"`
-	Role                         Role    `json:"role"`
-	CreatedAt                    string  `json:"createdAt"`
-	UpdatedAt                    *string `json:"updatedAt,omitempty"`
+	ID         string  `bson:"_id" json:"id"`
+	EmployeeID string  `json:"employeeID"`
+	Name       string  `json:"name"`
+	Email      string  `json:"email"`
+	Role       Role    `json:"role"`
+	CreatedAt  string  `json:"createdAt"`
+	UpdatedAt  *string `json:"updatedAt,omitempty"`
 }
 
 type Difficulty string
