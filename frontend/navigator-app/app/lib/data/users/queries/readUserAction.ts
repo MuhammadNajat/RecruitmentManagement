@@ -20,8 +20,6 @@ export async function readUser(id: String) {
           name
           email
           password
-          adminAssignedPassword
-          changedAdminAssignedPassword
           role
           createdAt
           updatedAt
@@ -58,8 +56,6 @@ export async function readUsers() {
             name
             email
             password
-            adminAssignedPassword
-            changedAdminAssignedPassword
             role
             createdAt
             updatedAt

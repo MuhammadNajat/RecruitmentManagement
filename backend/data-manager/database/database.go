@@ -61,7 +61,7 @@ func (database database) CreateUser(input model.UserCreateInput) *model.UserCrea
 	formattedTime := currentTime.Format("2006-01-02 15:04:05.000000000")
 
 	insertedUser, error := userCollection.InsertOne(ctx,
-		bson.M{"employeeID": input.EmployeeID, "name": input.Name, "email": input.Email, "role": input.Role, "password": input.Password, "adminAssignedPassword": input.AdminAssignedPassword, "changedAdminAssignedPassword": input.ChangedAdminAssignedPassword, "createdAt": formattedTime, "updatedAt": ""})
+		bson.M{"employeeID": input.EmployeeID, "name": input.Name, "email": input.Email, "role": input.Role, "password": input.Password, "createdAt": formattedTime, "updatedAt": ""})
 
 	fmt.Println(">>> >>> Inserted Data:", insertedUser)
 
@@ -72,7 +72,7 @@ func (database database) CreateUser(input model.UserCreateInput) *model.UserCrea
 	}
 
 	insertedUserID := insertedUser.InsertedID.(primitive.ObjectID).Hex()
-	user := model.UserCreateResponse{ID: insertedUserID, EmployeeID: input.EmployeeID, Name: input.Name, Email: input.Email, Role: input.Role, Password: input.Password, AdminAssignedPassword: &input.AdminAssignedPassword, ChangedAdminAssignedPassword: &input.ChangedAdminAssignedPassword, CreatedAt: formattedTime, UpdatedAt: nil}
+	user := model.UserCreateResponse{ID: insertedUserID, EmployeeID: input.EmployeeID, Name: input.Name, Email: input.Email, Role: input.Role, CreatedAt: formattedTime, UpdatedAt: nil}
 	return &user
 }
 
@@ -135,14 +135,6 @@ func (database database) UpdateUser(id string, input model.UserUpdateInput) *mod
 	}
 	if input.Password != nil {
 		userUpdateInfo["password"] = input.Password
-		//userUpdateInfo["changedAdminAssignedPassword"] = true
-	}
-	if input.AdminAssignedPassword != nil {
-		userUpdateInfo["adminAssignedPassword"] = input.AdminAssignedPassword
-		//userUpdateInfo["changedAdminAssignedPassword"] = true
-	}
-	if input.ChangedAdminAssignedPassword != nil {
-		userUpdateInfo["changedAdminAssignedPassword"] = input.ChangedAdminAssignedPassword
 	}
 	if input.Role != nil {
 		userUpdateInfo["role"] = input.Role

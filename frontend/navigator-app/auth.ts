@@ -74,8 +74,7 @@ export const { auth, signIn, signOut } = NextAuth({
                       return null;
                     console.log(">>> User found:\n", user);
                     console.log(">>>email:", email, ", password:", password);
-                    let passwordsMatch = !user.changedAdminAssignedPassword && user.adminAssignedPassword === password;
-                    passwordsMatch = !passwordsMatch? await bcrypt.compare(password, user.password) : passwordsMatch;
+                    const passwordsMatch = await bcrypt.compare(password, user.password);
 
                     if (passwordsMatch)
                       return user;

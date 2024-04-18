@@ -52,18 +52,6 @@ export default async function Users() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                      Admin-assigned Password
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
-                      Changed Admin-assigned Password?
-                    </th>
-                    <th
-                      scope="col"
-                      className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                    >
                       Created at
                     </th>
                     <th scope="col" className="relative px-6 py-3">
@@ -93,12 +81,6 @@ export default async function Users() {
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.role}
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.adminAssignedPassword}
-                      </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
-                        {user.changedAdminAssignedPassword ? "Yes" : "No"}
                       </td>
                       <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.createdAt.slice(0, 19)}
