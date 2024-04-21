@@ -340,7 +340,7 @@ func (database database) CreateProblem(input model.ProblemCreateInput) *model.Pr
 		bson.M{
 			"statement":           input.Statement,
 			"image":               input.Image,
-			"tags":                input.Tags,
+			"tagIDs":              input.TagIDs,
 			"difficulty":          input.Difficulty,
 			"status":              input.Status,
 			"authorUserID":        input.AuthorUserID,
@@ -363,7 +363,7 @@ func (database database) CreateProblem(input model.ProblemCreateInput) *model.Pr
 		ID:                  insertedProblemID,
 		Statement:           input.Statement,
 		Image:               input.Image,
-		Tags:                input.Tags,
+		TagIDs:              input.TagIDs,
 		Difficulty:          input.Difficulty,
 		Status:              input.Status,
 		AuthorUserID:        input.AuthorUserID,
@@ -430,8 +430,8 @@ func (database database) UpdateProblem(id string, input model.ProblemUpdateInput
 	if input.Image != nil {
 		categoryUpdateInfo["image"] = input.Image
 	}
-	if input.Tags != nil {
-		categoryUpdateInfo["tags"] = input.Tags
+	if input.TagIDs != nil {
+		categoryUpdateInfo["tagIDs"] = input.TagIDs
 	}
 	if input.Difficulty != nil {
 		categoryUpdateInfo["difficulty"] = input.Difficulty
@@ -485,8 +485,8 @@ func (database database) DeleteProblem(id string) *model.ProblemDeleteResponse {
 
 	_id, _ := primitive.ObjectIDFromHex(id)
 	filter := bson.M{"_id": _id}
-	var user model.Problem
-	if errInSearching := problems.FindOne(ctx, filter).Decode(&user); errInSearching != nil {
+	var problem model.Problem
+	if errInSearching := problems.FindOne(ctx, filter).Decode(&problem); errInSearching != nil {
 		fmt.Println("!!! Error in DeleteProblem (No problem found)")
 		return nil
 	}
@@ -502,4 +502,131 @@ func (database database) DeleteProblem(id string) *model.ProblemDeleteResponse {
 
 /***
 PROBLEM CRUD ends
+***/
+
+/***
+TAG CRUD Starts
+***/
+
+func (database database) CreateTag(input model.TagCreateInput) *model.TagCreateResponse {
+	tags := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	insertedTag, error := tags.InsertOne(ctx,
+		bson.M{"name": input.Name})
+
+	fmt.Println(">>> >>> Inserted Tag:", insertedTag)
+
+	if error != nil {
+		fmt.Println("Error in CreateTag")
+		return nil
+		///log.Fatal(error)
+	}
+
+	insertedTagID := insertedTag.InsertedID.(primitive.ObjectID).Hex()
+	tag := model.TagCreateResponse{ID: insertedTagID, Name: input.Name}
+	return &tag
+}
+
+func (database database) GetTags() []*model.Tag {
+	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	var tags []*model.Tag
+	cursor, error := tagCollection.Find(ctx, bson.D{})
+	if error != nil {
+		fmt.Println("Error in GetTags")
+		return nil
+		///log.Fatal(error)
+	}
+
+	if error = cursor.All(context.TODO(), &tags); error != nil {
+		panic(error)
+	}
+
+	return tags
+}
+
+func (database database) GetTag(id string) *model.Tag {
+	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//defer recoverFunc()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	//filter := bson.M{"_id": _id}
+	filter := bson.M{"_id": _id}
+
+	var tag model.Tag
+	err := tagCollection.FindOne(ctx, filter).Decode(&tag)
+	if err != nil {
+		fmt.Println("Error in GetTag")
+		return nil
+		/////log.Fatal(err)
+	}
+	return &tag
+}
+
+func (database database) UpdateTag(id string, input model.TagUpdateInput) *model.TagUpdateResponse {
+	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	tagUpdateInfo := bson.M{}
+
+	if input.Name != nil {
+		tagUpdateInfo["name"] = input.Name
+	}
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+
+	var tag model.Tag
+	if errInSearching := tagCollection.FindOne(ctx, filter).Decode(&tag); errInSearching != nil {
+		fmt.Println("!!! Error in UpdateTag (No tag found)")
+		return nil
+	}
+
+	updateCommand := bson.M{"$set": tagUpdateInfo}
+
+	results := tagCollection.FindOneAndUpdate(ctx, filter, updateCommand, options.FindOneAndUpdate().SetReturnDocument(1))
+
+	var tagUpdateResponse model.TagUpdateResponse
+
+	if err := results.Decode(&tagUpdateResponse); err != nil {
+		fmt.Println("Error in UpdateTag")
+		return nil
+		///log.Fatal(err)
+	}
+
+	return &tagUpdateResponse
+}
+
+func (database database) DeleteTag(id string) *model.TagDeleteResponse {
+	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"_id": _id}
+	var tag model.Tag
+	if errInSearching := tagCollection.FindOne(ctx, filter).Decode(&tag); errInSearching != nil {
+		fmt.Println("!!! Error in DeleteTag (No tag found)")
+		return nil
+	}
+
+	_, errInDeleting := tagCollection.DeleteOne(ctx, filter)
+	if errInDeleting != nil {
+		fmt.Println("!!! Error in DeleteTag")
+		return nil
+		///log.Fatal(err)
+	}
+	return &model.TagDeleteResponse{ID: id}
+}
+
+/***
+TAG CRUD Ends
 ***/

@@ -132,7 +132,7 @@ type Problem {
   _id : ID!
   statement : String!
   image : Upload
-  tags : [String!]
+  tagIDs : [ID!]
   difficulty : Difficulty!
   status : Status!
   authorUserID : ID!
@@ -147,7 +147,7 @@ type Problem {
 input ProblemCreateInput {
   statement : String!
   image : Upload
-  tags : [String!]
+  tagIDs : [ID!]
   difficulty : Difficulty!
   status : Status!
   authorUserID : ID!
@@ -159,7 +159,7 @@ input ProblemCreateInput {
 input ProblemUpdateInput {
   statement : String
   image : Upload
-  tags : [String!]
+  tagIDs : [ID!]
   difficulty : Difficulty
   status : Status
   authorUserID : ID
@@ -172,7 +172,7 @@ type ProblemUpdateResponse {
   id : ID!
   statement : String!
   image : Upload
-  tags : [String!]
+  tagIDs : [String!]
   difficulty : Difficulty!
   status : Status!
   authorUserID : ID!
@@ -184,6 +184,40 @@ type ProblemUpdateResponse {
 }
 
 type ProblemDeleteResponse {
+  id : String!
+}
+
+
+
+
+
+
+
+
+type Tag {
+  _id : ID!
+  name : String!
+}
+
+input TagCreateInput {
+  name : String!
+}
+
+type TagCreateResponse {
+  id : ID!
+  name : String!
+}
+
+input TagUpdateInput {
+  name : String
+}
+
+type TagUpdateResponse {
+  id : ID!
+  name : String!
+}
+
+type TagDeleteResponse {
   id : String!
 }
 
@@ -206,6 +240,9 @@ type Query {
 
   getProblem(id : ID!) : Problem!
   getProblems : [Problem!]!
+
+  getTag(id : ID!) : Tag!
+  getTags : [Tag!]!
 }
 
 type Mutation {
@@ -230,4 +267,12 @@ type Mutation {
   updateProblem(id : ID!, input : ProblemUpdateInput!) : ProblemUpdateResponse!
   
   deleteProblem(id : ID!) : ProblemDeleteResponse!
+
+
+  
+  createTag(input : TagCreateInput!) : TagCreateResponse!
+
+  updateTag(id : ID!, input : TagUpdateInput!) : TagUpdateResponse!
+
+  deleteTag(id : ID!) : TagDeleteResponse!
 }

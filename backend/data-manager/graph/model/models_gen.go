@@ -26,7 +26,7 @@ type Problem struct {
 	ID                  string          `bson:"_id" json:"id"`
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags,omitempty"`
+	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
 	AuthorUserID        string          `json:"authorUserID"`
@@ -49,7 +49,7 @@ type ProblemCategoryCreateInput struct {
 }
 
 type ProblemCategoryDeleteResponse struct {
-	ID string `json:"id"`
+	ID string `bson:"_id" json:"id"`
 }
 
 type ProblemCategoryUpdateInput struct {
@@ -66,7 +66,7 @@ type ProblemCategoryUpdateResponse struct {
 type ProblemCreateInput struct {
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags,omitempty"`
+	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
 	AuthorUserID        string          `json:"authorUserID"`
@@ -82,7 +82,7 @@ type ProblemDeleteResponse struct {
 type ProblemUpdateInput struct {
 	Statement           *string         `json:"statement,omitempty"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags,omitempty"`
+	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          *Difficulty     `json:"difficulty,omitempty"`
 	Status              *Status         `json:"status,omitempty"`
 	AuthorUserID        *string         `json:"authorUserID,omitempty"`
@@ -95,7 +95,7 @@ type ProblemUpdateResponse struct {
 	ID                  string          `bson:"_id" json:"id"`
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
-	Tags                []string        `json:"tags,omitempty"`
+	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
 	AuthorUserID        string          `json:"authorUserID"`
@@ -107,6 +107,33 @@ type ProblemUpdateResponse struct {
 }
 
 type Query struct {
+}
+
+type Tag struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
+}
+
+type TagCreateInput struct {
+	Name string `json:"name"`
+}
+
+type TagCreateResponse struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
+}
+
+type TagDeleteResponse struct {
+	ID string `bson:"_id" json:"id"`
+}
+
+type TagUpdateInput struct {
+	Name *string `json:"name,omitempty"`
+}
+
+type TagUpdateResponse struct {
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
 }
 
 type User struct {

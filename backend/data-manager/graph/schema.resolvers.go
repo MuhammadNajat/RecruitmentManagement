@@ -56,6 +56,21 @@ func (r *mutationResolver) DeleteProblem(ctx context.Context, id string) (*model
 	return connection.DeleteProblem(id), nil
 }
 
+// CreateTag is the resolver for the createTag field.
+func (r *mutationResolver) CreateTag(ctx context.Context, input model.TagCreateInput) (*model.TagCreateResponse, error) {
+	return connection.CreateTag(input), nil
+}
+
+// UpdateTag is the resolver for the updateTag field.
+func (r *mutationResolver) UpdateTag(ctx context.Context, id string, input model.TagUpdateInput) (*model.TagUpdateResponse, error) {
+	return connection.UpdateTag(id, input), nil
+}
+
+// DeleteTag is the resolver for the deleteTag field.
+func (r *mutationResolver) DeleteTag(ctx context.Context, id string) (*model.TagDeleteResponse, error) {
+	return connection.DeleteTag(id), nil
+}
+
 // GetUser is the resolver for the getUser field.
 func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
 	return connection.GetUser(id), nil
@@ -84,6 +99,16 @@ func (r *queryResolver) GetProblem(ctx context.Context, id string) (*model.Probl
 // GetProblems is the resolver for the getProblems field.
 func (r *queryResolver) GetProblems(ctx context.Context) ([]*model.Problem, error) {
 	return connection.GetProblems(), nil
+}
+
+// GetTag is the resolver for the getTag field.
+func (r *queryResolver) GetTag(ctx context.Context, id string) (*model.Tag, error) {
+	return connection.GetTag(id), nil
+}
+
+// GetTags is the resolver for the getTags field.
+func (r *queryResolver) GetTags(ctx context.Context) ([]*model.Tag, error) {
+	return connection.GetTags(), nil
 }
 
 // Mutation returns MutationResolver implementation.

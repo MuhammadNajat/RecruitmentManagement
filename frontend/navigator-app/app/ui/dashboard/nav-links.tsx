@@ -16,6 +16,7 @@ const links = [
   { name: 'Problem Categories', href: '/admin/problem-categories', icon: DocumentDuplicateIcon },
   { name: 'Create Problem', href: '/admin/problems/create', icon: DocumentDuplicateIcon },
   { name: 'Problem Bank', href: '/admin/problems', icon: DocumentDuplicateIcon },
+  { name: 'Tags', href: '/admin/tags', icon: DocumentDuplicateIcon },
   { name: 'User Creation', href: '/admin/users/create', icon: UserGroupIcon },
   { name: 'Users', href: '/admin/users', icon: UserGroupIcon },
   { name: 'Users\' Stats', href: '/admin/users/stats', icon: UserGroupIcon }

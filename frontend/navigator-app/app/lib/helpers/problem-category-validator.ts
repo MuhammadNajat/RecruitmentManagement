@@ -1,4 +1,4 @@
-export let invalidChars = "<>\'\"@%&{}[]()=^";
+export let invalidChars = "<>\'\"@%&{}[]=";
 
 export function isInvalid(text: String) {
     var alphabetRegExp = /[a-zA-Z]/g;

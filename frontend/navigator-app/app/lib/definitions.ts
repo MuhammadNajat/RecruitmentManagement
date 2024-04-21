@@ -41,3 +41,8 @@ export type Problem = {
   createdAt: string;
   updatedAt: string;
 }
+
+export type Tag = {
+  _id: string;
+  name: string;
+}
