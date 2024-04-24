@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { gql, GraphQLClient } from 'graphql-request';
 import { checkNameValidity } from '@/app/lib/helpers/tag-validator';
+import { getTagByName } from '../queries/readTagAction';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -23,7 +24,17 @@ export async function createTag(prevState: string | undefined, formData: FormDat
     return inputValidity[1].toString();
   }
 
-  await insertData(name);
+  const trimmedName = name.trim();
+
+  const tagWithInputName = await getTagByName(trimmedName);
+  console.log(">>> >>> >>> tagWithInputName", tagWithInputName);
+
+  if(tagWithInputName != null) {
+    const response = "A tag with the same name exists.";
+    return response;
+  }
+
+  await insertData(trimmedName);
 
   revalidatePath('/admin/tags');
 

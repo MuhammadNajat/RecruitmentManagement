@@ -16,13 +16,6 @@ export default function EditProblemCategoryForm({
     //const updateUserWithId = updateUser.bind(null, user.employeeID);
     const [errorMessage, dispatch] = useFormState(updateCategory, undefined);
 
-    let subCategories = "";
-    let length = category.subCategories.length;
-    for (let i = 0; i < length; i++) {
-        subCategories += (category.subCategories[i]);
-        subCategories += i == (length - 1) ? "" : ",";
-    }
-
     return (
         <form id="categoryCreateForm" action={dispatch} className="w-2/3">
             <div className="rounded-md bg-gray-50 p-4 md:p-6">
@@ -58,25 +51,6 @@ export default function EditProblemCategoryForm({
                                 defaultValue={category.name}
                                 minLength={2}
                                 maxLength={50}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                <div className="mb-4">
-                    <label htmlFor="subCategories" className="mb-2 block text-sm font-medium">
-                        Sub-categories (seperated by comma)
-                    </label>
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <input
-                                id="subCategories"
-                                name="subCategories"
-                                type="text"
-                                placeholder="Array, Tree, Sub-category 3, Sub-category 4"
-                                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
-                                defaultValue={subCategories}
-                                maxLength={220}
                             />
                         </div>
                     </div>

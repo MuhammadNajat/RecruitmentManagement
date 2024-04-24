@@ -14,7 +14,6 @@ export async function getProblemCategories() {
       getProblemCategories {
         _id
         name
-        subCategories
       }
     }
   `;
@@ -29,7 +28,7 @@ export async function getProblemCategories() {
   }
 }
 
-export async function getProblemCategory(id: String) {
+export async function getProblemCategoryByID(id: String) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -37,11 +36,10 @@ export async function getProblemCategory(id: String) {
   });
 
   const query = gql`
-    query GetProblemCategory($id : ID!) {
-      getProblemCategory(id : $id) {
+    query GetProblemCategoryByID($id : ID!) {
+      getProblemCategoryByID(id : $id) {
         _id
         name
-        subCategories
       }
     }
   `;
@@ -58,5 +56,36 @@ export async function getProblemCategory(id: String) {
     return results;
   } catch (error) {
     console.error(`Error Query (GetProblemCategory${id}):`, error);
+  }
+}
+
+export async function getProblemCategoryByName(name: String) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+    query GetProblemCategoryByName($name : String!) {
+      getProblemCategoryByName(name : $name) {
+        _id
+        name
+      }
+    }
+  `;
+
+  const variables = {
+    name: name,
+  };
+
+
+  try {
+    const results = await graphQLClient.request(query, variables);
+    console.log(`*** *** Query (GetProblemCategoryByName${name}) Results:`);
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error(`Error Query (GetProblemCategoryByName${name}):`, error);
   }
 }

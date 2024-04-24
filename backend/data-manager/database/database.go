@@ -96,7 +96,7 @@ func (database database) GetUsers() []*model.User {
 	return users
 }
 
-func (database database) GetUser(id string) *model.User {
+func (database database) GetUserByID(id string) *model.User {
 	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -110,10 +110,89 @@ func (database database) GetUser(id string) *model.User {
 	var user model.User
 	err := userCollection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
-		fmt.Println("Error in GetUser")
+		fmt.Println("Error in GetUserByID")
 		return nil
 		/////log.Fatal(err)
 	}
+
+	return &user
+
+	/*var response = model.UserQueryResponse{
+		ID:         user.ID,
+		EmployeeID: user.EmployeeID,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
+	}
+
+	return &response*/
+}
+
+func (database database) GetUserByEmployeeID(employeeID string) *model.User {
+	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//defer recoverFunc()
+
+	//_id, _ := primitive.ObjectIDFromHex(id)
+	//filter := bson.M{"_id": _id}
+	filter := bson.M{"employeeID": employeeID}
+
+	var user model.User
+	err := userCollection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		fmt.Println("Error in GetUserByEmployeeID")
+		return nil
+		/////log.Fatal(err)
+	}
+
+	/*var response = model.UserQueryResponse{
+		ID:         user.ID,
+		EmployeeID: user.EmployeeID,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
+	}
+
+	return &response*/
+	return &user
+}
+
+func (database database) GetUserByEmail(email string) *model.User {
+	userCollection := database.client.Database("RecruitmentManagement").Collection("users")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//defer recoverFunc()
+
+	//_id, _ := primitive.ObjectIDFromHex(id)
+	//filter := bson.M{"_id": _id}
+	filter := bson.M{"email": email}
+
+	var user model.User
+	err := userCollection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		fmt.Println("Error in GetUserByEmail")
+		return nil
+		/////log.Fatal(err)
+	}
+
+	/*var response = model.UserQueryResponse{
+		ID:         user.ID,
+		EmployeeID: user.EmployeeID,
+		Name:       user.Name,
+		Email:      user.Email,
+		Role:       user.Role,
+		CreatedAt:  user.CreatedAt,
+		UpdatedAt:  user.UpdatedAt,
+	}
+
+	return &response*/
 	return &user
 }
 
@@ -206,7 +285,7 @@ func (database database) CreateProblemCategory(input model.ProblemCategoryCreate
 	defer cancel()
 
 	insertedCategory, error := categories.InsertOne(ctx,
-		bson.M{"name": input.Name, "subCategories": input.SubCategories})
+		bson.M{"name": input.Name})
 
 	fmt.Println(">>> >>> Inserted Category:", insertedCategory)
 
@@ -217,7 +296,7 @@ func (database database) CreateProblemCategory(input model.ProblemCategoryCreate
 	}
 
 	insertedCategoryID := insertedCategory.InsertedID.(primitive.ObjectID).Hex()
-	category := model.ProblemCategory{ID: insertedCategoryID, Name: input.Name, SubCategories: input.SubCategories}
+	category := model.ProblemCategory{ID: insertedCategoryID, Name: input.Name}
 	return &category
 }
 
@@ -242,7 +321,7 @@ func (database database) GetProblemCategories() []*model.ProblemCategory {
 	return fetchedCategories
 }
 
-func (database database) GetProblemCategory(id string) *model.ProblemCategory {
+func (database database) GetProblemCategoryByID(id string) *model.ProblemCategory {
 	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -253,7 +332,25 @@ func (database database) GetProblemCategory(id string) *model.ProblemCategory {
 	var fetchedCategory model.ProblemCategory
 	err := categories.FindOne(ctx, filter).Decode(&fetchedCategory)
 	if err != nil {
-		fmt.Println("Error in GetProblemCategory")
+		fmt.Println("Error in GetProblemCategoryByID")
+		return nil
+		/////log.Fatal(err)
+	}
+	return &fetchedCategory
+}
+
+func (database database) GetProblemCategoryByName(name string) *model.ProblemCategory {
+	categories := database.client.Database("RecruitmentManagement").Collection("problemCategories")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//_id, _ := primitive.ObjectIDFromHex(id)
+	filter := bson.M{"name": name}
+
+	var fetchedCategory model.ProblemCategory
+	err := categories.FindOne(ctx, filter).Decode(&fetchedCategory)
+	if err != nil {
+		fmt.Println("Error in GetProblemCategoryByName")
 		return nil
 		/////log.Fatal(err)
 	}
@@ -269,9 +366,6 @@ func (database database) UpdateProblemCategory(id string, input model.ProblemCat
 
 	if input.Name != nil {
 		categoryUpdateInfo["name"] = input.Name
-	}
-	if input.SubCategories != nil {
-		categoryUpdateInfo["subCategories"] = input.SubCategories
 	}
 
 	_id, _ := primitive.ObjectIDFromHex(id)
@@ -549,7 +643,7 @@ func (database database) GetTags() []*model.Tag {
 	return tags
 }
 
-func (database database) GetTag(id string) *model.Tag {
+func (database database) GetTagByID(id string) *model.Tag {
 	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -563,7 +657,28 @@ func (database database) GetTag(id string) *model.Tag {
 	var tag model.Tag
 	err := tagCollection.FindOne(ctx, filter).Decode(&tag)
 	if err != nil {
-		fmt.Println("Error in GetTag")
+		fmt.Println("Error in GetTagByID")
+		return nil
+		/////log.Fatal(err)
+	}
+	return &tag
+}
+
+func (database database) GetTagByName(name string) *model.Tag {
+	tagCollection := database.client.Database("RecruitmentManagement").Collection("tags")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+
+	//defer recoverFunc()
+
+	//_id, _ := primitive.ObjectIDFromHex(id)
+	//filter := bson.M{"_id": _id}
+	filter := bson.M{"name": name}
+
+	var tag model.Tag
+	err := tagCollection.FindOne(ctx, filter).Decode(&tag)
+	if err != nil {
+		fmt.Println("Error in GetTagByName")
 		return nil
 		/////log.Fatal(err)
 	}

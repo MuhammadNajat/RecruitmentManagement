@@ -5,7 +5,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import { unstable_noStore as noStore } from 'next/cache';
 import { User } from "@/app/lib/definitions";
 
-export async function readUser(id: String) {
+export async function getUserByID(id: String) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -13,13 +13,12 @@ export async function readUser(id: String) {
   });
 
   const query = gql`
-      query GetUser($id: ID!) {
-        getUser(id: $id) {
+      query GetUserByID($id: ID!) {
+        getUserByID(id: $id) {
           _id
           employeeID
           name
           email
-          password
           role
           createdAt
           updatedAt
@@ -41,7 +40,75 @@ export async function readUser(id: String) {
   }
 }
 
-export async function readUsers() {
+export async function getUserByEmployeeID(employeeID: String) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+    query GetUserByEmployeeID($employeeID: String!) {
+      getUserByEmployeeID(employeeID: $employeeID) {
+        _id
+        employeeID
+        name
+        email
+        role
+      }
+    }
+  `;
+
+  const variables = {
+    employeeID: employeeID,
+  };
+
+  try {
+    const results = await graphQLClient.request(query, variables);
+    console.log("Query (GetUserByEmployeeID) Result:");
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error("Error GetUserByEmployeeID:", error);
+  }
+}
+
+export async function getUserByEmail(email: String) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+    query GetUserByEmail($email: String!) {
+      getUserByEmail(email: $email) {
+        _id
+        employeeID
+        name
+        email
+        role
+        createdAt
+        updatedAt
+      }
+    }
+  `;
+
+  const variables = {
+    email: email,
+  };
+
+  try {
+    const results = await graphQLClient.request(query, variables);
+    console.log("Query (GetUserByEmail) Result:");
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error("Error GetUserByEmail:", error);
+  }
+}
+
+export async function getUsers() {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -55,7 +122,6 @@ export async function readUsers() {
             employeeID
             name
             email
-            password
             role
             createdAt
             updatedAt
@@ -82,7 +148,7 @@ export async function fetchFilteredUsers(
   const offset = (currentPage - 1) * ITEMS_PER_PAGE;
 
   try {
-    let temp: unknown = await readUsers();
+    let temp: unknown = await getUsers();
     const userData = temp as User[];
 
     //@ts-ignore

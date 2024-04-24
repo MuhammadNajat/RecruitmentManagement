@@ -1,14 +1,14 @@
-import { readUsers } from "@/app/lib/data/users/queries/readUserAction"
+import { getUsers } from "@/app/lib/data/users/queries/readUserAction"
 import { lusitana } from '@/app/ui/fonts';
-import { User } from "@/app/lib/definitions";
+import { User, UserQueryResponse } from "@/app/lib/definitions";
 import Link from 'next/link'
 import DeleteComponent from "@/app/ui/users/delete-user";
 
 export default async function Users() {
-  let temp: unknown = await readUsers();
+  let temp: unknown = await getUsers();
   const userData = temp as User[];
-  console.log("&&& &&& userData", userData);
-  //@ts-ignore
+  console.log("&&& &&& userData:", userData);
+  /* //@ts-ignore */
   const users = userData.getUsers;
   console.log("^^^ ^^^ fteched users: ", userData);
 
@@ -54,7 +54,7 @@ export default async function Users() {
                     >
                       Created at
                     </th>
-                    <th scope="col" className="relative px-6 py-3">
+                    <th scope="col" className="relative text-left px-6 py-3">
                       <span className="sr-only">Edit</span>
                     </th>
                     <th scope="col" className="relative px-6 py-3">
@@ -85,21 +85,29 @@ export default async function Users() {
                       <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
                         {user.createdAt.slice(0, 19)}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
 
-                        <Link href={`/admin/users/${encodeURIComponent(user._id)}/edit`} className="text-indigo-600 hover:text-indigo-900">
+                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
+                        <Link href={`/admin/users/${encodeURIComponent(user._id)}/resetPassword`} className="text-indigo-600 hover:text-indigo-900">
+                          Reset Password
+                        </Link>
+                      </td>
+
+                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
+
+                        <Link href={`/admin/users/${encodeURIComponent(user._id)}/edit`}
+                          className="text-indigo-600 hover:text-indigo-900">
                           Edit
                         </Link>
 
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
 
 
                         <DeleteComponent key={user._id} id={user._id} />
 
                         {/*
-                      <Link href={`/admin/users/${encodeURIComponent(user._id)}/delete`} className="text-indigo-600 hover:text-indigo-900">
+                      <Link href={`/admin/users/${encodeURIComponent(user.id)}/delete`} className="text-indigo-600 hover:text-indigo-900">
                         Delete
                       </Link>
                       */}

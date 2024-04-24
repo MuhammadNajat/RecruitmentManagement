@@ -1,25 +1,24 @@
 'use server';
 
-import { INVALID, z } from 'zod';
+import { z } from 'zod';
 //import { sql } from '@vercel/postgres';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
-import { checkNameValidity, checkNamesValidity } from '@/app/lib/helpers/problem-category-validator';
-import { request, gql, GraphQLClient } from 'graphql-request';
+import { checkNameValidity } from '@/app/lib/helpers/problem-category-validator';
+import { gql, GraphQLClient } from 'graphql-request';
+import { getProblemCategoryByName } from '../queries/readProblemCategoryAction';
 
 const FormSchema = z.object({
     id: z.string(),
     name: z.string(),
-    subCategories: z.string(),
 });
 
 const UpdateCategory = FormSchema.omit({/* */ });
 
 export async function updateCategory(prevState: string | undefined, formData: FormData,) {
-    const { id, name, subCategories } = UpdateCategory.parse({
+    const { id, name } = UpdateCategory.parse({
         id: formData.get('id'),
         name: formData.get('name'),
-        subCategories: formData.get('subCategories'),
     });
 
     let categoryNameValidity = checkNameValidity(name);
@@ -30,23 +29,16 @@ export async function updateCategory(prevState: string | undefined, formData: Fo
 
     let trimmedName = name.trim();
 
-    const chunks = subCategories.split(",");
-    console.log("chunks: ", chunks);
+    const categoryWithInputName = await getProblemCategoryByName(trimmedName);
+    console.log(">>> >>> >>> categoryWithInputName", categoryWithInputName);
 
-    let validity = checkNamesValidity(chunks);
-    if (!validity[0]) {
-        console.log("~~~ ~~~Insert valid category name");
-        return validity[1].toString();
+    if (categoryWithInputName != null) {
+        const response = "A category with the same name exists.";
+        return response;
     }
 
-
-    let trimmedChunks: string[] = []
-    chunks.forEach((item, index) => {
-        trimmedChunks.push(item.trim());
-    })
-
     try {
-        await updateData(id, trimmedName, trimmedChunks);
+        await updateData(id, trimmedName);
     } catch (error) {
         console.error("!!! !!! Error updating category:", error);
     }
@@ -56,7 +48,7 @@ export async function updateCategory(prevState: string | undefined, formData: Fo
     redirect('/admin/problem-categories');
 }
 
-async function updateData(id: string, name: string, subCategories: Array<string>) {
+async function updateData(id: string, name: string) {
     console.log("Enetered: updateProblemCategoryAction->updateData, id = ", id);
     const graphQLClient = new GraphQLClient('http://localhost:8080/query');
 
@@ -64,7 +56,6 @@ async function updateData(id: string, name: string, subCategories: Array<string>
         mutation UpdateProblemCategory($id : ID!, $input : ProblemCategoryUpdateInput!) {
             updateProblemCategory(id : $id, input : $input) {
                 name
-                subCategories
             }
         }
     `;
@@ -72,10 +63,8 @@ async function updateData(id: string, name: string, subCategories: Array<string>
         id: id,
         input: {
             name: name,
-            subCategories: subCategories
         }
     };
-
 
     try {
         const results = await graphQLClient.request(query, variables);

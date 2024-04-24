@@ -87,9 +87,8 @@ type ComplexityRoot struct {
 	}
 
 	ProblemCategory struct {
-		ID            func(childComplexity int) int
-		Name          func(childComplexity int) int
-		SubCategories func(childComplexity int) int
+		ID   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 
 	ProblemCategoryDeleteResponse struct {
@@ -97,9 +96,8 @@ type ComplexityRoot struct {
 	}
 
 	ProblemCategoryUpdateResponse struct {
-		ID            func(childComplexity int) int
-		Name          func(childComplexity int) int
-		SubCategories func(childComplexity int) int
+		ID   func(childComplexity int) int
+		Name func(childComplexity int) int
 	}
 
 	ProblemDeleteResponse struct {
@@ -122,14 +120,18 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetProblem           func(childComplexity int, id string) int
-		GetProblemCategories func(childComplexity int) int
-		GetProblemCategory   func(childComplexity int, id string) int
-		GetProblems          func(childComplexity int) int
-		GetTag               func(childComplexity int, id string) int
-		GetTags              func(childComplexity int) int
-		GetUser              func(childComplexity int, id string) int
-		GetUsers             func(childComplexity int) int
+		GetProblem               func(childComplexity int, id string) int
+		GetProblemCategories     func(childComplexity int) int
+		GetProblemCategoryByID   func(childComplexity int, id string) int
+		GetProblemCategoryByName func(childComplexity int, name string) int
+		GetProblems              func(childComplexity int) int
+		GetTagByID               func(childComplexity int, id string) int
+		GetTagByName             func(childComplexity int, name string) int
+		GetTags                  func(childComplexity int) int
+		GetUserByEmail           func(childComplexity int, email string) int
+		GetUserByEmployeeID      func(childComplexity int, employeeID string) int
+		GetUserByID              func(childComplexity int, id string) int
+		GetUsers                 func(childComplexity int) int
 	}
 
 	Tag struct {
@@ -202,13 +204,17 @@ type MutationResolver interface {
 	DeleteTag(ctx context.Context, id string) (*model.TagDeleteResponse, error)
 }
 type QueryResolver interface {
-	GetUser(ctx context.Context, id string) (*model.User, error)
+	GetUserByID(ctx context.Context, id string) (*model.User, error)
+	GetUserByEmployeeID(ctx context.Context, employeeID string) (*model.User, error)
+	GetUserByEmail(ctx context.Context, email string) (*model.User, error)
 	GetUsers(ctx context.Context) ([]*model.User, error)
-	GetProblemCategory(ctx context.Context, id string) (*model.ProblemCategory, error)
+	GetProblemCategoryByID(ctx context.Context, id string) (*model.ProblemCategory, error)
+	GetProblemCategoryByName(ctx context.Context, name string) (*model.ProblemCategory, error)
 	GetProblemCategories(ctx context.Context) ([]*model.ProblemCategory, error)
 	GetProblem(ctx context.Context, id string) (*model.Problem, error)
 	GetProblems(ctx context.Context) ([]*model.Problem, error)
-	GetTag(ctx context.Context, id string) (*model.Tag, error)
+	GetTagByID(ctx context.Context, id string) (*model.Tag, error)
+	GetTagByName(ctx context.Context, name string) (*model.Tag, error)
 	GetTags(ctx context.Context) ([]*model.Tag, error)
 }
 
@@ -515,13 +521,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ProblemCategory.Name(childComplexity), true
 
-	case "ProblemCategory.subCategories":
-		if e.complexity.ProblemCategory.SubCategories == nil {
-			break
-		}
-
-		return e.complexity.ProblemCategory.SubCategories(childComplexity), true
-
 	case "ProblemCategoryDeleteResponse.id":
 		if e.complexity.ProblemCategoryDeleteResponse.ID == nil {
 			break
@@ -542,13 +541,6 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 		}
 
 		return e.complexity.ProblemCategoryUpdateResponse.Name(childComplexity), true
-
-	case "ProblemCategoryUpdateResponse.subCategories":
-		if e.complexity.ProblemCategoryUpdateResponse.SubCategories == nil {
-			break
-		}
-
-		return e.complexity.ProblemCategoryUpdateResponse.SubCategories(childComplexity), true
 
 	case "ProblemDeleteResponse.id":
 		if e.complexity.ProblemDeleteResponse.ID == nil {
@@ -660,17 +652,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetProblemCategories(childComplexity), true
 
-	case "Query.getProblemCategory":
-		if e.complexity.Query.GetProblemCategory == nil {
+	case "Query.getProblemCategoryByID":
+		if e.complexity.Query.GetProblemCategoryByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getProblemCategory_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getProblemCategoryByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetProblemCategory(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetProblemCategoryByID(childComplexity, args["id"].(string)), true
+
+	case "Query.getProblemCategoryByName":
+		if e.complexity.Query.GetProblemCategoryByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getProblemCategoryByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetProblemCategoryByName(childComplexity, args["name"].(string)), true
 
 	case "Query.getProblems":
 		if e.complexity.Query.GetProblems == nil {
@@ -679,17 +683,29 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetProblems(childComplexity), true
 
-	case "Query.getTag":
-		if e.complexity.Query.GetTag == nil {
+	case "Query.getTagByID":
+		if e.complexity.Query.GetTagByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getTag_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getTagByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetTag(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetTagByID(childComplexity, args["id"].(string)), true
+
+	case "Query.getTagByName":
+		if e.complexity.Query.GetTagByName == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getTagByName_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetTagByName(childComplexity, args["name"].(string)), true
 
 	case "Query.getTags":
 		if e.complexity.Query.GetTags == nil {
@@ -698,17 +714,41 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Query.GetTags(childComplexity), true
 
-	case "Query.getUser":
-		if e.complexity.Query.GetUser == nil {
+	case "Query.getUserByEmail":
+		if e.complexity.Query.GetUserByEmail == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getUser_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getUserByEmail_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetUser(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetUserByEmail(childComplexity, args["email"].(string)), true
+
+	case "Query.getUserByEmployeeID":
+		if e.complexity.Query.GetUserByEmployeeID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getUserByEmployeeID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetUserByEmployeeID(childComplexity, args["employeeID"].(string)), true
+
+	case "Query.getUserByID":
+		if e.complexity.Query.GetUserByID == nil {
+			break
+		}
+
+		args, err := ec.field_Query_getUserByID_args(context.TODO(), rawArgs)
+		if err != nil {
+			return 0, false
+		}
+
+		return e.complexity.Query.GetUserByID(childComplexity, args["id"].(string)), true
 
 	case "Query.getUsers":
 		if e.complexity.Query.GetUsers == nil {
@@ -1290,7 +1330,7 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getProblemCategory_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getProblemCategoryByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1302,6 +1342,21 @@ func (ec *executionContext) field_Query_getProblemCategory_args(ctx context.Cont
 		}
 	}
 	args["id"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getProblemCategoryByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
 	return args, nil
 }
 
@@ -1320,7 +1375,7 @@ func (ec *executionContext) field_Query_getProblem_args(ctx context.Context, raw
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getTag_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTagByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1335,7 +1390,52 @@ func (ec *executionContext) field_Query_getTag_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
-func (ec *executionContext) field_Query_getUser_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+func (ec *executionContext) field_Query_getTagByName_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["name"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("name"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["name"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getUserByEmail_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["email"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("email"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["email"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getUserByEmployeeID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["employeeID"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("employeeID"))
+		arg0, err = ec.unmarshalNString2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["employeeID"] = arg0
+	return args, nil
+}
+
+func (ec *executionContext) field_Query_getUserByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
 	var arg0 string
@@ -1893,8 +1993,6 @@ func (ec *executionContext) fieldContext_Mutation_createProblemCategory(ctx cont
 				return ec.fieldContext_ProblemCategory__id(ctx, field)
 			case "name":
 				return ec.fieldContext_ProblemCategory_name(ctx, field)
-			case "subCategories":
-				return ec.fieldContext_ProblemCategory_subCategories(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ProblemCategory", field.Name)
 		},
@@ -1956,8 +2054,6 @@ func (ec *executionContext) fieldContext_Mutation_updateProblemCategory(ctx cont
 				return ec.fieldContext_ProblemCategoryUpdateResponse_id(ctx, field)
 			case "name":
 				return ec.fieldContext_ProblemCategoryUpdateResponse_name(ctx, field)
-			case "subCategories":
-				return ec.fieldContext_ProblemCategoryUpdateResponse_subCategories(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ProblemCategoryUpdateResponse", field.Name)
 		},
@@ -3035,47 +3131,6 @@ func (ec *executionContext) fieldContext_ProblemCategory_name(ctx context.Contex
 	return fc, nil
 }
 
-func (ec *executionContext) _ProblemCategory_subCategories(ctx context.Context, field graphql.CollectedField, obj *model.ProblemCategory) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ProblemCategory_subCategories(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SubCategories, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	fc.Result = res
-	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ProblemCategory_subCategories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProblemCategory",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
 func (ec *executionContext) _ProblemCategoryDeleteResponse_id(ctx context.Context, field graphql.CollectedField, obj *model.ProblemCategoryDeleteResponse) (ret graphql.Marshaler) {
 	fc, err := ec.fieldContext_ProblemCategoryDeleteResponse_id(ctx, field)
 	if err != nil {
@@ -3196,47 +3251,6 @@ func (ec *executionContext) _ProblemCategoryUpdateResponse_name(ctx context.Cont
 }
 
 func (ec *executionContext) fieldContext_ProblemCategoryUpdateResponse_name(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
-	fc = &graphql.FieldContext{
-		Object:     "ProblemCategoryUpdateResponse",
-		Field:      field,
-		IsMethod:   false,
-		IsResolver: false,
-		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type String does not have child fields")
-		},
-	}
-	return fc, nil
-}
-
-func (ec *executionContext) _ProblemCategoryUpdateResponse_subCategories(ctx context.Context, field graphql.CollectedField, obj *model.ProblemCategoryUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ProblemCategoryUpdateResponse_subCategories(ctx, field)
-	if err != nil {
-		return graphql.Null
-	}
-	ctx = graphql.WithFieldContext(ctx, fc)
-	defer func() {
-		if r := recover(); r != nil {
-			ec.Error(ctx, ec.Recover(ctx, r))
-			ret = graphql.Null
-		}
-	}()
-	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
-		ctx = rctx // use context from middleware stack in children
-		return obj.SubCategories, nil
-	})
-	if err != nil {
-		ec.Error(ctx, err)
-		return graphql.Null
-	}
-	if resTmp == nil {
-		return graphql.Null
-	}
-	res := resTmp.([]string)
-	fc.Result = res
-	return ec.marshalOString2ᚕstringᚄ(ctx, field.Selections, res)
-}
-
-func (ec *executionContext) fieldContext_ProblemCategoryUpdateResponse_subCategories(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ProblemCategoryUpdateResponse",
 		Field:      field,
@@ -3803,8 +3817,8 @@ func (ec *executionContext) fieldContext_ProblemUpdateResponse_updatedAt(ctx con
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getUser(ctx, field)
+func (ec *executionContext) _Query_getUserByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3817,7 +3831,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetUser(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetUserByID(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3834,7 +3848,7 @@ func (ec *executionContext) _Query_getUser(ctx context.Context, field graphql.Co
 	return ec.marshalNUser2ᚖdataᚑmanagerᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getUser(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getUserByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -3869,7 +3883,153 @@ func (ec *executionContext) fieldContext_Query_getUser(ctx context.Context, fiel
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getUser_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getUserByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getUserByEmployeeID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserByEmployeeID(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetUserByEmployeeID(rctx, fc.Args["employeeID"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖdataᚑmanagerᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getUserByEmployeeID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_User__id(ctx, field)
+			case "employeeID":
+				return ec.fieldContext_User_employeeID(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
+			case "role":
+				return ec.fieldContext_User_role(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getUserByEmployeeID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getUserByEmail(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getUserByEmail(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetUserByEmail(rctx, fc.Args["email"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.User)
+	fc.Result = res
+	return ec.marshalNUser2ᚖdataᚑmanagerᚋgraphᚋmodelᚐUser(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getUserByEmail(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_User__id(ctx, field)
+			case "employeeID":
+				return ec.fieldContext_User_employeeID(ctx, field)
+			case "name":
+				return ec.fieldContext_User_name(ctx, field)
+			case "email":
+				return ec.fieldContext_User_email(ctx, field)
+			case "password":
+				return ec.fieldContext_User_password(ctx, field)
+			case "role":
+				return ec.fieldContext_User_role(ctx, field)
+			case "createdAt":
+				return ec.fieldContext_User_createdAt(ctx, field)
+			case "updatedAt":
+				return ec.fieldContext_User_updatedAt(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type User", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getUserByEmail_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -3938,8 +4098,8 @@ func (ec *executionContext) fieldContext_Query_getUsers(ctx context.Context, fie
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getProblemCategory(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getProblemCategory(ctx, field)
+func (ec *executionContext) _Query_getProblemCategoryByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getProblemCategoryByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3952,7 +4112,7 @@ func (ec *executionContext) _Query_getProblemCategory(ctx context.Context, field
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetProblemCategory(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetProblemCategoryByID(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3969,7 +4129,7 @@ func (ec *executionContext) _Query_getProblemCategory(ctx context.Context, field
 	return ec.marshalNProblemCategory2ᚖdataᚑmanagerᚋgraphᚋmodelᚐProblemCategory(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getProblemCategory(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getProblemCategoryByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -3981,8 +4141,6 @@ func (ec *executionContext) fieldContext_Query_getProblemCategory(ctx context.Co
 				return ec.fieldContext_ProblemCategory__id(ctx, field)
 			case "name":
 				return ec.fieldContext_ProblemCategory_name(ctx, field)
-			case "subCategories":
-				return ec.fieldContext_ProblemCategory_subCategories(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ProblemCategory", field.Name)
 		},
@@ -3994,7 +4152,68 @@ func (ec *executionContext) fieldContext_Query_getProblemCategory(ctx context.Co
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getProblemCategory_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getProblemCategoryByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getProblemCategoryByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getProblemCategoryByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetProblemCategoryByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.ProblemCategory)
+	fc.Result = res
+	return ec.marshalNProblemCategory2ᚖdataᚑmanagerᚋgraphᚋmodelᚐProblemCategory(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getProblemCategoryByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_ProblemCategory__id(ctx, field)
+			case "name":
+				return ec.fieldContext_ProblemCategory_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type ProblemCategory", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getProblemCategoryByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4044,8 +4263,6 @@ func (ec *executionContext) fieldContext_Query_getProblemCategories(ctx context.
 				return ec.fieldContext_ProblemCategory__id(ctx, field)
 			case "name":
 				return ec.fieldContext_ProblemCategory_name(ctx, field)
-			case "subCategories":
-				return ec.fieldContext_ProblemCategory_subCategories(ctx, field)
 			}
 			return nil, fmt.Errorf("no field named %q was found under type ProblemCategory", field.Name)
 		},
@@ -4204,8 +4421,8 @@ func (ec *executionContext) fieldContext_Query_getProblems(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getTag(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getTag(ctx, field)
+func (ec *executionContext) _Query_getTagByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getTagByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4218,7 +4435,7 @@ func (ec *executionContext) _Query_getTag(ctx context.Context, field graphql.Col
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetTag(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetTagByID(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4235,7 +4452,7 @@ func (ec *executionContext) _Query_getTag(ctx context.Context, field graphql.Col
 	return ec.marshalNTag2ᚖdataᚑmanagerᚋgraphᚋmodelᚐTag(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getTag(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getTagByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -4258,7 +4475,68 @@ func (ec *executionContext) fieldContext_Query_getTag(ctx context.Context, field
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getTag_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getTagByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+		ec.Error(ctx, err)
+		return fc, err
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Query_getTagByName(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getTagByName(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return ec.resolvers.Query().GetTagByName(rctx, fc.Args["name"].(string))
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		if !graphql.HasFieldError(ctx, fc) {
+			ec.Errorf(ctx, "must not be null")
+		}
+		return graphql.Null
+	}
+	res := resTmp.(*model.Tag)
+	fc.Result = res
+	return ec.marshalNTag2ᚖdataᚑmanagerᚋgraphᚋmodelᚐTag(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Query_getTagByName(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Query",
+		Field:      field,
+		IsMethod:   true,
+		IsResolver: true,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			switch field.Name {
+			case "_id":
+				return ec.fieldContext_Tag__id(ctx, field)
+			case "name":
+				return ec.fieldContext_Tag_name(ctx, field)
+			}
+			return nil, fmt.Errorf("no field named %q was found under type Tag", field.Name)
+		},
+	}
+	defer func() {
+		if r := recover(); r != nil {
+			err = ec.Recover(ctx, r)
+			ec.Error(ctx, err)
+		}
+	}()
+	ctx = graphql.WithFieldContext(ctx, fc)
+	if fc.Args, err = ec.field_Query_getTagByName_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -7532,7 +7810,7 @@ func (ec *executionContext) unmarshalInputProblemCategoryCreateInput(ctx context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "subCategories"}
+	fieldsInOrder := [...]string{"name"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7546,13 +7824,6 @@ func (ec *executionContext) unmarshalInputProblemCategoryCreateInput(ctx context
 				return it, err
 			}
 			it.Name = data
-		case "subCategories":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subCategories"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SubCategories = data
 		}
 	}
 
@@ -7566,7 +7837,7 @@ func (ec *executionContext) unmarshalInputProblemCategoryUpdateInput(ctx context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"name", "subCategories"}
+	fieldsInOrder := [...]string{"name"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7580,13 +7851,6 @@ func (ec *executionContext) unmarshalInputProblemCategoryUpdateInput(ctx context
 				return it, err
 			}
 			it.Name = data
-		case "subCategories":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("subCategories"))
-			data, err := ec.unmarshalOString2ᚕstringᚄ(ctx, v)
-			if err != nil {
-				return it, err
-			}
-			it.SubCategories = data
 		}
 	}
 
@@ -8215,8 +8479,6 @@ func (ec *executionContext) _ProblemCategory(ctx context.Context, sel ast.Select
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "subCategories":
-			out.Values[i] = ec._ProblemCategory_subCategories(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8300,8 +8562,6 @@ func (ec *executionContext) _ProblemCategoryUpdateResponse(ctx context.Context, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "subCategories":
-			out.Values[i] = ec._ProblemCategoryUpdateResponse_subCategories(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -8459,7 +8719,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Query")
-		case "getUser":
+		case "getUserByID":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -8468,7 +8728,51 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getUser(ctx, field)
+				res = ec._Query_getUserByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getUserByEmployeeID":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getUserByEmployeeID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getUserByEmail":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getUserByEmail(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -8503,7 +8807,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getProblemCategory":
+		case "getProblemCategoryByID":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -8512,7 +8816,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getProblemCategory(ctx, field)
+				res = ec._Query_getProblemCategoryByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getProblemCategoryByName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getProblemCategoryByName(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}
@@ -8591,7 +8917,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getTag":
+		case "getTagByID":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -8600,7 +8926,29 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getTag(ctx, field)
+				res = ec._Query_getTagByID(ctx, field)
+				if res == graphql.Null {
+					atomic.AddUint32(&fs.Invalids, 1)
+				}
+				return res
+			}
+
+			rrm := func(ctx context.Context) graphql.Marshaler {
+				return ec.OperationContext.RootResolverMiddleware(ctx,
+					func(ctx context.Context) graphql.Marshaler { return innerFunc(ctx, out) })
+			}
+
+			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
+		case "getTagByName":
+			field := field
+
+			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
+				defer func() {
+					if r := recover(); r != nil {
+						ec.Error(ctx, ec.Recover(ctx, r))
+					}
+				}()
+				res = ec._Query_getTagByName(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

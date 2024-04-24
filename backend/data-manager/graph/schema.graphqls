@@ -97,23 +97,19 @@ type Comment {
 type ProblemCategory {
   _id : ID!
   name: String!
-  subCategories: [String!]
 }
 
 input ProblemCategoryCreateInput {
   name : String!
-  subCategories : [String!]
 }
 
 input ProblemCategoryUpdateInput {
   name : String
-  subCategories : [String!]
 }
 
 type ProblemCategoryUpdateResponse {
   id : ID!
   name : String!
-  subCategories : [String!]
 }
 
 type ProblemCategoryDeleteResponse {
@@ -232,47 +228,44 @@ type TagDeleteResponse {
 
 
 type Query {
-  getUser(id : ID!) : User!
+  getUserByID(id : ID!) : User!
+  getUserByEmployeeID(employeeID : String!) : User!
+  getUserByEmail(email : String!) : User!
   getUsers : [User!]!
 
-  getProblemCategory(id : ID!) : ProblemCategory!
+  getProblemCategoryByID(id : ID!) : ProblemCategory!
+  getProblemCategoryByName(name : String!) : ProblemCategory!
   getProblemCategories : [ProblemCategory!]!
 
   getProblem(id : ID!) : Problem!
   getProblems : [Problem!]!
 
-  getTag(id : ID!) : Tag!
+  getTagByID(id : ID!) : Tag!
+  getTagByName(name : String!) : Tag!
   getTags : [Tag!]!
 }
 
+
 type Mutation {
   createUser(input : UserCreateInput!) : UserCreateResponse!
-
   updateUser(id : ID!, input : UserUpdateInput!) : UserUpdateResponse!
-
   deleteUser(id : ID!) : UserDeleteResponse!
 
 
 
   createProblemCategory(input : ProblemCategoryCreateInput!) : ProblemCategory!
-
   updateProblemCategory(id : ID!, input : ProblemCategoryUpdateInput!) : ProblemCategoryUpdateResponse!
-  
   deleteProblemCategory(id : ID!) : ProblemCategoryDeleteResponse!
 
 
 
   createProblem(input : ProblemCreateInput!) : Problem!
-
   updateProblem(id : ID!, input : ProblemUpdateInput!) : ProblemUpdateResponse!
-  
   deleteProblem(id : ID!) : ProblemDeleteResponse!
 
 
   
   createTag(input : TagCreateInput!) : TagCreateResponse!
-
   updateTag(id : ID!, input : TagUpdateInput!) : TagUpdateResponse!
-
   deleteTag(id : ID!) : TagDeleteResponse!
 }

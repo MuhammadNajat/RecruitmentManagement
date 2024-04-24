@@ -5,18 +5,17 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { gql, GraphQLClient } from 'graphql-request';
 import { checkNameValidity, checkNamesValidity } from '@/app/lib/helpers/problem-category-validator';
+import { getProblemCategoryByName } from '../queries/readProblemCategoryAction';
 
 const FormSchema = z.object({
     name: z.string(),
-    subCategories: z.string(),
 });
 
 const CreateCategory = FormSchema.omit({});
 
 export async function createCategory(prevState: string | undefined, formData: FormData,) {
-    const { name, subCategories } = CreateCategory.parse({
+    const { name } = CreateCategory.parse({
         name: formData.get('name'),
-        subCategories: formData.get('subCategories'),
     });
 
     let categoryNameValidity = checkNameValidity(name);
@@ -27,28 +26,22 @@ export async function createCategory(prevState: string | undefined, formData: Fo
 
     let trimmedName = name.trim();
 
-    const chunks = subCategories.split(",");
-    console.log("chunks: ", chunks);
+    const categoryWithInputName = await getProblemCategoryByName(trimmedName);
+    console.log(">>> >>> >>> categoryWithInputName", categoryWithInputName);
 
-    let validity = checkNamesValidity(chunks);
-    if (!validity[0]) {
-        console.log("~~~ ~~~Insert valid category name");
-        return validity[1].toString();
+    if (categoryWithInputName != null) {
+        const response = "A category with the same name exists.";
+        return response;
     }
 
-    let trimmedChunks: string[] = []
-    chunks.forEach((item, index) => {
-        trimmedChunks.push(item.trim());
-    })
-
-    insertCategory(trimmedName, trimmedChunks);
+    insertCategory(trimmedName);
 
     revalidatePath('/admin/problem-categories');
 
     redirect('/admin/problem-categories');
 }
 
-async function insertCategory(name: string, subCategories: string[]) {
+async function insertCategory(name: string) {
     const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
         headers: {
             //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -58,15 +51,13 @@ async function insertCategory(name: string, subCategories: string[]) {
     const query = gql`
         mutation CreateProblemCategory($input : ProblemCategoryCreateInput!) {
             createProblemCategory(input : $input) {
-            name
-            subCategories
+                name
             }
         }
     `;
     const variables = {
         input: {
             name: name,
-            subCategories: subCategories
         }
     };
 

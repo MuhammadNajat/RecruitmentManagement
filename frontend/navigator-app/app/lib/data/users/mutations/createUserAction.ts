@@ -8,6 +8,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import * as bcrypt from 'bcrypt';
 import { sendMail } from '@/app/lib/helpers/mail-sender';
 import { generatePassword } from '@/app/lib/helpers/randomPasswordGenerator';
+import { getUserByEmail, getUserByEmployeeID } from '../queries/readUserAction';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -32,11 +33,29 @@ export async function createUser(prevState: string | undefined, formData: FormDa
     return inputValidity[1].toString();
   }
 
+  console.log("*** *** *** INPUT EMAIL: ", emailAddress, "INPUT EMPLOYEE ID: ", employeeID);
+
+  const userWithInputEmail = await getUserByEmail(emailAddress);
+  console.log(">>> >>> >>> userWithInputEmail", userWithInputEmail);
+
+  if(userWithInputEmail != null) {
+    const response = "A user with the same email exists.";
+    return response;
+  }
+
+  const userWithInputEmployeeID = await getUserByEmployeeID(employeeID);
+  console.log(">>> >>> >>> userWithInputEmployeeID", userWithInputEmployeeID);
+
+  if(userWithInputEmployeeID != null) {
+    const response = "A user with the same employee ID exists.";
+    return response;
+  }
+
   const password = generatePassword();
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  console.log("### ### HASHED PASSWORD:", hashedPassword);
+  ///console.log("### ### HASHED PASSWORD:", hashedPassword);
 
   await insertData(employeeID, name, emailAddress, hashedPassword, role);
 

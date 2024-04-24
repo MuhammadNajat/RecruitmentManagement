@@ -5,7 +5,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import { unstable_noStore as noStore } from 'next/cache';
 import { Tag } from "@/app/lib/definitions";
 
-export async function getTag(id: String) {
+export async function getTagByID(id: String) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -13,8 +13,8 @@ export async function getTag(id: String) {
   });
 
   const query = gql`
-      query GetTag($id: ID!) {
-        getTag(id: $id) {
+      query GetTagByID($id: ID!) {
+        getTagByID(id: $id) {
           _id
           name
         }
@@ -27,11 +27,41 @@ export async function getTag(id: String) {
 
   try {
     const results = await graphQLClient.request(query, variables);
-    console.log("Query (GetTag) Result:");
+    console.log("Query (getTagByID) Result:");
     console.log(results);
     return results;
   } catch (error) {
-    console.error("Error querying Tag:", error);
+    console.error("Error querying getTagByID:", error);
+  }
+}
+
+export async function getTagByName(name: String) {
+  const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
+    headers: {
+      //authorization: 'Apikey ' + process.env.AUTH_SECRET,
+    },
+  });
+
+  const query = gql`
+      query GetTagByName($name: String!) {
+        getTagByName(name: $name) {
+          _id
+          name
+        }
+      }
+    `;
+
+  const variables = {
+    name: name,
+  };
+
+  try {
+    const results = await graphQLClient.request(query, variables);
+    console.log("Query (GetTagByName) Result:");
+    console.log(results);
+    return results;
+  } catch (error) {
+    console.error("Error querying GetTagByName:", error);
   }
 }
 
@@ -53,11 +83,11 @@ export async function getTags() {
 
   try {
     const results = await graphQLClient.request(query);
-    console.log("*** *** Query Tag Results:");
+    console.log("*** *** Query GetTag Results:");
     console.log(results);
     return results;
   } catch (error) {
-    console.error("Error querying Tags:", error);
+    console.error("Error querying GetTags:", error);
   }
 }
 

@@ -71,9 +71,19 @@ func (r *mutationResolver) DeleteTag(ctx context.Context, id string) (*model.Tag
 	return connection.DeleteTag(id), nil
 }
 
-// GetUser is the resolver for the getUser field.
-func (r *queryResolver) GetUser(ctx context.Context, id string) (*model.User, error) {
-	return connection.GetUser(id), nil
+// GetUserByID is the resolver for the getUserByID field.
+func (r *queryResolver) GetUserByID(ctx context.Context, id string) (*model.User, error) {
+	return connection.GetUserByID(id), nil
+}
+
+// GetUserByEmployeeID is the resolver for the getUserByEmployeeID field.
+func (r *queryResolver) GetUserByEmployeeID(ctx context.Context, employeeID string) (*model.User, error) {
+	return connection.GetUserByEmployeeID(employeeID), nil
+}
+
+// GetUserByEmail is the resolver for the getUserByEmail field.
+func (r *queryResolver) GetUserByEmail(ctx context.Context, email string) (*model.User, error) {
+	return connection.GetUserByEmail(email), nil
 }
 
 // GetUsers is the resolver for the getUsers field.
@@ -81,9 +91,14 @@ func (r *queryResolver) GetUsers(ctx context.Context) ([]*model.User, error) {
 	return connection.GetUsers(), nil
 }
 
-// GetProblemCategory is the resolver for the getProblemCategory field.
-func (r *queryResolver) GetProblemCategory(ctx context.Context, id string) (*model.ProblemCategory, error) {
-	return connection.GetProblemCategory(id), nil
+// GetProblemCategoryByID is the resolver for the getProblemCategoryByID field.
+func (r *queryResolver) GetProblemCategoryByID(ctx context.Context, id string) (*model.ProblemCategory, error) {
+	return connection.GetProblemCategoryByID(id), nil
+}
+
+// GetProblemCategoryByName is the resolver for the getProblemCategoryByName field.
+func (r *queryResolver) GetProblemCategoryByName(ctx context.Context, name string) (*model.ProblemCategory, error) {
+	return connection.GetProblemCategoryByName(name), nil
 }
 
 // GetProblemCategories is the resolver for the getProblemCategories field.
@@ -101,9 +116,14 @@ func (r *queryResolver) GetProblems(ctx context.Context) ([]*model.Problem, erro
 	return connection.GetProblems(), nil
 }
 
-// GetTag is the resolver for the getTag field.
-func (r *queryResolver) GetTag(ctx context.Context, id string) (*model.Tag, error) {
-	return connection.GetTag(id), nil
+// GetTagByID is the resolver for the getTagByID field.
+func (r *queryResolver) GetTagByID(ctx context.Context, id string) (*model.Tag, error) {
+	return connection.GetTagByID(id), nil
+}
+
+// GetTagByName is the resolver for the getTagByName field.
+func (r *queryResolver) GetTagByName(ctx context.Context, name string) (*model.Tag, error) {
+	return connection.GetTagByName(name), nil
 }
 
 // GetTags is the resolver for the getTags field.

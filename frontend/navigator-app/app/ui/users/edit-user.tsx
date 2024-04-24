@@ -1,6 +1,6 @@
 'use client';
 
-import { User } from "@/app/lib/definitions";
+import { User, UserQueryResponse } from "@/app/lib/definitions";
 import { updateUser } from "@/app/lib/data/users/mutations/updateUserAction";
 import Link from "next/link";
 import { Button } from '@/app/ui/button';
@@ -10,7 +10,7 @@ import { useFormState, useFormStatus } from 'react-dom';
 export default function EditUserForm({
     user
 }: {
-    user: User;
+    user: UserQueryResponse;
 }) {
     console.log("### ### ### user inside EditUserForm", user);
     //const updateUserWithId = updateUser.bind(null, user.employeeID);
@@ -96,26 +96,6 @@ export default function EditUserForm({
                                 defaultValue={user.email}
                                 minLength={5}
                                 maxLength={256}
-                            />
-                        </div>
-                    </div>
-                </div>
-
-                {/* Reset Password */}
-
-                <div className="mb-4">
-                    <div className="relative mt-2 rounded-md">
-                        <div className="relative">
-                            <label htmlFor="resetPassword" className="mb-2 block text-sm font-medium">
-                                Reset Password
-                            </label>
-                            <input
-                                id="resetPassword"
-                                name="resetPassword"
-                                type="checkbox"
-                                defaultChecked={false}
-                                value="on"
-                                className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
                             />
                         </div>
                     </div>

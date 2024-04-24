@@ -7,10 +7,17 @@ export type User = {
   employeeID: string;
   name: string;
   email: string;
-  password: string;
   role: string;
-  adminAssignedPassword: string;
-  changedAdminAssignedPassword: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type UserQueryResponse = {
+  _id: string;
+  employeeID: string;
+  name: string;
+  email: string;
+  role: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -18,7 +25,6 @@ export type User = {
 export type ProblemCategory = {
   _id: string;
   name: string;
-  subCategories: [string];
 };
 
 export type ProblemCategoryInput = {

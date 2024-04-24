@@ -21,8 +21,8 @@ export default async function ProblemCategories() {
 
                     {categories.map(category => (
 
-                        <details key={category._id} className="group mb-2">
-                            <summary
+                        <div key={category._id} className="group mb-2">
+                            <div
                                 className="list-none py-4 text-lg font-medium text-secondary-900 group-open:text-primary-500">
 
                                 <span className="flow-root">
@@ -37,30 +37,9 @@ export default async function ProblemCategories() {
 
 
                                     <DeleteProblemCategory id={category._id} />
-
-
-
-                                    <span className="float-right">
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" className="block h-5 w-5 group-open:hidden">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                        </svg>
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                            stroke="currentColor" className="hidden h-5 w-5 group-open:block">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                                        </svg>
-                                    </span>
                                 </span>
-                            </summary>
-
-                            {category.subCategories.map(subCategory => (
-                                <>
-                                    <span key={subCategory} id="badge-dismiss-default" className="inline-flex items-center px-3 py-2 me-2 text-sm font-medium text-white bg-gray-600 rounded dark:bg-gray-600 dark:text-white mb-2">
-                                        {subCategory}
-                                    </span>
-                                </>
-                            ))}
-                        </details>
+                            </div>
+                        </div>
 
                     ))}
                 </div>

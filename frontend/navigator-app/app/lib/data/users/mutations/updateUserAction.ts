@@ -8,7 +8,7 @@ import { gql, GraphQLClient } from 'graphql-request';
 import { generatePassword } from '@/app/lib/helpers/randomPasswordGenerator';
 import * as bcrypt from "bcrypt";
 import { sendMail } from '@/app/lib/helpers/mail-sender';
-import { zfd } from "zod-form-data";
+import { getUserByEmail, getUserByEmployeeID } from '../queries/readUserAction';
 
 const FormSchema = z.object({
   id: z.string(),
@@ -31,7 +31,7 @@ export async function updateUser(prevState: string | undefined, formData: FormDa
     role: formData.get('role'),
   });
 
-  console.log("+++ +++ Showing resetPassword: ", resetPassword);
+  console.log(`+++ +++ Showing datat in updateUser: id:${id}, employeeID:${employeeID}, email: ${emailAddress}`);
 
   const inputValidity = checkUserInputValidity(employeeID, emailAddress, name, role);
   if (!inputValidity[0]) {
@@ -44,18 +44,30 @@ export async function updateUser(prevState: string | undefined, formData: FormDa
     hashedPassword = await bcrypt.hash(password, 10);
   }
 
-  updateUserData(id, employeeID, name, emailAddress, hashedPassword, role);
+  const userWithInputEmail = await getUserByEmail(emailAddress);
+  console.log(">>> >>> >>> userWithInputEmail", userWithInputEmail);
 
-  if (resetPassword != null && resetPassword == "on") {
-    sendEmail(emailAddress, String(password));
+  if(userWithInputEmail != null && userWithInputEmail.getUserByEmail._id != id) {
+    const response = "A user with the same email exists.";
+    return response;
   }
+
+  const userWithInputEmployeeID = await getUserByEmployeeID(employeeID);
+  console.log(">>> >>> >>> userWithInputEmployeeID", userWithInputEmployeeID);
+
+  if(userWithInputEmployeeID != null && userWithInputEmployeeID.getUserByEmployeeID._id != id) {
+    const response = "A user with the same employee ID exists.";
+    return response;
+  }
+
+  updateUserData(id, employeeID, name, emailAddress, hashedPassword, role);
 
   revalidatePath('/admin/users');
 
   redirect('/admin/users');
 }
 
-async function updateUserData(id: string, employeeID: string, name: string, emailAddress: string, password: any, role: string) {
+export async function updateUserData(id: any, employeeID: any, name: any, emailAddress: any, password: any, role: any) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,

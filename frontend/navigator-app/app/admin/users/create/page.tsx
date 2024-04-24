@@ -8,7 +8,7 @@ import { generatePassword } from '@/app/lib/helpers/randomPasswordGenerator';
 
 
 export default function Form() {
-  
+
 
   const password = generatePassword();
 

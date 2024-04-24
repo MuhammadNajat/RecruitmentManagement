@@ -38,14 +38,12 @@ type Problem struct {
 }
 
 type ProblemCategory struct {
-	ID            string   `bson:"_id" json:"id"`
-	Name          string   `json:"name"`
-	SubCategories []string `json:"subCategories,omitempty"`
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
 }
 
 type ProblemCategoryCreateInput struct {
-	Name          string   `json:"name"`
-	SubCategories []string `json:"subCategories,omitempty"`
+	Name string `json:"name"`
 }
 
 type ProblemCategoryDeleteResponse struct {
@@ -53,14 +51,12 @@ type ProblemCategoryDeleteResponse struct {
 }
 
 type ProblemCategoryUpdateInput struct {
-	Name          *string  `json:"name,omitempty"`
-	SubCategories []string `json:"subCategories,omitempty"`
+	Name *string `json:"name,omitempty"`
 }
 
 type ProblemCategoryUpdateResponse struct {
-	ID            string   `bson:"_id" json:"id"`
-	Name          string   `json:"name"`
-	SubCategories []string `json:"subCategories,omitempty"`
+	ID   string `bson:"_id" json:"id"`
+	Name string `json:"name"`
 }
 
 type ProblemCreateInput struct {
