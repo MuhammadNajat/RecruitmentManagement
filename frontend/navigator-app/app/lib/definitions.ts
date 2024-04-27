@@ -36,7 +36,8 @@ export type Problem = {
   _id: string;
   statement: string;
   image: any;
-  tags: string[];
+  categoryIDs: string[];
+  tagIDs: string[];
   difficulty: string;
   status: string;
   authorUserID: string;

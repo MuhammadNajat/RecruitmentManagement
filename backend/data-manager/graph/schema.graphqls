@@ -128,6 +128,7 @@ type Problem {
   _id : ID!
   statement : String!
   image : Upload
+  categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty!
   status : Status!
@@ -143,6 +144,7 @@ type Problem {
 input ProblemCreateInput {
   statement : String!
   image : Upload
+  categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty!
   status : Status!
@@ -155,6 +157,7 @@ input ProblemCreateInput {
 input ProblemUpdateInput {
   statement : String
   image : Upload
+  categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty
   status : Status
@@ -168,6 +171,7 @@ type ProblemUpdateResponse {
   id : ID!
   statement : String!
   image : Upload
+  categoryIDs : [ID!]
   tagIDs : [String!]
   difficulty : Difficulty!
   status : Status!
@@ -237,7 +241,7 @@ type Query {
   getProblemCategoryByName(name : String!) : ProblemCategory!
   getProblemCategories : [ProblemCategory!]!
 
-  getProblem(id : ID!) : Problem!
+  getProblemByID(id : ID!) : Problem!
   getProblems : [Problem!]!
 
   getTagByID(id : ID!) : Tag!

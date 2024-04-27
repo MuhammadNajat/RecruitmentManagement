@@ -4,48 +4,66 @@ import { z } from 'zod';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { gql, GraphQLClient } from 'graphql-request';
-import { checkValidity } from '@/app/lib/helpers/problem-validator';
+import { checkInputProblemValidity } from '@/app/lib/helpers/problem-validator';
+import { useForm } from "react-hook-form";
+import { ProblemCategory } from '@/app/lib/definitions';
+
 
 const MAX_FILE_SIZE = 10490880; //1MB = 1024 KB = 1024 * 1024 Bytes
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
 
-const FormSchema = z.object({
+const ProblemCreateFormSchema = z.object({
     statement: z.string(),
     image: z.any()
-        .refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 1MB.`)
+        /*.refine((file) => file?.size <= MAX_FILE_SIZE, `Max image size is 1MB.`)
         .refine(
             (file) => ACCEPTED_IMAGE_TYPES.includes(file?.type),
             "Only .jpg, .jpeg, .png and .webp formats are supported."
-        ),
+        )*/,
     difficulty: z.string(),
-    tags: z.string()
+    categoryIDs: z.array(z.string()),
+    tagIDs: z.array(z.string())
 });
 
-const CreateCategory = FormSchema.omit({});
+///const CreateCategory = ProblemCreateFormSchema.omit({});
 
-export async function createProblem(prevState: string | undefined, formData: FormData,) {
-    const { statement, image, difficulty, tags } = CreateCategory.parse({
-        statement: formData.get('statement'),
-        image: formData.get('image'),
-        difficulty: formData.get('difficulty'),
-        tags: formData.get('tags')
-    });
+export async function createProblem(prevState: string | undefined, data: FormData) {
+    let { statement, image, difficulty, categoryIDs, tagIDs } = ProblemCreateFormSchema.parse({
+        statement: data.get('statement'),
+        image: data.get('image'),
+        difficulty: data.get('difficulty'),
+        categoryIDs: data.getAll('categories'),
+        tagIDs: data.getAll('tags')
+      });
 
-    let checkInputValidity = checkValidity(statement, image, difficulty, tags);
-    if (!checkInputValidity[0]) {
-        console.log("~~~ ~~~Insert valid category name");
-        return checkInputValidity[1].toString();
+    console.log("*** *** *** Data received on problem create form submission:");
+    console.log(data);
+
+    console.log("*** *** *** Destructured:");
+    console.log("statement: ", statement, "image: ", image, "difficulty: ", difficulty, "categories:", categoryIDs, "tags: ", tagIDs);
+
+    const validity = await checkInputProblemValidity({statement, image, difficulty, categoryIDs, tagIDs});
+
+    if(!validity[0]) {
+        return validity[1];
+    }
+    
+    if(image.size == 0) {
+        image = null;
     }
 
-    insertProblem(statement, image, difficulty, tags);
+    insertProblem(statement, image, difficulty, categoryIDs, tagIDs);
 
     revalidatePath('/admin/problems');
 
     redirect('/admin/problems');
+
+    return [true, ""];
 }
 
-async function insertProblem(statement: string, image: any, difficulty: string, tags: string) {
+
+async function insertProblem(statement: string, image: any, difficulty: string, categoryIDs: string[], tagIDs: string[]) {
     const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
         headers: {
             //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -58,7 +76,8 @@ async function insertProblem(statement: string, image: any, difficulty: string, 
             _id
             statement
             image
-            tags
+            categoryIDs
+            tagIDs
             status
             difficulty
             commentIDs
@@ -71,24 +90,12 @@ async function insertProblem(statement: string, image: any, difficulty: string, 
         }
     `;
 
-    /**
-     * statement : String!
-  image : Upload
-  tags : [String!]
-  difficulty : Difficulty!
-  status : Status!
-  authorUserID : ID!
-  reviewerUserID : ID
-  approverAdminUserID : ID
-  commentIDs : [ID!]
-     */
-
-
     const variables = {
         input: {
             statement: statement,
             image: image,
-            tags: tags,
+            categoryIDs: categoryIDs,
+            tagIDs: tagIDs,
             difficulty: difficulty,
             status: "SUBMITTED",
             authorUserID: "690",

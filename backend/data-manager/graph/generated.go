@@ -74,6 +74,7 @@ type ComplexityRoot struct {
 	Problem struct {
 		ApproverAdminUserID func(childComplexity int) int
 		AuthorUserID        func(childComplexity int) int
+		CategoryIDs         func(childComplexity int) int
 		CommentIDs          func(childComplexity int) int
 		CreatedAt           func(childComplexity int) int
 		Difficulty          func(childComplexity int) int
@@ -107,6 +108,7 @@ type ComplexityRoot struct {
 	ProblemUpdateResponse struct {
 		ApproverAdminUserID func(childComplexity int) int
 		AuthorUserID        func(childComplexity int) int
+		CategoryIDs         func(childComplexity int) int
 		CommentIDs          func(childComplexity int) int
 		CreatedAt           func(childComplexity int) int
 		Difficulty          func(childComplexity int) int
@@ -120,7 +122,7 @@ type ComplexityRoot struct {
 	}
 
 	Query struct {
-		GetProblem               func(childComplexity int, id string) int
+		GetProblemByID           func(childComplexity int, id string) int
 		GetProblemCategories     func(childComplexity int) int
 		GetProblemCategoryByID   func(childComplexity int, id string) int
 		GetProblemCategoryByName func(childComplexity int, name string) int
@@ -211,7 +213,7 @@ type QueryResolver interface {
 	GetProblemCategoryByID(ctx context.Context, id string) (*model.ProblemCategory, error)
 	GetProblemCategoryByName(ctx context.Context, name string) (*model.ProblemCategory, error)
 	GetProblemCategories(ctx context.Context) ([]*model.ProblemCategory, error)
-	GetProblem(ctx context.Context, id string) (*model.Problem, error)
+	GetProblemByID(ctx context.Context, id string) (*model.Problem, error)
 	GetProblems(ctx context.Context) ([]*model.Problem, error)
 	GetTagByID(ctx context.Context, id string) (*model.Tag, error)
 	GetTagByName(ctx context.Context, name string) (*model.Tag, error)
@@ -437,6 +439,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Problem.AuthorUserID(childComplexity), true
 
+	case "Problem.categoryIDs":
+		if e.complexity.Problem.CategoryIDs == nil {
+			break
+		}
+
+		return e.complexity.Problem.CategoryIDs(childComplexity), true
+
 	case "Problem.commentIDs":
 		if e.complexity.Problem.CommentIDs == nil {
 			break
@@ -563,6 +572,13 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ProblemUpdateResponse.AuthorUserID(childComplexity), true
 
+	case "ProblemUpdateResponse.categoryIDs":
+		if e.complexity.ProblemUpdateResponse.CategoryIDs == nil {
+			break
+		}
+
+		return e.complexity.ProblemUpdateResponse.CategoryIDs(childComplexity), true
+
 	case "ProblemUpdateResponse.commentIDs":
 		if e.complexity.ProblemUpdateResponse.CommentIDs == nil {
 			break
@@ -633,17 +649,17 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ProblemUpdateResponse.UpdatedAt(childComplexity), true
 
-	case "Query.getProblem":
-		if e.complexity.Query.GetProblem == nil {
+	case "Query.getProblemByID":
+		if e.complexity.Query.GetProblemByID == nil {
 			break
 		}
 
-		args, err := ec.field_Query_getProblem_args(context.TODO(), rawArgs)
+		args, err := ec.field_Query_getProblemByID_args(context.TODO(), rawArgs)
 		if err != nil {
 			return 0, false
 		}
 
-		return e.complexity.Query.GetProblem(childComplexity, args["id"].(string)), true
+		return e.complexity.Query.GetProblemByID(childComplexity, args["id"].(string)), true
 
 	case "Query.getProblemCategories":
 		if e.complexity.Query.GetProblemCategories == nil {
@@ -1330,6 +1346,21 @@ func (ec *executionContext) field_Query___type_args(ctx context.Context, rawArgs
 	return args, nil
 }
 
+func (ec *executionContext) field_Query_getProblemByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
+	var err error
+	args := map[string]interface{}{}
+	var arg0 string
+	if tmp, ok := rawArgs["id"]; ok {
+		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
+		arg0, err = ec.unmarshalNID2string(ctx, tmp)
+		if err != nil {
+			return nil, err
+		}
+	}
+	args["id"] = arg0
+	return args, nil
+}
+
 func (ec *executionContext) field_Query_getProblemCategoryByID_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
 	var err error
 	args := map[string]interface{}{}
@@ -1357,21 +1388,6 @@ func (ec *executionContext) field_Query_getProblemCategoryByName_args(ctx contex
 		}
 	}
 	args["name"] = arg0
-	return args, nil
-}
-
-func (ec *executionContext) field_Query_getProblem_args(ctx context.Context, rawArgs map[string]interface{}) (map[string]interface{}, error) {
-	var err error
-	args := map[string]interface{}{}
-	var arg0 string
-	if tmp, ok := rawArgs["id"]; ok {
-		ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("id"))
-		arg0, err = ec.unmarshalNID2string(ctx, tmp)
-		if err != nil {
-			return nil, err
-		}
-	}
-	args["id"] = arg0
 	return args, nil
 }
 
@@ -2176,6 +2192,8 @@ func (ec *executionContext) fieldContext_Mutation_createProblem(ctx context.Cont
 				return ec.fieldContext_Problem_statement(ctx, field)
 			case "image":
 				return ec.fieldContext_Problem_image(ctx, field)
+			case "categoryIDs":
+				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
 				return ec.fieldContext_Problem_tagIDs(ctx, field)
 			case "difficulty":
@@ -2257,6 +2275,8 @@ func (ec *executionContext) fieldContext_Mutation_updateProblem(ctx context.Cont
 				return ec.fieldContext_ProblemUpdateResponse_statement(ctx, field)
 			case "image":
 				return ec.fieldContext_ProblemUpdateResponse_image(ctx, field)
+			case "categoryIDs":
+				return ec.fieldContext_ProblemUpdateResponse_categoryIDs(ctx, field)
 			case "tagIDs":
 				return ec.fieldContext_ProblemUpdateResponse_tagIDs(ctx, field)
 			case "difficulty":
@@ -2657,6 +2677,47 @@ func (ec *executionContext) fieldContext_Problem_image(ctx context.Context, fiel
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Upload does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _Problem_categoryIDs(ctx context.Context, field graphql.CollectedField, obj *model.Problem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Problem_categoryIDs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CategoryIDs, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOID2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_Problem_categoryIDs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "Problem",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3431,6 +3492,47 @@ func (ec *executionContext) fieldContext_ProblemUpdateResponse_image(ctx context
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
 			return nil, errors.New("field of type Upload does not have child fields")
+		},
+	}
+	return fc, nil
+}
+
+func (ec *executionContext) _ProblemUpdateResponse_categoryIDs(ctx context.Context, field graphql.CollectedField, obj *model.ProblemUpdateResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ProblemUpdateResponse_categoryIDs(ctx, field)
+	if err != nil {
+		return graphql.Null
+	}
+	ctx = graphql.WithFieldContext(ctx, fc)
+	defer func() {
+		if r := recover(); r != nil {
+			ec.Error(ctx, ec.Recover(ctx, r))
+			ret = graphql.Null
+		}
+	}()
+	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
+		ctx = rctx // use context from middleware stack in children
+		return obj.CategoryIDs, nil
+	})
+	if err != nil {
+		ec.Error(ctx, err)
+		return graphql.Null
+	}
+	if resTmp == nil {
+		return graphql.Null
+	}
+	res := resTmp.([]string)
+	fc.Result = res
+	return ec.marshalOID2ᚕstringᚄ(ctx, field.Selections, res)
+}
+
+func (ec *executionContext) fieldContext_ProblemUpdateResponse_categoryIDs(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+	fc = &graphql.FieldContext{
+		Object:     "ProblemUpdateResponse",
+		Field:      field,
+		IsMethod:   false,
+		IsResolver: false,
+		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
+			return nil, errors.New("field of type ID does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4270,8 +4372,8 @@ func (ec *executionContext) fieldContext_Query_getProblemCategories(ctx context.
 	return fc, nil
 }
 
-func (ec *executionContext) _Query_getProblem(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Query_getProblem(ctx, field)
+func (ec *executionContext) _Query_getProblemByID(ctx context.Context, field graphql.CollectedField) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Query_getProblemByID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -4284,7 +4386,7 @@ func (ec *executionContext) _Query_getProblem(ctx context.Context, field graphql
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return ec.resolvers.Query().GetProblem(rctx, fc.Args["id"].(string))
+		return ec.resolvers.Query().GetProblemByID(rctx, fc.Args["id"].(string))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -4301,7 +4403,7 @@ func (ec *executionContext) _Query_getProblem(ctx context.Context, field graphql
 	return ec.marshalNProblem2ᚖdataᚑmanagerᚋgraphᚋmodelᚐProblem(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Query_getProblem(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Query_getProblemByID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Query",
 		Field:      field,
@@ -4315,6 +4417,8 @@ func (ec *executionContext) fieldContext_Query_getProblem(ctx context.Context, f
 				return ec.fieldContext_Problem_statement(ctx, field)
 			case "image":
 				return ec.fieldContext_Problem_image(ctx, field)
+			case "categoryIDs":
+				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
 				return ec.fieldContext_Problem_tagIDs(ctx, field)
 			case "difficulty":
@@ -4344,7 +4448,7 @@ func (ec *executionContext) fieldContext_Query_getProblem(ctx context.Context, f
 		}
 	}()
 	ctx = graphql.WithFieldContext(ctx, fc)
-	if fc.Args, err = ec.field_Query_getProblem_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
+	if fc.Args, err = ec.field_Query_getProblemByID_args(ctx, field.ArgumentMap(ec.Variables)); err != nil {
 		ec.Error(ctx, err)
 		return fc, err
 	}
@@ -4396,6 +4500,8 @@ func (ec *executionContext) fieldContext_Query_getProblems(ctx context.Context, 
 				return ec.fieldContext_Problem_statement(ctx, field)
 			case "image":
 				return ec.fieldContext_Problem_image(ctx, field)
+			case "categoryIDs":
+				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
 				return ec.fieldContext_Problem_tagIDs(ctx, field)
 			case "difficulty":
@@ -7864,7 +7970,7 @@ func (ec *executionContext) unmarshalInputProblemCreateInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"statement", "image", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
+	fieldsInOrder := [...]string{"statement", "image", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7885,6 +7991,13 @@ func (ec *executionContext) unmarshalInputProblemCreateInput(ctx context.Context
 				return it, err
 			}
 			it.Image = data
+		case "categoryIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoryIDs"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CategoryIDs = data
 		case "tagIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tagIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -7947,7 +8060,7 @@ func (ec *executionContext) unmarshalInputProblemUpdateInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"statement", "image", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
+	fieldsInOrder := [...]string{"statement", "image", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7968,6 +8081,13 @@ func (ec *executionContext) unmarshalInputProblemUpdateInput(ctx context.Context
 				return it, err
 			}
 			it.Image = data
+		case "categoryIDs":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoryIDs"))
+			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
+			if err != nil {
+				return it, err
+			}
+			it.CategoryIDs = data
 		case "tagIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("tagIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -8405,6 +8525,8 @@ func (ec *executionContext) _Problem(ctx context.Context, sel ast.SelectionSet, 
 			}
 		case "image":
 			out.Values[i] = ec._Problem_image(ctx, field, obj)
+		case "categoryIDs":
+			out.Values[i] = ec._Problem_categoryIDs(ctx, field, obj)
 		case "tagIDs":
 			out.Values[i] = ec._Problem_tagIDs(ctx, field, obj)
 		case "difficulty":
@@ -8647,6 +8769,8 @@ func (ec *executionContext) _ProblemUpdateResponse(ctx context.Context, sel ast.
 			}
 		case "image":
 			out.Values[i] = ec._ProblemUpdateResponse_image(ctx, field, obj)
+		case "categoryIDs":
+			out.Values[i] = ec._ProblemUpdateResponse_categoryIDs(ctx, field, obj)
 		case "tagIDs":
 			out.Values[i] = ec._ProblemUpdateResponse_tagIDs(ctx, field, obj)
 		case "difficulty":
@@ -8873,7 +8997,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 			}
 
 			out.Concurrently(i, func(ctx context.Context) graphql.Marshaler { return rrm(innerCtx) })
-		case "getProblem":
+		case "getProblemByID":
 			field := field
 
 			innerFunc := func(ctx context.Context, fs *graphql.FieldSet) (res graphql.Marshaler) {
@@ -8882,7 +9006,7 @@ func (ec *executionContext) _Query(ctx context.Context, sel ast.SelectionSet) gr
 						ec.Error(ctx, ec.Recover(ctx, r))
 					}
 				}()
-				res = ec._Query_getProblem(ctx, field)
+				res = ec._Query_getProblemByID(ctx, field)
 				if res == graphql.Null {
 					atomic.AddUint32(&fs.Invalids, 1)
 				}

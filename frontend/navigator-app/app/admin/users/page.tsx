@@ -79,20 +79,20 @@ export default async function Users() {
                           {user.email}
                         </span>
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
                         {user.role}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap text-sm text-gray-500">
+                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
                         {user.createdAt.slice(0, 19)}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
+                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
                         <Link href={`/admin/users/${encodeURIComponent(user._id)}/resetPassword`} className="text-indigo-600 hover:text-indigo-900">
                           Reset Password
                         </Link>
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
+                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
 
                         <Link href={`/admin/users/${encodeURIComponent(user._id)}/edit`}
                           className="text-indigo-600 hover:text-indigo-900">
@@ -101,7 +101,7 @@ export default async function Users() {
 
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left text-sm font-medium">
+                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
 
 
                         <DeleteComponent key={user._id} id={user._id} />

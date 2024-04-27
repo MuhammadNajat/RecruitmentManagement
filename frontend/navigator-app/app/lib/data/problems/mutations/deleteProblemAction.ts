@@ -4,7 +4,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 import { gql, GraphQLClient } from 'graphql-request';
 
-export async function deleteProblemCategory(id: string) {
+export async function deleteProblem(id: string) {
     const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
         headers: {
             //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -12,8 +12,8 @@ export async function deleteProblemCategory(id: string) {
     });
 
     const query = gql`
-        mutation DeleteProblemCategory($id : ID!) {
-            deleteProblemCategory(id : $id) {
+        mutation DeleteProblem($id : ID!) {
+            deleteProblem(id : $id) {
                 id
             }
         }
@@ -25,13 +25,13 @@ export async function deleteProblemCategory(id: string) {
 
     try {
         const results = await graphQLClient.request(query, variables);
-        console.log(">>> >>> Delete Problem Category Results:");
+        console.log(">>> >>> Delete Problem Results:");
         console.log(results);
     } catch (error) {
-        console.error("Error deleting Problem Category:", error);
+        console.error("Error deleting Problem:", error);
     }
 
-    revalidatePath('/admin/problem-categories');
+    revalidatePath('/admin/problems');
 
-    redirect('/admin/problem-categories');
+    redirect('/admin/problems');
 }

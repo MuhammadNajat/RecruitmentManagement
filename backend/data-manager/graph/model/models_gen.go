@@ -26,6 +26,7 @@ type Problem struct {
 	ID                  string          `bson:"_id" json:"id"`
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
+	CategoryIDs         []string        `json:"categoryIDs,omitempty"`
 	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
@@ -62,6 +63,7 @@ type ProblemCategoryUpdateResponse struct {
 type ProblemCreateInput struct {
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
+	CategoryIDs         []string        `json:"categoryIDs,omitempty"`
 	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`
@@ -78,6 +80,7 @@ type ProblemDeleteResponse struct {
 type ProblemUpdateInput struct {
 	Statement           *string         `json:"statement,omitempty"`
 	Image               *graphql.Upload `json:"image,omitempty"`
+	CategoryIDs         []string        `json:"categoryIDs,omitempty"`
 	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          *Difficulty     `json:"difficulty,omitempty"`
 	Status              *Status         `json:"status,omitempty"`
@@ -91,6 +94,7 @@ type ProblemUpdateResponse struct {
 	ID                  string          `bson:"_id" json:"id"`
 	Statement           string          `json:"statement"`
 	Image               *graphql.Upload `json:"image,omitempty"`
+	CategoryIDs         []string        `json:"categoryIDs,omitempty"`
 	TagIDs              []string        `json:"tagIDs,omitempty"`
 	Difficulty          Difficulty      `json:"difficulty"`
 	Status              Status          `json:"status"`

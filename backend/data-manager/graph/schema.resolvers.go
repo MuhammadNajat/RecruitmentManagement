@@ -27,7 +27,6 @@ func (r *mutationResolver) DeleteUser(ctx context.Context, id string) (*model.Us
 
 // CreateProblemCategory is the resolver for the createProblemCategory field.
 func (r *mutationResolver) CreateProblemCategory(ctx context.Context, input model.ProblemCategoryCreateInput) (*model.ProblemCategory, error) {
-	//panic(fmt.Errorf("not implemented: CreateProblemCategory - createProblemCategory"))
 	return connection.CreateProblemCategory(input), nil
 }
 
@@ -106,9 +105,9 @@ func (r *queryResolver) GetProblemCategories(ctx context.Context) ([]*model.Prob
 	return connection.GetProblemCategories(), nil
 }
 
-// GetProblem is the resolver for the getProblem field.
-func (r *queryResolver) GetProblem(ctx context.Context, id string) (*model.Problem, error) {
-	return connection.GetProblem(id), nil
+// GetProblemByID is the resolver for the getProblemByID field.
+func (r *queryResolver) GetProblemByID(ctx context.Context, id string) (*model.Problem, error) {
+	return connection.GetProblemByID(id), nil
 }
 
 // GetProblems is the resolver for the getProblems field.

@@ -1,6 +1,6 @@
 'use server';
 
-import { request, gql, GraphQLClient } from 'graphql-request';
+import { gql, GraphQLClient } from 'graphql-request';
 
 export async function getProblems() {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
@@ -15,7 +15,8 @@ export async function getProblems() {
         _id
         statement
         image
-        tags
+        categoryIDs
+        tagIDs
         status
         difficulty
         commentIDs
@@ -38,7 +39,7 @@ export async function getProblems() {
   }
 }
 
-export async function getProblem(id: String) {
+export async function getProblemByID(id: String) {
   const graphQLClient = new GraphQLClient('http://localhost:8080/query', {
     headers: {
       //authorization: 'Apikey ' + process.env.AUTH_SECRET,
@@ -46,8 +47,8 @@ export async function getProblem(id: String) {
   });
 
   const query = gql`
-    query GetProblem($id : ID!) {
-      getProblem(id : $id) {
+    query GetProblemByID($id : ID!) {
+      getProblemByID(id : $id) {
         _id
         statement
         image

@@ -19,7 +19,7 @@ export default function Form() {
       <div className="rounded-md bg-gray-50 p-4 md:p-6">
         {/* Employee ID */}
         <div className="mb-4">
-          <label htmlFor="employeeID" className="mb-2 block text-sm font-medium">
+          <label htmlFor="employeeID" className="mb-2 block  font-medium">
             Employee ID
           </label>
           <div className="relative mt-2 rounded-md">
@@ -29,7 +29,7 @@ export default function Form() {
                 name="employeeID"
                 type="text"
                 placeholder="Enter employee ID in the company"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10  outline-2 placeholder:text-gray-500"
                 required
                 minLength={1}
                 maxLength={10}
@@ -40,7 +40,7 @@ export default function Form() {
 
         {/* Employee Name */}
         <div className="mb-4">
-          <label htmlFor="name" className="mb-2 block text-sm font-medium">
+          <label htmlFor="name" className="mb-2 block  font-medium">
             Name
           </label>
           <div className="relative mt-2 rounded-md">
@@ -50,7 +50,7 @@ export default function Form() {
                 name="name"
                 type="text"
                 placeholder="Enter employee name"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10  outline-2 placeholder:text-gray-500"
                 required
                 minLength={3}
                 maxLength={50}
@@ -61,7 +61,7 @@ export default function Form() {
 
         {/* Email*/}
         <div className="mb-4">
-          <label htmlFor="email" className="mb-2 block text-sm font-medium">
+          <label htmlFor="email" className="mb-2 block  font-medium">
             Email
           </label>
           <div className="relative mt-2 rounded-md">
@@ -71,7 +71,7 @@ export default function Form() {
                 name="email"
                 type="text"
                 placeholder="Enter employee's official email address"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10  outline-2 placeholder:text-gray-500"
                 pattern="/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/"
                 required
                 minLength={5}
@@ -85,7 +85,7 @@ export default function Form() {
 
         {/* 
         <div className="mb-4">
-          <label htmlFor="password" className="mb-2 block text-sm font-medium">
+          <label htmlFor="password" className="mb-2 block  font-medium">
             Password (randomly generated one is provided)
           </label>
           <div className="relative mt-2 rounded-md">
@@ -95,7 +95,7 @@ export default function Form() {
                 name="password"
                 type="text"
                 placeholder="Enter an initial password"
-                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
+                className="peer block w-full rounded-md border border-gray-200 py-2 pl-10  outline-2 placeholder:text-gray-500"
                 required
                 defaultValue={password}
                 minLength={6}
@@ -108,7 +108,7 @@ export default function Form() {
 
         {/* Role*/}
         <fieldset>
-          <legend className="mb-2 block text-sm font-medium">
+          <legend className="mb-2 block  font-medium">
             User-type
           </legend>
           <div className="rounded-md border border-gray-200 bg-white px-[14px] py-3">
@@ -123,7 +123,7 @@ export default function Form() {
                 />
                 <label
                   htmlFor="problemSetter"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-200 px-3 py-1.5 text-xs font-medium text-gray-600"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-200 px-3 py-1.5  font-medium text-gray-600"
                 >
                   Problem Setter
                 </label>
@@ -138,7 +138,7 @@ export default function Form() {
                 />
                 <label
                   htmlFor="reviewer"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-400 px-3 py-1.5 text-xs font-medium text-gray-800"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-400 px-3 py-1.5  font-medium text-gray-800"
                 >
                   Reviewer
                 </label>
@@ -154,7 +154,7 @@ export default function Form() {
                 />
                 <label
                   htmlFor="admin"
-                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5 text-xs font-medium text-white"
+                  className="ml-2 flex cursor-pointer items-center gap-1.5 rounded-full bg-green-600 px-3 py-1.5  font-medium text-white"
                 >
                   Admin
                 </label>
@@ -166,7 +166,7 @@ export default function Form() {
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/admin/users"
-          className="flex h-10 items-center rounded-lg bg-gray-100 px-4 text-sm font-medium text-gray-600 transition-colors hover:bg-gray-200"
+          className="flex h-10 items-center rounded-lg bg-gray-100 px-4  font-medium text-gray-600 transition-colors hover:bg-gray-200"
         >
           Cancel
         </Link>
@@ -180,7 +180,7 @@ export default function Form() {
       >
         {errorMessage && (
           <>
-            <p className="text-sm text-red-500">{errorMessage}</p>
+            <p className=" text-red-500">{errorMessage}</p>
           </>
         )}
       </div>
