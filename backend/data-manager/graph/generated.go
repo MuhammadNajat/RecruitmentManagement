@@ -72,19 +72,19 @@ type ComplexityRoot struct {
 	}
 
 	Problem struct {
-		ApproverAdminUserID func(childComplexity int) int
-		AuthorUserID        func(childComplexity int) int
-		CategoryIDs         func(childComplexity int) int
-		CommentIDs          func(childComplexity int) int
-		CreatedAt           func(childComplexity int) int
-		Difficulty          func(childComplexity int) int
-		ID                  func(childComplexity int) int
-		Image               func(childComplexity int) int
-		ReviewerUserID      func(childComplexity int) int
-		Statement           func(childComplexity int) int
-		Status              func(childComplexity int) int
-		TagIDs              func(childComplexity int) int
-		UpdatedAt           func(childComplexity int) int
+		ApproverAdminUserID     func(childComplexity int) int
+		AuthorUserID            func(childComplexity int) int
+		CategoryIDs             func(childComplexity int) int
+		CommentIDs              func(childComplexity int) int
+		CreatedAt               func(childComplexity int) int
+		Difficulty              func(childComplexity int) int
+		ID                      func(childComplexity int) int
+		ImageCloudinaryPublicID func(childComplexity int) int
+		ReviewerUserID          func(childComplexity int) int
+		Statement               func(childComplexity int) int
+		Status                  func(childComplexity int) int
+		TagIDs                  func(childComplexity int) int
+		UpdatedAt               func(childComplexity int) int
 	}
 
 	ProblemCategory struct {
@@ -106,19 +106,19 @@ type ComplexityRoot struct {
 	}
 
 	ProblemUpdateResponse struct {
-		ApproverAdminUserID func(childComplexity int) int
-		AuthorUserID        func(childComplexity int) int
-		CategoryIDs         func(childComplexity int) int
-		CommentIDs          func(childComplexity int) int
-		CreatedAt           func(childComplexity int) int
-		Difficulty          func(childComplexity int) int
-		ID                  func(childComplexity int) int
-		Image               func(childComplexity int) int
-		ReviewerUserID      func(childComplexity int) int
-		Statement           func(childComplexity int) int
-		Status              func(childComplexity int) int
-		TagIDs              func(childComplexity int) int
-		UpdatedAt           func(childComplexity int) int
+		ApproverAdminUserID     func(childComplexity int) int
+		AuthorUserID            func(childComplexity int) int
+		CategoryIDs             func(childComplexity int) int
+		CommentIDs              func(childComplexity int) int
+		CreatedAt               func(childComplexity int) int
+		Difficulty              func(childComplexity int) int
+		ID                      func(childComplexity int) int
+		ImageCloudinaryPublicID func(childComplexity int) int
+		ReviewerUserID          func(childComplexity int) int
+		Statement               func(childComplexity int) int
+		Status                  func(childComplexity int) int
+		TagIDs                  func(childComplexity int) int
+		UpdatedAt               func(childComplexity int) int
 	}
 
 	Query struct {
@@ -474,12 +474,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.Problem.ID(childComplexity), true
 
-	case "Problem.image":
-		if e.complexity.Problem.Image == nil {
+	case "Problem.imageCloudinaryPublicID":
+		if e.complexity.Problem.ImageCloudinaryPublicID == nil {
 			break
 		}
 
-		return e.complexity.Problem.Image(childComplexity), true
+		return e.complexity.Problem.ImageCloudinaryPublicID(childComplexity), true
 
 	case "Problem.reviewerUserID":
 		if e.complexity.Problem.ReviewerUserID == nil {
@@ -607,12 +607,12 @@ func (e *executableSchema) Complexity(typeName, field string, childComplexity in
 
 		return e.complexity.ProblemUpdateResponse.ID(childComplexity), true
 
-	case "ProblemUpdateResponse.image":
-		if e.complexity.ProblemUpdateResponse.Image == nil {
+	case "ProblemUpdateResponse.imageCloudinaryPublicID":
+		if e.complexity.ProblemUpdateResponse.ImageCloudinaryPublicID == nil {
 			break
 		}
 
-		return e.complexity.ProblemUpdateResponse.Image(childComplexity), true
+		return e.complexity.ProblemUpdateResponse.ImageCloudinaryPublicID(childComplexity), true
 
 	case "ProblemUpdateResponse.reviewerUserID":
 		if e.complexity.ProblemUpdateResponse.ReviewerUserID == nil {
@@ -2190,8 +2190,8 @@ func (ec *executionContext) fieldContext_Mutation_createProblem(ctx context.Cont
 				return ec.fieldContext_Problem__id(ctx, field)
 			case "statement":
 				return ec.fieldContext_Problem_statement(ctx, field)
-			case "image":
-				return ec.fieldContext_Problem_image(ctx, field)
+			case "imageCloudinaryPublicID":
+				return ec.fieldContext_Problem_imageCloudinaryPublicID(ctx, field)
 			case "categoryIDs":
 				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
@@ -2273,8 +2273,8 @@ func (ec *executionContext) fieldContext_Mutation_updateProblem(ctx context.Cont
 				return ec.fieldContext_ProblemUpdateResponse_id(ctx, field)
 			case "statement":
 				return ec.fieldContext_ProblemUpdateResponse_statement(ctx, field)
-			case "image":
-				return ec.fieldContext_ProblemUpdateResponse_image(ctx, field)
+			case "imageCloudinaryPublicID":
+				return ec.fieldContext_ProblemUpdateResponse_imageCloudinaryPublicID(ctx, field)
 			case "categoryIDs":
 				return ec.fieldContext_ProblemUpdateResponse_categoryIDs(ctx, field)
 			case "tagIDs":
@@ -2641,8 +2641,8 @@ func (ec *executionContext) fieldContext_Problem_statement(ctx context.Context, 
 	return fc, nil
 }
 
-func (ec *executionContext) _Problem_image(ctx context.Context, field graphql.CollectedField, obj *model.Problem) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_Problem_image(ctx, field)
+func (ec *executionContext) _Problem_imageCloudinaryPublicID(ctx context.Context, field graphql.CollectedField, obj *model.Problem) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_Problem_imageCloudinaryPublicID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -2655,7 +2655,7 @@ func (ec *executionContext) _Problem_image(ctx context.Context, field graphql.Co
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Image, nil
+		return obj.ImageCloudinaryPublicID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -2664,19 +2664,19 @@ func (ec *executionContext) _Problem_image(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*graphql.Upload)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_Problem_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_Problem_imageCloudinaryPublicID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "Problem",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Upload does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -3456,8 +3456,8 @@ func (ec *executionContext) fieldContext_ProblemUpdateResponse_statement(ctx con
 	return fc, nil
 }
 
-func (ec *executionContext) _ProblemUpdateResponse_image(ctx context.Context, field graphql.CollectedField, obj *model.ProblemUpdateResponse) (ret graphql.Marshaler) {
-	fc, err := ec.fieldContext_ProblemUpdateResponse_image(ctx, field)
+func (ec *executionContext) _ProblemUpdateResponse_imageCloudinaryPublicID(ctx context.Context, field graphql.CollectedField, obj *model.ProblemUpdateResponse) (ret graphql.Marshaler) {
+	fc, err := ec.fieldContext_ProblemUpdateResponse_imageCloudinaryPublicID(ctx, field)
 	if err != nil {
 		return graphql.Null
 	}
@@ -3470,7 +3470,7 @@ func (ec *executionContext) _ProblemUpdateResponse_image(ctx context.Context, fi
 	}()
 	resTmp, err := ec.ResolverMiddleware(ctx, func(rctx context.Context) (interface{}, error) {
 		ctx = rctx // use context from middleware stack in children
-		return obj.Image, nil
+		return obj.ImageCloudinaryPublicID, nil
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -3479,19 +3479,19 @@ func (ec *executionContext) _ProblemUpdateResponse_image(ctx context.Context, fi
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*graphql.Upload)
+	res := resTmp.(*string)
 	fc.Result = res
-	return ec.marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, field.Selections, res)
+	return ec.marshalOString2ᚖstring(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) fieldContext_ProblemUpdateResponse_image(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
+func (ec *executionContext) fieldContext_ProblemUpdateResponse_imageCloudinaryPublicID(ctx context.Context, field graphql.CollectedField) (fc *graphql.FieldContext, err error) {
 	fc = &graphql.FieldContext{
 		Object:     "ProblemUpdateResponse",
 		Field:      field,
 		IsMethod:   false,
 		IsResolver: false,
 		Child: func(ctx context.Context, field graphql.CollectedField) (*graphql.FieldContext, error) {
-			return nil, errors.New("field of type Upload does not have child fields")
+			return nil, errors.New("field of type String does not have child fields")
 		},
 	}
 	return fc, nil
@@ -4415,8 +4415,8 @@ func (ec *executionContext) fieldContext_Query_getProblemByID(ctx context.Contex
 				return ec.fieldContext_Problem__id(ctx, field)
 			case "statement":
 				return ec.fieldContext_Problem_statement(ctx, field)
-			case "image":
-				return ec.fieldContext_Problem_image(ctx, field)
+			case "imageCloudinaryPublicID":
+				return ec.fieldContext_Problem_imageCloudinaryPublicID(ctx, field)
 			case "categoryIDs":
 				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
@@ -4498,8 +4498,8 @@ func (ec *executionContext) fieldContext_Query_getProblems(ctx context.Context, 
 				return ec.fieldContext_Problem__id(ctx, field)
 			case "statement":
 				return ec.fieldContext_Problem_statement(ctx, field)
-			case "image":
-				return ec.fieldContext_Problem_image(ctx, field)
+			case "imageCloudinaryPublicID":
+				return ec.fieldContext_Problem_imageCloudinaryPublicID(ctx, field)
 			case "categoryIDs":
 				return ec.fieldContext_Problem_categoryIDs(ctx, field)
 			case "tagIDs":
@@ -7970,7 +7970,7 @@ func (ec *executionContext) unmarshalInputProblemCreateInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"statement", "image", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
+	fieldsInOrder := [...]string{"statement", "imageCloudinaryPublicID", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -7984,13 +7984,13 @@ func (ec *executionContext) unmarshalInputProblemCreateInput(ctx context.Context
 				return it, err
 			}
 			it.Statement = data
-		case "image":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
-			data, err := ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+		case "imageCloudinaryPublicID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imageCloudinaryPublicID"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Image = data
+			it.ImageCloudinaryPublicID = data
 		case "categoryIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoryIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -8060,7 +8060,7 @@ func (ec *executionContext) unmarshalInputProblemUpdateInput(ctx context.Context
 		asMap[k] = v
 	}
 
-	fieldsInOrder := [...]string{"statement", "image", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
+	fieldsInOrder := [...]string{"statement", "imageCloudinaryPublicID", "categoryIDs", "tagIDs", "difficulty", "status", "authorUserID", "reviewerUserID", "approverAdminUserID", "commentIDs"}
 	for _, k := range fieldsInOrder {
 		v, ok := asMap[k]
 		if !ok {
@@ -8074,13 +8074,13 @@ func (ec *executionContext) unmarshalInputProblemUpdateInput(ctx context.Context
 				return it, err
 			}
 			it.Statement = data
-		case "image":
-			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("image"))
-			data, err := ec.unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx, v)
+		case "imageCloudinaryPublicID":
+			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("imageCloudinaryPublicID"))
+			data, err := ec.unmarshalOString2ᚖstring(ctx, v)
 			if err != nil {
 				return it, err
 			}
-			it.Image = data
+			it.ImageCloudinaryPublicID = data
 		case "categoryIDs":
 			ctx := graphql.WithPathContext(ctx, graphql.NewPathWithField("categoryIDs"))
 			data, err := ec.unmarshalOID2ᚕstringᚄ(ctx, v)
@@ -8523,8 +8523,8 @@ func (ec *executionContext) _Problem(ctx context.Context, sel ast.SelectionSet, 
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "image":
-			out.Values[i] = ec._Problem_image(ctx, field, obj)
+		case "imageCloudinaryPublicID":
+			out.Values[i] = ec._Problem_imageCloudinaryPublicID(ctx, field, obj)
 		case "categoryIDs":
 			out.Values[i] = ec._Problem_categoryIDs(ctx, field, obj)
 		case "tagIDs":
@@ -8767,8 +8767,8 @@ func (ec *executionContext) _ProblemUpdateResponse(ctx context.Context, sel ast.
 			if out.Values[i] == graphql.Null {
 				out.Invalids++
 			}
-		case "image":
-			out.Values[i] = ec._ProblemUpdateResponse_image(ctx, field, obj)
+		case "imageCloudinaryPublicID":
+			out.Values[i] = ec._ProblemUpdateResponse_imageCloudinaryPublicID(ctx, field, obj)
 		case "categoryIDs":
 			out.Values[i] = ec._ProblemUpdateResponse_categoryIDs(ctx, field, obj)
 		case "tagIDs":
@@ -10793,22 +10793,6 @@ func (ec *executionContext) marshalOString2ᚖstring(ctx context.Context, sel as
 		return graphql.Null
 	}
 	res := graphql.MarshalString(*v)
-	return res
-}
-
-func (ec *executionContext) unmarshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, v interface{}) (*graphql.Upload, error) {
-	if v == nil {
-		return nil, nil
-	}
-	res, err := graphql.UnmarshalUpload(v)
-	return &res, graphql.ErrorOnPath(ctx, err)
-}
-
-func (ec *executionContext) marshalOUpload2ᚖgithubᚗcomᚋ99designsᚋgqlgenᚋgraphqlᚐUpload(ctx context.Context, sel ast.SelectionSet, v *graphql.Upload) graphql.Marshaler {
-	if v == nil {
-		return graphql.Null
-	}
-	res := graphql.MarshalUpload(*v)
 	return res
 }
 

@@ -14,7 +14,7 @@ export async function getProblems() {
       getProblems {
         _id
         statement
-        image
+        imageCloudinaryPublicID
         categoryIDs
         tagIDs
         status
@@ -51,8 +51,9 @@ export async function getProblemByID(id: String) {
       getProblemByID(id : $id) {
         _id
         statement
-        image
-        tags
+        imageCloudinaryPublicID
+        categoryIDs
+        tagIDs
         status
         difficulty
         commentIDs

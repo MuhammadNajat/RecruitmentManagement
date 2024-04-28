@@ -1,9 +1,12 @@
 import { getProblems } from "@/app/lib/data/problems/queries/readProblemAction";
 import { getUsers } from "@/app/lib/data/users/queries/readUserAction"
 import { lusitana } from '@/app/ui/fonts';
-import { User, UserQueryResponse, Problem } from "@/app/lib/definitions";
+import { User, UserQueryResponse, Problem, ProblemCategory, Tag } from "@/app/lib/definitions";
 import Link from 'next/link'
 import DeleteComponent from "@/app/ui/users/delete-user";
+import { getProblemCategoryByID } from "@/app/lib/data/problem-categories/queries/readProblemCategoryAction";
+import { getTagByID } from "@/app/lib/data/tags/queries/readTagAction";
+import { getUserByID } from "@/app/lib/data/users/queries/readUserAction";
 
 export default async function Problems() {
   let temp: unknown = await getProblems();
@@ -12,10 +15,53 @@ export default async function Problems() {
   const problems = problemData.getProblems;
   console.log("^^^ ^^^ fteched problems: ", problems);
 
-  /*for(let i=0; i<problems.categoryIDs.length; i++) {
+  let categoryNames: string[] = [];
+  for (let i = 0; i < problems.length; i++) {
+    categoryNames.push("");
+  }
 
-  }*/
+  for (let i = 0; i < problems.length; i++) {
+    categoryNames.push("");
+    for (let j = 0; j < problems[i].categoryIDs?.length; j++) {
+      let temp: unknown = await getProblemCategoryByID(problems[i].categoryIDs[j]);
+      const data = temp as ProblemCategory;
+      ///console.log("### ### ### In problems: data as ProblemCategory:", data);
+      const category = data.getProblemCategoryByID;
+      if (!category) {
+        continue;
+      }
+      categoryNames[i] += category?.name?.toString();
+      categoryNames[i] += ", ";
+    }
+    categoryNames[i] = categoryNames[i].substring(0, categoryNames[i].length - 2);
+  }
 
+  let tagNames: string[] = [];
+
+  for (let i = 0; i < problems.length; i++) {
+    tagNames.push("");
+    for (let j = 0; j < problems[i].tagIDs?.length; j++) {
+      let temp: unknown = await getTagByID(problems[i].tagIDs[j].toString());
+      const data = temp as Tag;
+      console.log("### ### ### In problems: data as Tag:", data);
+      const tag = data.getTagByID;
+
+      if (tag == null) {
+        continue;
+      }
+      tagNames[i] += tag?.name?.toString();
+      tagNames[i] += ", ";
+    }
+    tagNames[i] = tagNames[i].substring(0, tagNames[i].length - 2);
+  }
+
+  let authorNames: string[] = [];
+  for (let i = 0; i < problems.length; i++) {
+    let temp: unknown = await getUserByID(problems[i].authorUserID);
+    const data = temp as User;
+    const user = data.getUserByID;
+    authorNames.push(user.name.toString());
+  }
   return (
     <div className="flex w-full flex-col md:col-span-4">
       <h2 className={`${lusitana.className} mb-4 text-xl md:text-2xl`}>
@@ -50,13 +96,13 @@ export default async function Problems() {
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                     Has Image?
+                      Has Image?
                     </th>
                     <th
                       scope="col"
                       className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
                     >
-                     Has Comments?
+                      Has Comments?
                     </th>
                     <th
                       scope="col"
@@ -106,61 +152,66 @@ export default async function Problems() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {problems.map(problem => (
+                  {problems.map((problem, index) => (
                     <tr key={problem._id}>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                        {problem.statement.substring(0, 25)} {problem.statement.length > 25? "..." : ""}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
+                        {problem.statement.substring(0, 25)} {problem.statement.length > 25 ? "..." : ""}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
                         {problem.difficulty}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap">
-                          {problem.status}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
+                        {problem.status}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
-                        {problem.iamge == null? "No" : "Yes"}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium   text-gray-500">
+                        {problem.imageCloudinaryPublicID == null ? "No" : "Yes"}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
-                        {problem.commentIDs == null || problem.commentIDs.length == 0? "No" : "Yes"}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium   text-gray-500">
+                        {problem.commentIDs == null || problem.commentIDs.length == 0 ? "No" : "Yes"}
                       </td>
-                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
-                        {problems.categoryIDs?.map(categoryID => (
-                            <span>{categoryID}</span>
-                        ))}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium   text-gray-500">
+                        {categoryNames[index]}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap  text-gray-500">
-                        {problems.tagIDs?.map(tagID => (
-                            <span>{tagID}</span>
-                        ))}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium   text-gray-500">
+                        {tagNames[index]}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap">
-                          {problem.authorUserID}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
+                        {authorNames[index]}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap">
-                          {problem.reviewerUserID}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
+                        {problem.reviewerUserID ? problem.reviewerUserID : "-"}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap">
-                          {problem.approverAdminUserID}
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium ">
+                        {problem.approverAdminUserID ? problem.approverAdminUserID : "-"}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium  text-left  font-medium">
                         {problem.createdAt.substring(0, 19)}
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium  text-left  font-medium">
 
-                        <Link href={`/admin/users/${encodeURIComponent(problem._id)}/edit`}
+                        <Link href={`/admin/problems/${encodeURIComponent(problem._id)}/view`}
+                          className="text-indigo-600 hover:text-indigo-900">
+                          View
+                        </Link>
+
+                      </td>
+
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium  text-left  font-medium">
+
+                        <Link href={`/admin/problems/${encodeURIComponent(problem._id)}/edit`}
                           className="text-indigo-600 hover:text-indigo-900">
                           Edit
                         </Link>
 
                       </td>
 
-                      <td className="px-5 py-4 whitespace-nowrap text-left  font-medium">
+                      <td className="px-3 py-3 whitespace-nowrap text-sm font-medium  text-left  font-medium">
 
 
                         <DeleteComponent key={problem._id} id={problem._id} />

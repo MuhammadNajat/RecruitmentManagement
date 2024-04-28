@@ -122,12 +122,10 @@ type ProblemCategoryDeleteResponse {
 
 
 
-scalar Upload
-
 type Problem {
   _id : ID!
   statement : String!
-  image : Upload
+  imageCloudinaryPublicID : String
   categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty!
@@ -143,7 +141,7 @@ type Problem {
 
 input ProblemCreateInput {
   statement : String!
-  image : Upload
+  imageCloudinaryPublicID : String
   categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty!
@@ -156,7 +154,7 @@ input ProblemCreateInput {
 
 input ProblemUpdateInput {
   statement : String
-  image : Upload
+  imageCloudinaryPublicID : String
   categoryIDs : [ID!]
   tagIDs : [ID!]
   difficulty : Difficulty
@@ -170,7 +168,7 @@ input ProblemUpdateInput {
 type ProblemUpdateResponse {
   id : ID!
   statement : String!
-  image : Upload
+  imageCloudinaryPublicID : String
   categoryIDs : [ID!]
   tagIDs : [String!]
   difficulty : Difficulty!

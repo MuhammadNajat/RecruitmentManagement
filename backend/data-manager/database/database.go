@@ -583,7 +583,7 @@ func (database database) CreateProblem(input model.ProblemCreateInput) *model.Pr
 	insertedProblem, error := problemCollection.InsertOne(ctx,
 		bson.M{
 			"statement":           input.Statement,
-			"image":               input.Image,
+			"imageCloudinaryPublicID":               input.ImageCloudinaryPublicID,
 			"categoryIDs":		   input.CategoryIDs,
 			"tagIDs":              input.TagIDs,
 			"difficulty":          input.Difficulty,
@@ -605,19 +605,20 @@ func (database database) CreateProblem(input model.ProblemCreateInput) *model.Pr
 
 	insertedProblemID := insertedProblem.InsertedID.(primitive.ObjectID).Hex()
 	problem := model.Problem{
-		ID:                  insertedProblemID,
-		Statement:           input.Statement,
-		Image:               input.Image,
-		CategoryIDs:		 input.CategoryIDs,
-		TagIDs:              input.TagIDs,
-		Difficulty:          input.Difficulty,
-		Status:              input.Status,
-		AuthorUserID:        input.AuthorUserID,
-		ReviewerUserID:      input.ReviewerUserID,
-		ApproverAdminUserID: input.ApproverAdminUserID,
-		CommentIDs:          input.CommentIDs,
-		CreatedAt:           formattedTime,
-		UpdatedAt:           nil}
+		ID:                  					insertedProblemID,
+		Statement:           					input.Statement,
+		ImageCloudinaryPublicID:                input.ImageCloudinaryPublicID,
+		CategoryIDs:		 					input.CategoryIDs,
+		TagIDs:              					input.TagIDs,
+		Difficulty:          					input.Difficulty,
+		Status:              					input.Status,
+		AuthorUserID:      						input.AuthorUserID,
+		ReviewerUserID:      					input.ReviewerUserID,
+		ApproverAdminUserID: 					input.ApproverAdminUserID,
+		CommentIDs:          					input.CommentIDs,
+		CreatedAt:           					formattedTime,
+		UpdatedAt:           					nil}
+
 	return &problem
 }
 
@@ -673,8 +674,8 @@ func (database database) UpdateProblem(id string, input model.ProblemUpdateInput
 	if input.Statement != nil {
 		problemUpdateInfo["statement"] = input.Statement
 	}
-	if input.Image != nil {
-		problemUpdateInfo["image"] = input.Image
+	if input.ImageCloudinaryPublicID != nil {
+		problemUpdateInfo["imageCloudinaryPublicID"] = input.ImageCloudinaryPublicID
 	}
 	if input.CategoryIDs != nil {
 		problemUpdateInfo["categoryIDs"] = input.CategoryIDs

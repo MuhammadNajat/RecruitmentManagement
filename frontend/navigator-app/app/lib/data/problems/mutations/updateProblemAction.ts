@@ -15,7 +15,7 @@ const FormSchema = z.object({
 
 const UpdateCategory = FormSchema.omit({/* */ });
 
-export async function updateCategory(prevState: string | undefined, formData: FormData,) {
+export async function updateProblem(prevState: string | undefined, formData: FormData,) {
     const { id, name, subCategories } = UpdateCategory.parse({
         id: formData.get('id'),
         name: formData.get('name'),

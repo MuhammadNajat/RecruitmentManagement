@@ -27,6 +27,14 @@ export default function TagCreateForm() {
         }
     }
 
+    const handleTagNameInputFieldLoad = () => {
+        let name = document.getElementById('name');
+        if(!name) {
+            return;
+        }
+        name.innerHTML = "";
+    }
+
     return (
         <div>
             <button className="mt-5" onClick={toggleTagCreateFormVisibility}>
@@ -42,7 +50,7 @@ export default function TagCreateForm() {
                 </svg>
             </button>
 
-            <form id="tagCreateForm" action={dispatch} className="hidden w-2/3">
+            <form id="tagCreateForm" name="tagCreateForm" onSubmit={handleTagNameInputFieldLoad} action={dispatch} className="hidden w-2/3">
                 <div className="rounded-md bg-gray-50 p-4 md:p-6">
 
                     {/* Tag Name */}
@@ -59,8 +67,10 @@ export default function TagCreateForm() {
                                     placeholder="Enter tag name"
                                     className="peer block w-full rounded-md border border-gray-200 py-2 pl-10 text-sm outline-2 placeholder:text-gray-500"
                                     required
+                                    defaultValue={""}
                                     minLength={2}
                                     maxLength={50}
+                                    onLoad={handleTagNameInputFieldLoad}
                                 />
                             </div>
                         </div>
@@ -73,7 +83,7 @@ export default function TagCreateForm() {
                         >
                             Cancel
                         </Link>*/}
-                        <Button type="submit">Create</Button>
+                        <button type="submit" onClick={handleTagNameInputFieldLoad} className="text-white bg-blue-500 px-4 py-2 rounded-lg">Create</button>
                     </div>
 
                     <div
