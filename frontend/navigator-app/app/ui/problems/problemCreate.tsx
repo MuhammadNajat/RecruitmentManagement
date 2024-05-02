@@ -47,6 +47,7 @@ export default function ReactHookForm({ tags, categories }: { tags: Tag[], categ
                                 name="image"
                                 type="file"
                                 placeholder="Upload relevant image"
+                                /*onChange={handleFileChange}*/
                                 className="peer block w-full rounded-md border border-gray-200 py-2 pl-10  outline-2 placeholder:text-gray-500"
                             />
                         </div>

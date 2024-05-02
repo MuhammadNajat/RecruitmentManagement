@@ -9,7 +9,7 @@ import { redirect } from 'next/navigation';
 export default async function Page({ params }: { params: { id: string } }) {
   const password = generatePassword();
   const hashedPassword = await bcrypt.hash(password, 10);
-  updateUserData(params.id, hashedPassword);
+  updateUserData(params.id, password, hashedPassword);
 
   revalidatePath('/admin/users');
 

@@ -166,7 +166,7 @@ async function insertProblem(statement: string, imageCloudinaryPublicID: any, di
             tagIDs: tagIDs,
             difficulty: difficulty,
             status: "SUBMITTED",
-            authorUserID: "6626bb8a2bf891b04ca0ab74",
+            authorUserID: "6620fbe7d8100f36cf145be4",
             reviewerUserID: null,
             approverAdminUserID: null,
             commentIDs: null

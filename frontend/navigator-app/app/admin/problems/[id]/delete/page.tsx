@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { deleteUser } from '@/app/lib/data/users/mutations/deleteUserAction';
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
+import { deleteProblem } from '@/app/lib/data/problems/mutations/deleteProblemAction';
 
 export default async function Page({ params }: { params: { id: string } }) {
   const id = params.id;
@@ -18,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   };
 
 const trigerDelete =  async function() {
-  await deleteUser(id);
+  await deleteProblem(id);
   revalidatePath('/admin/problems');
 
   redirect('/admin/problems');

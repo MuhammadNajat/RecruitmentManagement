@@ -8,7 +8,7 @@ export default function UpdatePassword({ id }: { id: string }) {
     const trigerUpdte = async function () {
         const password = generatePassword();
         const hashedPassword = await bcrypt.hash(password, 10);
-        await updateUserData(id, hashedPassword);
+        await updateUserData(id, password, hashedPassword);
     };
 
     console.log(">>> >>> >>> Update Password Clicked");
